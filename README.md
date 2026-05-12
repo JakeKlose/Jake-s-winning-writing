@@ -1,6 +1,6 @@
 # Winning Writing
 
-> A set of Claude Code skills + an agentic browser pipeline. The rules from Stanford GSB's GSBGEN 352 (Glenn Kramon) and Rachel Konrad's cold-outreach lectures, exposed as 25 composable agents you can invoke from your terminal, your desktop, or a three-field web form.
+> 25 Claude skills for cold outreach, op-eds, and pitches. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352) and Rachel Konrad's cold-outreach lectures. Run them from Claude Code, from Cowork, or from a three-mode browser Coach that streams every step.
 
 ## The shortest path
 
