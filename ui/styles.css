@@ -157,6 +157,97 @@ main {
   header p { font-size: var(--t-base); }
 }
 
+/* Pipeline trace */
+#pipeline-trace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+.pipe-step {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink-faint);
+  border-radius: var(--radius-sm);
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface);
+  font-family: var(--sans);
+  font-size: var(--t-sm);
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.pipe-step.running { border-left-color: var(--accent); background: var(--accent-soft); }
+.pipe-step.done    { border-left-color: var(--good); }
+.pipe-step.skipped { border-left-color: var(--ink-faint); opacity: 0.7; }
+.pipe-step.error   { border-left-color: var(--bad); background: var(--bad-soft); }
+
+.pipe-step-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+.pipe-step-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: currentColor; opacity: 0.5;
+  flex-shrink: 0;
+}
+.pipe-step.running .pipe-step-dot { background: var(--accent); animation: pulse 1.2s var(--ease) infinite; }
+.pipe-step.done    .pipe-step-dot { background: var(--good); opacity: 1; }
+.pipe-step.error   .pipe-step-dot { background: var(--bad); opacity: 1; }
+@keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+.pipe-step-head strong { font-weight: 500; }
+.pipe-step-model {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--ink-faint);
+  background: var(--surface-2);
+  padding: 0.05em 0.4em;
+  border-radius: 3px;
+}
+.pipe-step-status {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--ink-muted);
+}
+.pipe-step-note {
+  font-size: var(--t-xs);
+  color: var(--ink-muted);
+  margin-top: var(--s-1);
+  line-height: 1.5;
+}
+.pipe-step-out {
+  margin-top: var(--s-2);
+}
+.pipe-step-out summary {
+  font-size: var(--t-xs);
+  color: var(--ink-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.pipe-step-out summary:hover { color: var(--ink); }
+.pipe-step-out pre {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--s-3);
+  font-size: var(--t-xs);
+  font-family: var(--mono);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+  margin: var(--s-2) 0 0;
+  line-height: 1.55;
+}
+.pipe-step-err {
+  margin-top: var(--s-2);
+  color: var(--bad);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  white-space: pre-wrap;
+}
+
 /* Sections instead of nested cards */
 section.section {
   padding: var(--s-6) 0;

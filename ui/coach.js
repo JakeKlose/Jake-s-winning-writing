@@ -1,9 +1,11 @@
 import { SYSTEM_PROMPT } from './coach-prompt.js';
 import { CROSS_MODEL_SYSTEM_PROMPT } from './cross-model-prompt.js';
+import { runSingleShotWithPolish, runFullAgentic } from './agents.js';
 
 const $ = (id) => document.getElementById(id);
 const KEY_STORE = 'winning-writing.coach.apikey';
 const MODEL_STORE = 'winning-writing.coach.model';
+const MODE_STORE = 'winning-writing.coach.mode';
 const ABOUT_STORE = 'winning-writing.coach.about-me';
 const SEARCH_STORE = 'winning-writing.coach.search-enabled';
 const HUMANIZE_STORE = 'winning-writing.coach.humanize-enabled';
@@ -16,6 +18,8 @@ function loadStored() {
   $('api-key').value = localStorage.getItem(KEY_STORE) || '';
   const storedModel = localStorage.getItem(MODEL_STORE);
   if (storedModel) $('model').value = storedModel;
+  const storedMode = localStorage.getItem(MODE_STORE);
+  if (storedMode) $('mode').value = storedMode;
   const storedAbout = localStorage.getItem(ABOUT_STORE);
   if (storedAbout) $('about-me').value = storedAbout;
   const search = localStorage.getItem(SEARCH_STORE);
@@ -33,6 +37,7 @@ function persistKey() {
   if (k) localStorage.setItem(KEY_STORE, k);
 }
 function persistModel() { localStorage.setItem(MODEL_STORE, $('model').value); }
+function persistMode() { localStorage.setItem(MODE_STORE, $('mode').value); }
 function persistAbout() { localStorage.setItem(ABOUT_STORE, $('about-me').value); }
 function persistSearch() { localStorage.setItem(SEARCH_STORE, $('enable-search').checked ? 'true' : 'false'); }
 function persistHumanize() { localStorage.setItem(HUMANIZE_STORE, $('enable-humanize').checked ? 'true' : 'false'); }
@@ -228,6 +233,91 @@ function checkEmDashesInEmail(md) {
   return { found: dashes + doubleHyphens, dashes, doubleHyphens };
 }
 
+// ---------- Pipeline trace ----------
+
+const STEP_LABELS = {
+  drafter: 'Drafter',
+  'polish-planner': 'Polish planner',
+  researcher: 'Researcher',
+  'connection-finder': 'Connection finder',
+  'em-dash-killer': 'Em-dash killer',
+  'adverb-killer': 'Adverb killer',
+  'jargon-killer': 'Jargon killer',
+  humanize: 'Humanize',
+  'warmth-and-competence': 'Warmth + competence',
+  rubric: 'Rubric scorer',
+};
+
+function pipelineCardId(name) {
+  return `pipe-step-${name}`;
+}
+
+function ensurePipelineVisible() {
+  const sec = $('pipeline-section');
+  if (sec.style.display === 'none') sec.style.display = '';
+}
+
+function clearPipeline() {
+  $('pipeline-trace').innerHTML = '';
+  $('pipeline-section').style.display = 'none';
+}
+
+function escapeHtmlForTrace(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function handlePipelineEvent(evt) {
+  ensurePipelineVisible();
+  const trace = $('pipeline-trace');
+  if (evt.type === 'step-start') {
+    const label = STEP_LABELS[evt.name] || evt.name;
+    const card = document.createElement('div');
+    card.id = pipelineCardId(evt.name);
+    card.className = 'pipe-step running';
+    card.innerHTML = `
+      <div class="pipe-step-head">
+        <span class="pipe-step-dot"></span>
+        <strong>${label}</strong>
+        <span class="pipe-step-model">${escapeHtmlForTrace(evt.model || '')}</span>
+        <span class="pipe-step-status">running…</span>
+      </div>
+      ${evt.note ? `<div class="pipe-step-note">${escapeHtmlForTrace(evt.note)}</div>` : ''}
+    `;
+    trace.appendChild(card);
+  } else if (evt.type === 'step-done') {
+    const card = document.getElementById(pipelineCardId(evt.name));
+    if (!card) return;
+    card.classList.remove('running');
+    card.classList.add(evt.skipped ? 'skipped' : 'done');
+    const usage = evt.usage || {};
+    const usageStr = `${usage.input_tokens || '?'} in / ${usage.output_tokens || '?'} out`;
+    const search = evt.searchCount ? ` · ${evt.searchCount} search${evt.searchCount === 1 ? '' : 'es'}` : '';
+    const statusEl = card.querySelector('.pipe-step-status');
+    statusEl.textContent = evt.skipped ? `skipped · ${evt.elapsed}s` : `${evt.elapsed}s · ${usageStr}${search}`;
+    if (evt.output) {
+      const out = document.createElement('details');
+      out.className = 'pipe-step-out';
+      out.innerHTML = `<summary>Inspect output</summary><pre>${escapeHtmlForTrace(evt.output)}</pre>`;
+      card.appendChild(out);
+    }
+  } else if (evt.type === 'step-error') {
+    const card = document.getElementById(pipelineCardId(evt.name));
+    if (!card) return;
+    card.classList.remove('running');
+    card.classList.add('error');
+    card.querySelector('.pipe-step-status').textContent = 'error';
+    const err = document.createElement('div');
+    err.className = 'pipe-step-err';
+    err.textContent = evt.error;
+    card.appendChild(err);
+  } else if (evt.type === 'final') {
+    const summary = document.createElement('div');
+    summary.className = 'pipe-step done';
+    summary.innerHTML = `<div class="pipe-step-head"><span class="pipe-step-dot"></span><strong>Pipeline complete</strong><span class="pipe-step-status">${evt.totalElapsed}s total</span></div>`;
+    trace.appendChild(summary);
+  }
+}
+
 // ---------- Render ----------
 
 function setStatus(msg, kind = '') {
@@ -388,63 +478,123 @@ function renderOutput(text, reviewerInfo) {
 
 // ---------- Run ----------
 
+async function runReviewer(userMessage, drafterOutput) {
+  const drafterModel = $('model').value;
+  const reviewerModel = pickReviewerModel(drafterModel, $('reviewer-model').value);
+  const apiKey = $('api-key').value.trim();
+  const t1 = performance.now();
+  try {
+    const { text: reviewerText, usage: reviewerUsage } = await callClaudeReviewer(userMessage, drafterOutput, reviewerModel, apiKey);
+    const reviewerElapsed = ((performance.now() - t1) / 1000).toFixed(1);
+    const ru = reviewerUsage || {};
+    return {
+      info: { text: reviewerText, model: reviewerModel, drafterModel },
+      status: ` · gate ${reviewerElapsed}s on ${reviewerModel} (${ru.input_tokens || '?'} in / ${ru.output_tokens || '?'} out)`,
+    };
+  } catch (reviewerErr) {
+    return { info: null, status: ` · gate failed: ${reviewerErr.message.slice(0, 120)}` };
+  }
+}
+
 async function run() {
   setStatus('');
   $('output').innerHTML = '';
   $('output-hint').style.display = '';
+  clearPipeline();
   setHint('Building prompt…');
-  let userMessage;
-  try {
-    userMessage = buildUserMessage();
-  } catch (err) {
-    setStatus(err.message, 'err');
-    setHint('Fix the form and try again.');
-    return;
-  }
+
+  const mode = $('mode').value;
+
+  const recipient = $('recipient').value.trim();
+  const ask = $('ask').value.trim();
+  if (!recipient) { setStatus('Tell Coach who you\'re emailing.', 'err'); return; }
+  if (!ask) { setStatus('Tell Coach what you want from them.', 'err'); return; }
 
   const btn = $('run');
   btn.disabled = true;
   const orig = btn.textContent;
   btn.textContent = 'Running…';
-  setHint($('enable-search').checked
-    ? 'Calling Claude with web_search enabled — typically 30–60 seconds…'
-    : 'Calling Claude — typically 10–25 seconds…');
-  setStatus('Calling Claude…', 'ok');
 
   try {
-    persistKey(); persistModel(); persistAbout(); persistSearch(); persistHumanize();
+    persistKey(); persistModel(); persistMode(); persistAbout(); persistSearch(); persistHumanize();
     persistReview(); persistReviewModel();
+
+    const apiKey = $('api-key').value.trim();
+    if (!apiKey) throw new Error('Paste your Anthropic API key first.');
+
     const t0 = performance.now();
-    const { text, usage, searchCount } = await callClaude(userMessage);
-    const drafterElapsed = ((performance.now() - t0) / 1000).toFixed(1);
+    let resultText = '';
+    let drafterElapsed = '?';
+    let usage = {};
+    let searchCount = 0;
+    let userMessage = ''; // for the reviewer to see
+
+    if (mode === 'single-shot') {
+      // Existing path
+      userMessage = buildUserMessage();
+      setHint($('enable-search').checked
+        ? 'Calling Claude with web_search enabled — typically 30–60 seconds…'
+        : 'Calling Claude — typically 10–25 seconds…');
+      setStatus('Calling Claude (single-shot)…', 'ok');
+      const r = await callClaude(userMessage);
+      resultText = r.text; usage = r.usage; searchCount = r.searchCount;
+      drafterElapsed = ((performance.now() - t0) / 1000).toFixed(1);
+    } else if (mode === 'single-shot-polish') {
+      userMessage = buildUserMessage();
+      setHint('Single-shot + polish: drafter (Opus 4.7) then planner-routed surgical passes (Haiku)…');
+      setStatus('Running single-shot + polish…', 'ok');
+      const r = await runSingleShotWithPolish({
+        apiKey,
+        drafterModel: $('model').value,
+        userMessage,
+        drafterSystem: SYSTEM_PROMPT,
+        enableSearch: $('enable-search').checked,
+        onEvent: handlePipelineEvent,
+      });
+      resultText = r.fullOutput;
+      drafterElapsed = r.totalElapsed;
+    } else if (mode === 'full-agentic') {
+      const inputs = {
+        recipient,
+        ask,
+        aboutMe: $('about-me').value.trim(),
+        draft: $('draft-input').value.trim(),
+        humanize: $('enable-humanize').checked,
+      };
+      userMessage = JSON.stringify(inputs, null, 2);
+      setHint('Full agentic pipeline: researcher → connector → drafter → surgical (parallel) → warmth/competence → rubric…');
+      setStatus('Running full agentic pipeline…', 'ok');
+      const r = await runFullAgentic({
+        apiKey,
+        inputs,
+        enableSearch: $('enable-search').checked,
+        onEvent: handlePipelineEvent,
+      });
+      resultText = r.fullOutput;
+      drafterElapsed = r.totalElapsed;
+    } else {
+      throw new Error(`Unknown mode: ${mode}`);
+    }
 
     let reviewerInfo = null;
     let reviewerStatus = '';
     if ($('enable-cross-review').checked) {
       const drafterModel = $('model').value;
       const reviewerModel = pickReviewerModel(drafterModel, $('reviewer-model').value);
-      setHint(`Drafter done in ${drafterElapsed}s. Running independent gate on ${reviewerModel}…`);
-      setStatus(`Drafter done. Running cross-model gate on ${reviewerModel}…`, 'ok');
-      const t1 = performance.now();
-      try {
-        const apiKey = $('api-key').value.trim();
-        const { text: reviewerText, usage: reviewerUsage } = await callClaudeReviewer(userMessage, text, reviewerModel, apiKey);
-        const reviewerElapsed = ((performance.now() - t1) / 1000).toFixed(1);
-        reviewerInfo = { text: reviewerText, model: reviewerModel, drafterModel };
-        const ru = reviewerUsage || {};
-        reviewerStatus = ` · gate ${reviewerElapsed}s on ${reviewerModel} (${ru.input_tokens || '?'} in / ${ru.output_tokens || '?'} out)`;
-      } catch (reviewerErr) {
-        reviewerStatus = ` · gate failed: ${reviewerErr.message.slice(0, 120)}`;
-      }
+      setHint(`Pipeline done in ${drafterElapsed}s. Running independent gate on ${reviewerModel}…`);
+      setStatus(`Running cross-model gate on ${reviewerModel}…`, 'ok');
+      const r = await runReviewer(userMessage, resultText);
+      reviewerInfo = r.info;
+      reviewerStatus = r.status;
     }
 
-    renderOutput(text, reviewerInfo);
+    renderOutput(resultText, reviewerInfo);
     const u = usage || {};
     const totalElapsed = ((performance.now() - t0) / 1000).toFixed(1);
-    setStatus(
-      `Done in ${totalElapsed}s · drafter ${drafterElapsed}s (${u.input_tokens || '?'} in / ${u.output_tokens || '?'} out · ${searchCount} web search${searchCount === 1 ? '' : 'es'})${reviewerStatus}`,
-      'ok'
-    );
+    const usageStr = mode === 'single-shot'
+      ? ` · drafter ${drafterElapsed}s (${u.input_tokens || '?'} in / ${u.output_tokens || '?'} out · ${searchCount} web search${searchCount === 1 ? '' : 'es'})`
+      : ` · pipeline ${drafterElapsed}s (see trace for per-step usage)`;
+    setStatus(`Done in ${totalElapsed}s${usageStr}${reviewerStatus}`, 'ok');
   } catch (err) {
     setStatus(err.message, 'err');
     setHint('Failed. See status above. Common fixes: check API key, check internet, try a different model, or disable web search.');
@@ -468,6 +618,7 @@ function init() {
   $('enable-humanize').addEventListener('change', persistHumanize);
   $('enable-cross-review').addEventListener('change', persistReview);
   $('reviewer-model').addEventListener('change', persistReviewModel);
+  $('mode').addEventListener('change', persistMode);
   $('show-raw').addEventListener('click', () => {
     const r = $('raw');
     r.style.display = r.style.display === 'none' ? 'block' : 'none';
