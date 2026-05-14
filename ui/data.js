@@ -286,7 +286,7 @@ export const PRINCIPLES = [
   },
   {
     category: 'Eliminate irrelevant detail',
-    source: 'Kramon class — May 14 2026 session',
+    source: 'Kramon — Winning Writing',
     items: [
       'In narrative writing, cut cinematic details that don\'t serve the main point. Different from cutting words (concision-drill) and different from cutting stories (pick-a-lane). This cuts within a story.',
       'The two questions for every detail: (1) Does it serve the main point? (2) If I cut it, what is lost — texture, or argument?',
@@ -298,7 +298,7 @@ export const PRINCIPLES = [
   },
   {
     category: 'Kill redundancy',
-    source: 'Kramon class — May 14 2026 session',
+    source: 'Kramon — Winning Writing',
     items: [
       'Cut phrases where one half implies the other. Different from cutting jargon, adverbs, or filler — this catches legible English that adds nothing because the verb or context already implies it.',
       'Direction tags after future-tense verbs: "going forward," "moving forward," "in the future" all redundant with "will."',
@@ -402,12 +402,12 @@ export const PRINCIPLES = [
     category: 'Be specific',
     source: 'Kramon + Kristof + the Be-Specific skill',
     items: [
-      'Replace generic category nouns with concrete ones. "Dog" → German shepherd. "Engineer" → John, the SRE on the payments team. "Customer" → Sarah at JPMorgan\'s options-trading desk.',
+      'Replace generic category nouns with concrete ones. "Dog" → German shepherd. "Engineer" → John, the SRE on the payments team. "Customer" → a senior trader at a top-tier bank\'s options desk (the shape; in real writing, name the specific person and bank).',
       'Replace "many / few / most / a lot / significant" with the actual number. "Errors dropped" → "errors dropped from 4,200/day to 380/day."',
       'Replace "recently / soon / a while ago" with dates. "Recently" → "March 14, 2026." "A long time" → "38 minutes."',
       'Replace "a city / a country / the office" with named places. There is almost never a reason to omit a city.',
       'Replace category tools with make/version. "An LLM" → "Claude Sonnet 4.6." "A robot" → "Meccano MeccaNoid G15."',
-      'Replace summarized feedback with the quoted line. "Customers liked it" → \'Priya at DoorDash: "the brief is good, but it doesn\'t save us from the part that hurts."\'',
+      'Replace summarized feedback with the quoted line. "Customers liked it" → \'a product lead at a named customer: "the brief is good, but it doesn\'t save us from the part that hurts."\' (placeholder shape; in real writing, name the customer and the person who said it).',
       'When you can\'t verify a fact, write [lookup: ...] in the draft so you remember to fill it in. Never fabricate a name, quote, or number — fabrication breaks trust faster than vagueness.',
       'When NOT to be specific: universality is the point ("most people who fall in love"), or the specific would derail the argument.',
     ],

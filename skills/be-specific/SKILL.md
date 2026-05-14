@@ -1,11 +1,19 @@
 ---
 name: be-specific
-description: Replaces generic nouns with concrete, specific ones. "Dog" becomes "German shepherd"; "engineer" becomes "John, the SRE on the payments team"; "company" becomes "Snowflake (12,000 employees, Bozeman HQ)." Implements Kramon's "specific over abstract" rule and Kristof's "real names, real numbers, real interviews" rule. Use when a draft is full of category nouns that the reader has to fill in themselves. Triggers on "be specific," "more concrete," "too abstract," "vague," "category nouns," "real examples."
+description: Replaces generic nouns with concrete, specific ones. "Dog" becomes "German shepherd"; "engineer" becomes "John, the SRE on the payments team"; "company" becomes the actual company name with one specific number attached. Implements Kramon's "specific over abstract" rule and Kristof's "real names, real numbers, real interviews" rule. Use when a draft is full of category nouns that the reader has to fill in themselves. Triggers on "be specific," "more concrete," "too abstract," "vague," "category nouns," "real examples."
 ---
 
 # Be specific
 
 Source: `points/core-rules.md` rule 2 (know your audience), `points/frameworks.md` (op-ed structure), Kristof's columns, Kramon's rule that **stories are 12× more memorable than statistics alone**.
+
+## A note on the examples in this file
+
+The placeholders in this documentation (*"a senior trader at a top-tier investment bank,"* *"a product lead at a named customer,"* *"the named venue in a named year"*) are intentionally generic. That's a privacy choice for the public repo — *not* the rule of the skill.
+
+**The rule of the skill is the opposite.** When you write, name the actual person, the actual company, the actual number, the actual place. The placeholder here shows you what *shape* the named version should take. You fill in the real names when you draft.
+
+If a reader of this doc walks away thinking *"be specific means use vague archetypes"* — they've inverted the skill. Be vague in documentation when privacy demands; be specific in writing, always.
 
 ## The premise
 
@@ -27,15 +35,15 @@ For every category noun in your draft, ask: *can I name a specific instance?*
 |---|---|
 | dog | German shepherd, Alma my golden retriever, the puppy at the rescue |
 | engineer | John, the SRE on the payments team |
-| customer | JPMorgan's options-trading desk |
+| customer | a named institution's specific desk or team (e.g., a top-tier bank's trading floor) |
 | city | Bozeman (population 56,000, mountain west) |
-| big company | Snowflake (12,000 employees, $3B revenue) |
+| big company | the named company plus one specific number (employees, revenue, or market share) |
 | recent study | the 2024 Stanford HAI paper on agent reliability |
 | many people | 47 of the 100 PMs I interviewed |
 | a long time | 38 minutes |
 | somewhere | the named venue in a named year |
 | early | 2:47 a.m. last Wednesday |
-| executives | the head of executive recruiting at Anthropic |
+| executives | the named executive's actual title at the named company |
 | consultant | a McKinsey BA who left to start a SaaS company |
 | AI tool | Claude Sonnet 4.6 with the web_search tool |
 | school | Stanford GSB's section H |
@@ -51,7 +59,7 @@ Different drafts need different kinds. The skill fixes them in this priority ord
 Replace "a customer," "the team," "a consultant" with **first names + roles + locations** wherever you have permission.
 
 ❌ *"A customer told us our latency was a problem."*
-✅ *"Sarah at JPMorgan's options-trading desk told us in March: 'every 100ms costs us a million dollars in slippage.'"*
+✅ *"A senior options trader at a top-tier investment bank told us in March: 'every 100ms costs us a million dollars in slippage.'"*
 
 If you don't have permission to name them, use a *specific archetype* with a real-sounding detail: *"a senior options trader at a top-tier investment bank, 12 years in the seat."* The reader pictures someone real.
 
@@ -67,7 +75,7 @@ If you don't know the number, get it before publishing. If you can't get it, nam
 Replace "a city," "a country," "the office" with **named locations**. Specificity here is free — there's almost never a reason to omit a city name.
 
 ❌ *"At a tech company in California…"*
-✅ *"At Anthropic's Embarcadero Center office…"*
+✅ *"At the company's San Francisco office on the waterfront…"*
 
 ### 4. Times
 Replace "recently," "soon," "a while ago" with **dates and durations**.
@@ -90,7 +98,7 @@ This is especially load-bearing in tech writing — *"an LLM"* is so generic it'
 Replace "they said they liked it" with **the actual sentence they said**, in quotation marks.
 
 ❌ *"Customers love the new feature."*
-✅ *"Priya at DoorDash, last Thursday: 'The brief is good, but it doesn't save us from the part that hurts.'"*
+✅ *"A product lead at a named customer, last Thursday: 'The brief is good, but it doesn't save us from the part that hurts.'"*
 
 A summary in quotes is still a summary. Get the actual line.
 
@@ -133,7 +141,7 @@ If a generic noun is doing real work (universality), keep it. If it's just throa
 2. ...
 
 ## Lookups needed (the user must verify before sending)
-- [lookup: customer name in the JPMorgan story]
+- [lookup: customer name and exact role for the trading-floor story]
 - [lookup: exact MAU number in March 2026]
 - ...
 

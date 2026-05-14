@@ -88,7 +88,9 @@ Recipient name + one fact swapped into a structure that would work for any of th
 
 ### 9. Credentials dump
 
-Front-loads credentials ("I'm an MBA at Stanford, ex-Snowflake, ex-Amazon, currently at…") instead of showing competence through specifics.
+Front-loads credentials (e.g., *"I'm an MBA at a top program, ex-large-tech-co, ex-another-large-tech-co, currently at…"*) instead of showing competence through specifics.
+
+> *Note: the placeholder above is intentionally generic. In a real draft, name the specific school and the specific companies. The failure mode is the **dump**, not the named institutions — naming places is correct; CV-listing them in the opener is what's wrong.*
 
 **Tells:** the first paragraph is a CV summary; named institutions appear before any concrete work.
 

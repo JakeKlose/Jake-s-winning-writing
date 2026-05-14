@@ -5,7 +5,7 @@ description: Cuts cinematic details that don't serve the main point. The opposit
 
 # Irrelevant detail killer
 
-Source: Glenn Kramon's *Winning Writing* class — the rule named explicitly in the May 14 2026 session as *"essential to great writing."* The two-word version: **eliminate irrelevant detail.**
+Source: Glenn Kramon's *Winning Writing* — the rule named explicitly in class as *"essential to great writing."* The two-word version: **eliminate irrelevant detail.**
 
 ## The problem this skill solves
 

@@ -153,7 +153,7 @@ The two skills below grow your `context/` files incrementally, so the toolkit ge
 | `voice-commit` | Manual one-off merge — when you say "save this to my voice file," "remember this style," "this isn't how I write." Routes style notes to `voice-and-style.md` and identity/career notes to `about-me.md` |
 | `voice-consolidator` | Batch pull from Claude Code's auto-memory — when you say "consolidate my voice" or "what has Claude learned about my style?" Reads `~/.claude/projects/<project>/memory/` and proposes merges with citation |
 
-The pattern is borrowed from chief-of-staff's `/commit` slash command (structured user-triggered logging) and llm-wiki's `UPDATE_PROMPT` (preserve old, merge new, flag contradictions). Auto-learning from every draft is intentionally not supported — it would reinforce AI-tells the model rationalized away. Manual merge with diff approval is the right shape.
+The pattern borrows from two established shapes: a structured user-triggered logging command (the user says "save this," the system writes only what's authorized), and a merge prompt that preserves old content, merges new content, and flags contradictions instead of overwriting. Auto-learning from every draft is intentionally not supported — it would reinforce AI-tells the model rationalized away. Manual merge with diff approval is the right shape.
 
 Each skill has a `SKILL.md` with frontmatter, a checklist, and pointers back to the relevant `points/` file.
 

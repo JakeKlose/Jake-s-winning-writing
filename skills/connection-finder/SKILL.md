@@ -46,7 +46,7 @@ Both military veterans. Both first-generation immigrants. Both built something f
 Both Ironman triathletes. Both jazz pianists. Both run ultras. Both bake bread. Specificity matters: *"like you, I'm 6 marathons in"* beats *"like you, I'm a runner."*
 
 ### 6. Contrarian opinion parallel (highest — most memorable)
-You both believe an unfashionable thing about the same topic. *"Like you, I think the LLM-evals space is wildly under-priced. The Anthropic paper from March made the case better than I could."* This signals you've read them carefully and you have your own brain.
+You both believe an unfashionable thing about the same topic. *"Like you, I think the LLM-evals space is wildly under-priced. A recent paper from a frontier lab made the case better than I could."* This signals you've read them carefully and you have your own brain. (In a real email, you'd name the specific paper and the specific lab — the placeholder above keeps the shape generic for the documentation.)
 
 ### 7. Unusual / coincidental detail (highest — disarming + memorable)
 Both wear the same obscure watch brand. Both reference the same indie film. Both quote the same Greek philosopher. The more unusual, the better — these are the lines people screenshot.

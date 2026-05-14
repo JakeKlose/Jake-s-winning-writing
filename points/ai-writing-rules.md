@@ -84,7 +84,7 @@ Cowork plugs into Google Drive, Gmail, Calendar, and more. This is where it goes
 
 ## Prompts that work (student-tested in the Kramon class)
 
-Four prompts that real students reported working well, from the May 14 2026 session. Each one is a copy-pasteable centaur recipe.
+Four prompts reported as working well by writers using AI in the centaur mode. Each one is a copy-pasteable recipe.
 
 ### 1. The "eliminate irrelevant detail" prompt
 *"Here is the brain-dump version of my story, ~600 words. Tell me all the places where I'm giving irrelevant detail. Then turn it into something around 200 words. Preserve the voice — keep my actual phrasings and rhythms where they work."*

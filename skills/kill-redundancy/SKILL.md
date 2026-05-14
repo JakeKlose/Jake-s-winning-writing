@@ -5,7 +5,7 @@ description: Detects and cuts phrases where one half implies the other — "goin
 
 # Kill redundancy
 
-Source: Glenn Kramon's *Winning Writing* class — the May 14 2026 session exercise on cutting "make / be / has," plus the corollary rule on tag-along phrases that say what the verb already said.
+Source: Glenn Kramon's *Winning Writing* — the in-class exercise on cutting "make / be / has," plus the corollary rule on tag-along phrases that say what the verb already said.
 
 ## The pattern this skill catches
 

@@ -28,7 +28,7 @@ Any one named mode = FAIL. No partial credit.
 
 ## Posture failures (about how the sender comes across)
 
-9. **Credentials dump** — front-loads CV ("MBA at Stanford, ex-Snowflake, ex-Amazon...") instead of showing competence through specifics.
+9. **Credentials dump** — front-loads a CV-style list of institutions (e.g. "MBA at a top program, ex-large-tech-co, ex-another-large-tech-co...") instead of showing competence through a specific scene.
 10. **Humble brag** — false-modesty hedges. Tells: "at a much smaller scale," "while not as accomplished as you," "like you, but at a smaller scale."
 11. **Throat-clearing** — words spent before the email begins. Tells: "I hope this email finds you well," "My name is X and I'm a," "I'm reaching out because."
 12. **Fabricated specifics** — a name, number, quote, or event the email presents as fact but the inputs don't substantiate. Cross-reference every concrete claim:

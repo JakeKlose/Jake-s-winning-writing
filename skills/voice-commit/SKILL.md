@@ -11,7 +11,7 @@ Source of truth: `context/voice-and-style.md` and `context/about-me.md`. The ski
 
 The context files are the single highest-leverage input to every Coach output. When the user notices something about their voice that isn't captured (a phrase they use, a word they hate, a new project, a formative experience), this skill captures it without forcing them to open the file and figure out where it goes.
 
-Auto-learning from every draft is a trap — if a Coach output drifted toward AI-tells, learning from it would reinforce the bad pattern. The fix: manual user-triggered merge with diff approval. Borrowed from chief-of-staff's `/commit` slash command pattern and llm-wiki's UPDATE_PROMPT merge logic.
+Auto-learning from every draft is a trap — if a Coach output drifted toward AI-tells, learning from it would reinforce the bad pattern. The fix: manual user-triggered merge with diff approval. The shape borrows from two established patterns: a structured user-triggered logging command (the user explicitly says "save this," the system writes only what's authorized) and a merge prompt that preserves existing content, adds new content in the right section, and flags contradictions instead of overwriting.
 
 ## Inputs
 
@@ -25,7 +25,7 @@ One of:
 
 If the input is ambiguous (e.g., "save this" with no context), ask one clarifying question before proceeding.
 
-## The merge philosophy (from llm-wiki UPDATE_PROMPT)
+## The merge philosophy
 
 When merging into the file:
 
