@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Winning Writing Coach",
+  "version": "0.1.0",
+  "description": "Inline cold-email critique in the Chrome side panel against the Winning Writing rule library (points/ + skills/ from kalyvask/winning-writing). Imports the active Gmail compose draft on demand. Browser-direct Anthropic API; no backend.",
+  "permissions": ["sidePanel", "storage", "scripting", "activeTab"],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "https://api.anthropic.com/*"
+  ],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "Open Winning Writing Coach"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["rules/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
