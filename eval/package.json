@@ -1,0 +1,10 @@
+{
+  "name": "winning-writing-eval",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Regression eval harness for the inline critic. Run from repo root: ANTHROPIC_API_KEY=sk-ant-... node eval/run.mjs",
+  "engines": {
+    "node": ">=18"
+  }
+}

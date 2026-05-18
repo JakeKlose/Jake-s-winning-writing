@@ -91,6 +91,7 @@ points/    Distilled rules and frameworks (the "what")
 skills/    Claude skills you can invoke from Claude Code or Cowork (the "how")
 ui/        Optional browser entry point — Draft Critic + LLM Coach with inline critic
 extension/ Optional Chrome MV3 extension — Coach in the Gmail side panel
+eval/      Regression harness — node eval/run.mjs replays a golden corpus against the live critic
 ```
 
 ## The points
@@ -287,6 +288,19 @@ Full install + usage walkthrough in [`extension/README.md`](extension/README.md)
 - Auto-sync rules from GitHub — `rules/` is a snapshot; refresh via the PowerShell snippet in the extension README when `points/` or `skills/` change
 
 Each of those is a follow-up sized similar to the v1 itself.
+
+## The eval harness
+
+`eval/` ships a regression harness for the inline critic. A small golden corpus of drafts with declared expected flags, replayed against the live Anthropic API with the full rule library loaded. Each case asserts recall and (optionally) a clean-draft tolerance, so when you edit a rule in `points/` or `skills/` you can tell whether anything regressed.
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+node eval/run.mjs
+```
+
+A full 5-case run is ~$0.05-0.10 with prompt caching on the rule library. Exit code 0 = all pass, 1 = at least one case failed its threshold. Add cases as JSON in `eval/corpus/`. Full schema and authoring guidance in [`eval/README.md`](eval/README.md).
+
+The harness mirrors the production critic prompt and rule loader; it doesn't share code with the browser side directly because of the ES-modules-in-Node configuration. Keep them in sync when either changes; the duplication is called out in the eval code's header comment.
 
 ## Sources
 

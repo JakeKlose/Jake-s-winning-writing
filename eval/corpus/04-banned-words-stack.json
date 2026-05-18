@@ -1,0 +1,50 @@
+{
+  "name": "Banned-words stack — multiple jargon hits in one email",
+  "intent": "cold-email",
+  "draft": "Hi Sarah,\n\nI'm reaching out to align on how we might leverage your expertise to drive strategic outcomes. My team is currently working on impactful initiatives to empower customers and facilitate seamless workflows.\n\nWould love to explore synergies across our deliverables and align on a path forward. Are you free for 30 minutes next Tuesday at 2pm Pacific?\n\nBest,\nAlex",
+  "expected_clean": false,
+  "min_total_flags": 4,
+  "recall_threshold": 0.6,
+  "expected_flags": [
+    {
+      "quote_contains": "align",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "leverage",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "drive",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "impactful",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "empower",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "synergies",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "deliverables",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "facilitate",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "low"
+    }
+  ]
+}

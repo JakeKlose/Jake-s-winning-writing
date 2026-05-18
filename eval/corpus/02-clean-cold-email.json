@@ -1,0 +1,9 @@
+{
+  "name": "Clean cold email — tolerates up to 2 noise flags",
+  "intent": "cold-email",
+  "draft": "Hi Sarah,\n\nYour Stripe Sessions talk on agentic finance changed how I think about reconciliation. The slide where a customer's AI agent argues with the merchant's AI agent over a $4.17 discrepancy was the funniest thing I've seen all year and the most useful, because I work on the boring half: making sure both agents have the same source of truth before they argue.\n\nI'm Alex, finishing my MBA at Stanford GSB. Before this I shipped agentic workflows at Snowflake. I'm not job hunting, but I'd love 20 minutes the week of June 9 to ask you one specific question: how Stripe decided which agent-to-agent disputes were worth solving in software vs. routing to a human. I'll come to you, or any time zone works.\n\nIf no, no worries. I'll keep watching your talks.\n\nThanks,\nAlex\n\nP.S. Mike Pfeffer (your former colleague at Sequoia) said you'd be the right person to ask.",
+  "expected_clean": true,
+  "max_flags": 2,
+  "recall_threshold": 1.0,
+  "expected_flags": []
+}

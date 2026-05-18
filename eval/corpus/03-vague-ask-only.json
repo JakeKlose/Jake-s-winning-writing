@@ -1,0 +1,15 @@
+{
+  "name": "Vague ask isolated — should catch the ask even without other AI tells",
+  "intent": "cold-email",
+  "draft": "Hi Sarah,\n\nI read your March 14 podcast with Sequoia on agentic finance and the moment where you described arguing with your own AI assistant about an expense report has been stuck in my head for two weeks. The asymmetry you named there (humans negotiate, AIs comply) is the exact problem I'm working on at GSB.\n\nWould love to find time to chat sometime if you're open to it. Happy to work around your schedule.\n\nThanks,\nAlex",
+  "expected_clean": false,
+  "min_total_flags": 1,
+  "recall_threshold": 0.7,
+  "expected_flags": [
+    {
+      "quote_contains": "Would love to find time to chat sometime",
+      "categories": ["Vague ask", "Ask"],
+      "min_severity": "high"
+    }
+  ]
+}

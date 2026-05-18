@@ -1,0 +1,51 @@
+{
+  "name": "Classic bad cold email — stacks every common failure",
+  "intent": "cold-email",
+  "draft": "Hi Sarah,\n\nI hope this email finds you well. My name is Alex Kalyvas — I'm a Stanford MBA student passionate about AI products. I'm currently working at the intersection of AI and enterprise software, leveraging cutting-edge models to drive impactful outcomes.\n\nI would love to pick your brain over a coffee to delve into how you navigate the complexities of building robust AI solutions. Your work on agentic systems is truly inspiring and I'd love to learn more.\n\nI'm very flexible — happy to chat whenever works for you.\n\nBest,\nAlex",
+  "expected_clean": false,
+  "min_total_flags": 6,
+  "recall_threshold": 0.7,
+  "expected_flags": [
+    {
+      "quote_contains": "I hope this email finds you well",
+      "categories": ["Generic opener", "Throat-clearing", "Banned phrase"],
+      "min_severity": "medium",
+      "rule_source_prefix": "points/"
+    },
+    {
+      "quote_contains": "pick your brain",
+      "categories": ["Jargon", "Banned phrase", "Banned jargon"],
+      "min_severity": "high"
+    },
+    {
+      "quote_contains": "delve into",
+      "categories": ["AI-tell", "AI tell", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "navigate the complexities",
+      "categories": ["AI-tell", "AI tell", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "cutting-edge",
+      "categories": ["AI-tell", "AI tell", "Banned word", "Banned jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "leveraging",
+      "categories": ["Banned word", "Banned jargon", "Jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "at the intersection of",
+      "categories": ["Jargon", "Banned phrase", "Banned jargon"],
+      "min_severity": "medium"
+    },
+    {
+      "quote_contains": "happy to chat whenever",
+      "categories": ["Vague ask", "Ask"],
+      "min_severity": "high"
+    }
+  ]
+}
