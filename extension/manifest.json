@@ -6,7 +6,8 @@
   "permissions": ["sidePanel", "storage", "scripting", "activeTab"],
   "host_permissions": [
     "https://mail.google.com/*",
-    "https://api.anthropic.com/*"
+    "https://api.anthropic.com/*",
+    "https://raw.githubusercontent.com/*"
   ],
   "side_panel": {
     "default_path": "sidepanel.html"
@@ -15,7 +16,8 @@
     "default_title": "Open Winning Writing Coach"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {

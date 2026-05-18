@@ -29,6 +29,31 @@
             <option value="claude-haiku-4-5-20251001">Haiku 4.5 (fastest, cheapest)</option>
           </select>
         </label>
+        <label class="sp-field">
+          <span class="sp-label">Rule source</span>
+          <select id="rule-source">
+            <option value="bundled">Bundled snapshot (rules/ in extension)</option>
+            <option value="github">Live from GitHub (auto-syncs to main branch)</option>
+          </select>
+          <span class="sp-hint">Live mode picks up rule edits without rebuilding the extension. 1-hour cache; click <strong>Refresh rules</strong> to force a re-fetch. Falls back to bundled on network failure.</span>
+        </label>
+        <label class="sp-field" id="github-base-field" style="display:none;">
+          <span class="sp-label">GitHub source</span>
+          <input type="text" id="github-base" placeholder="kalyvask/winning-writing/main">
+          <span class="sp-hint">Format: <code>owner/repo/branch</code>. Default <code>kalyvask/winning-writing/main</code>.</span>
+        </label>
+        <div class="sp-toolbar">
+          <button class="btn" id="refresh-rules">Refresh rules</button>
+          <span class="sp-hint" id="rules-cache-info"></span>
+        </div>
+        <label class="sp-field" style="margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line);">
+          <span class="sp-label">Pre-send gate</span>
+          <div style="display: flex; align-items: center; gap: var(--s-2);">
+            <input type="checkbox" id="send-interception" style="width: auto; margin: 0;">
+            <span style="font-size: var(--t-sm);">Intercept the Gmail Send button</span>
+          </div>
+          <span class="sp-hint">When on, clicking Send (or Cmd/Ctrl+Enter) in Gmail runs the cross-model gate first. If it fails, a blocking modal names the failures; you can fix or Send anyway. Default off.</span>
+        </label>
       </div>
     </section>
 

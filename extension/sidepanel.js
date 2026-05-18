@@ -3,7 +3,7 @@
 // chrome.runtime.sendMessage (importing the active Gmail compose).
 
 import { runInlineCritic, runRefinementTurn } from './lib/agents.js';
-import { loadRulesForIntent } from './lib/skill-loader.js';
+import { loadRulesForIntent, clearRuleCache, setRuleSource, getRuleSourceSettings } from './lib/skill-loader.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -20,6 +20,8 @@ const inline = {
   intent: 'cold-email',
   rulesLoaded: [],
   rulesIntent: null,
+  rulesMode: 'bundled',
+  rulesOrigin: {},
   chatHistory: [],
 };
 
@@ -49,6 +51,94 @@ async function loadSettings() {
   $('api-key').value = await getStored(KEY_STORE);
   const m = await getStored(MODEL_STORE);
   if (m) $('model').value = m;
+  const ruleSettings = await getRuleSourceSettings();
+  $('rule-source').value = ruleSettings.source;
+  $('github-base').value = ruleSettings.githubBase;
+  updateRuleSourceVisibility();
+  updateCacheInfo();
+  // Send-interception toggle
+  if (inExtension && chrome.storage && chrome.storage.local) {
+    await new Promise((resolve) => {
+      chrome.storage.local.get(['ww-coach.send-interception'], (r) => {
+        $('send-interception').checked = r['ww-coach.send-interception'] === true;
+        resolve();
+      });
+    });
+  } else {
+    $('send-interception').checked = localStorage.getItem('ww-coach.send-interception') === 'true';
+  }
+}
+
+function updateRuleSourceVisibility() {
+  $('github-base-field').style.display = $('rule-source').value === 'github' ? '' : 'none';
+}
+
+async function updateCacheInfo() {
+  const settings = await getRuleSourceSettings();
+  if (settings.source !== 'github') {
+    $('rules-cache-info').textContent = 'Bundled — no cache.';
+    return;
+  }
+  let cacheSize = 0;
+  let oldest = null;
+  if (inExtension && chrome.storage && chrome.storage.local) {
+    await new Promise((resolve) => {
+      chrome.storage.local.get(['ww-coach.rule-cache'], (r) => {
+        const c = r['ww-coach.rule-cache'] || {};
+        cacheSize = Object.keys(c).length;
+        for (const k of Object.keys(c)) {
+          const t = c[k].fetchedAt;
+          if (oldest === null || t < oldest) oldest = t;
+        }
+        resolve();
+      });
+    });
+  } else {
+    try {
+      const c = JSON.parse(localStorage.getItem('ww-coach.rule-cache') || '{}');
+      cacheSize = Object.keys(c).length;
+      for (const k of Object.keys(c)) {
+        const t = c[k].fetchedAt;
+        if (oldest === null || t < oldest) oldest = t;
+      }
+    } catch {}
+  }
+  if (cacheSize === 0) {
+    $('rules-cache-info').textContent = 'Cache empty — next critique fetches all files.';
+  } else {
+    const ageMin = oldest ? Math.round((Date.now() - oldest) / 60000) : 0;
+    $('rules-cache-info').textContent = `${cacheSize} files cached · oldest ${ageMin} min ago.`;
+  }
+}
+
+async function onRuleSourceChange() {
+  const source = $('rule-source').value;
+  const base = $('github-base').value.trim() || 'kalyvask/winning-writing/main';
+  await setRuleSource(source, base);
+  updateRuleSourceVisibility();
+  updateCacheInfo();
+  setStatus(`Rule source set to ${source === 'github' ? 'live GitHub (' + base + ')' : 'bundled snapshot'}. Cache cleared.`, 'ok');
+}
+
+async function refreshRules() {
+  clearRuleCache();
+  setStatus('Rule cache cleared. Next critique will fetch fresh rules.', 'ok');
+  updateCacheInfo();
+}
+
+async function onSendInterceptionChange() {
+  const enabled = $('send-interception').checked;
+  if (inExtension && chrome.storage && chrome.storage.local) {
+    await new Promise((r) => chrome.storage.local.set({ 'ww-coach.send-interception': enabled }, r));
+    // Tell the background to broadcast to all Gmail tabs.
+    chrome.runtime.sendMessage({ type: 'set-send-interception-broadcast', enabled }, (resp) => {
+      const n = resp?.broadcastTo || 0;
+      setStatus(`Pre-send gate ${enabled ? 'ON' : 'OFF'}. ${n} open Gmail tab${n === 1 ? '' : 's'} notified.`, 'ok');
+    });
+  } else {
+    localStorage.setItem('ww-coach.send-interception', String(enabled));
+    setStatus(`Pre-send gate ${enabled ? 'ON' : 'OFF'} (browser-tab mode; no real Gmail integration).`, 'ok');
+  }
 }
 
 function persistKey() {
@@ -283,8 +373,12 @@ function renderChatTurns() {
 function renderInlineCoach() {
   $('inline-coach-section').style.display = '';
   const summaryHtml = inline.summary ? `<strong>Read:</strong> ${escapeHtml(inline.summary)}` : '';
+  const modeLabel = inline.rulesMode === 'github' ? '<span class="rule-mode-badge rule-mode-github">github</span>' : '<span class="rule-mode-badge rule-mode-bundled">bundled</span>';
+  const originHtml = Object.keys(inline.rulesOrigin).length > 0
+    ? ` <span class="rule-origin-breakdown">${Object.entries(inline.rulesOrigin).map(([k, v]) => `${k}=${v}`).join(' · ')}</span>`
+    : '';
   const libHtml = inline.rulesLoaded.length
-    ? `<div class="inline-coach-lib">Against <strong>${inline.rulesLoaded.length}</strong> rule sources (<code>${escapeHtml(inline.rulesIntent || 'cold-email')}</code>). <details><summary>Sources</summary><ul>${inline.rulesLoaded.map((s) => `<li>${ruleSourceLink(s)}</li>`).join('')}</ul></details></div>`
+    ? `<div class="inline-coach-lib">Against <strong>${inline.rulesLoaded.length}</strong> rule sources (<code>${escapeHtml(inline.rulesIntent || 'cold-email')}</code>) ${modeLabel}${originHtml}. <details><summary>Sources</summary><ul>${inline.rulesLoaded.map((s) => `<li>${ruleSourceLink(s)}</li>`).join('')}</ul></details></div>`
     : `<div class="inline-coach-lib">Rule library unreachable — fallback taxonomy used.</div>`;
   $('inline-coach-summary').innerHTML = summaryHtml + libHtml;
 
@@ -315,7 +409,10 @@ async function runCritique() {
     const rules = await loadRulesForIntent('cold-email');
     inline.rulesLoaded = rules.sources;
     inline.rulesIntent = rules.intent;
-    setStatus(`${rules.sources.length} rule sources loaded (${rules.pointCount} points + ${rules.skillCount} skills). Running critic…`, 'ok');
+    inline.rulesMode = rules.ruleSourceMode || 'bundled';
+    inline.rulesOrigin = rules.originBreakdown || {};
+    setStatus(`${rules.sources.length} rule sources loaded (${rules.pointCount} points + ${rules.skillCount} skills, ${inline.rulesMode}). Running critic…`, 'ok');
+    updateCacheInfo();
     const result = await runInlineCritic({
       apiKey,
       model: $('model').value,
@@ -485,6 +582,10 @@ async function init() {
   await loadSettings();
   $('api-key').addEventListener('change', persistKey);
   $('model').addEventListener('change', persistModel);
+  $('rule-source').addEventListener('change', onRuleSourceChange);
+  $('github-base').addEventListener('change', onRuleSourceChange);
+  $('refresh-rules').addEventListener('click', refreshRules);
+  $('send-interception').addEventListener('change', onSendInterceptionChange);
   $('import-compose').addEventListener('click', importFromCompose);
   $('clear-draft').addEventListener('click', clearDraft);
   $('critique-btn').addEventListener('click', runCritique);

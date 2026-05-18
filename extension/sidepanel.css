@@ -241,6 +241,17 @@ textarea {
   padding: 0.05rem 0.3rem;
   border-radius: 3px;
 }
+.rule-mode-badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+}
+.rule-mode-github { background: var(--good-soft); color: var(--good); }
+.rule-mode-bundled { background: var(--surface-2); color: var(--ink-muted); }
+.rule-origin-breakdown { font-family: var(--mono); font-size: 0.6rem; color: var(--ink-faint); }
 
 .inline-coach-toolbar {
   display: flex;
