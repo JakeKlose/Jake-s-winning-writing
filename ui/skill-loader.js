@@ -103,6 +103,7 @@ const INTENT_BUNDLES = {
       'warmth-and-competence',
       'kill-redundancy',
       'irrelevant-detail-killer',
+      'feedback-rephraser',
     ],
   },
   'general': {

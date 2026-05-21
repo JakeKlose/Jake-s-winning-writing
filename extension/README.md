@@ -19,7 +19,7 @@ extension/
 │   └── skill-loader.js    Extension-aware loader (uses chrome.runtime.getURL)
 └── rules/                 Snapshot of points/ and a curated set of skills/
     ├── points/            7 rule docs (cold-email + exec-memo + performance-review bundles share most of them)
-    └── skills/            13 SKILL.md files
+    └── skills/            14 SKILL.md files
 ```
 
 `rules/` is a snapshot. To pick up rule edits, copy from the repo root again (see [Updating rules](#updating-rules)).

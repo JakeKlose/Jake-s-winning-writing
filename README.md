@@ -1,6 +1,6 @@
 # Winning Writing
 
-> 32 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, and performance reviews. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
+> 33 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, and performance reviews. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
 
 ## The shortest path
 
@@ -159,6 +159,7 @@ Drop the `skills/` directory into `~/.claude/skills/` (or your Cowork folder) an
 | `pick-a-lane` | Diagnosing drafts that tell three half-stories instead of one full one. Cuts whole stories, not just words. |
 | `irrelevant-detail-killer` | Cuts cinematic details that are vivid but don't serve the main point. The third-pass refinement after pick-a-lane and show-don't-tell. |
 | `kill-redundancy` | Cuts phrases where one half implies the other ("going forward," "as I mentioned," "reduce so they are smaller"). Distinct from jargon-killer, adverb-killer, and concision-drill. |
+| `feedback-rephraser` | Rewrites blunt downward or peer feedback (perf reviews, 1:1 talking points, Slack DMs) as "what I like + what I would like" focused on the work, ideally phrased as a question. Catches trait-attacks, stop-without-replacement, psychoanalysis, and declared-not-asked patterns. |
 
 ### Maintaining your voice over time
 
