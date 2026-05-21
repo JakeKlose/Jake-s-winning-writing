@@ -47,9 +47,20 @@ function fmt(n, w = 4) {
   if (filter) console.log(`> filter:   "${filter}"`);
   console.log();
 
-  console.log(`> Loading rule library…`);
-  const rules = await loadRules(REPO_ROOT, intent);
-  console.log(`  ${rules.sources.length} sources (${rules.pointCount} points + ${rules.skillCount} skills)\n`);
+  // Load rules lazily, once per intent encountered in the corpus. The harness
+  // historically loaded one bundle for the whole run; that breaks the moment
+  // the corpus mixes intents (cold-email + exec-memo + ...).
+  const rulesCache = new Map();
+  async function rulesFor(intentKey) {
+    if (rulesCache.has(intentKey)) return rulesCache.get(intentKey);
+    console.log(`> Loading rule library for intent "${intentKey}"…`);
+    const r = await loadRules(REPO_ROOT, intentKey);
+    console.log(`  ${r.sources.length} sources (${r.pointCount} points + ${r.skillCount} skills)\n`);
+    rulesCache.set(intentKey, r);
+    return r;
+  }
+  // Warm the default-intent bundle so the first log appears before case output.
+  await rulesFor(intent);
 
   const allCases = (await readdir(CORPUS_DIR))
     .filter((f) => f.endsWith('.json'))
@@ -68,8 +79,10 @@ function fmt(n, w = 4) {
     const id = file.replace(/\.json$/, '');
     const t0 = Date.now();
     let critiqueResult;
+    const caseIntent = testCase.intent || intent;
+    const caseRules = await rulesFor(caseIntent);
     try {
-      critiqueResult = await critique({ apiKey: API_KEY, model, rules, draft: testCase.draft, intent: testCase.intent || intent });
+      critiqueResult = await critique({ apiKey: API_KEY, model, rules: caseRules, draft: testCase.draft, intent: caseIntent });
     } catch (err) {
       console.log(`[${id}] ${testCase.name}`);
       console.log(`  FAIL — API error: ${err.message}\n`);

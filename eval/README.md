@@ -20,13 +20,15 @@ Exit code is 0 if every case passes its threshold, 1 otherwise. Useful in a pre-
 |---|---|---|
 | `ANTHROPIC_API_KEY` | required | Your key |
 | `MODEL` | `claude-sonnet-4-6` | Critic model — match what the Coach UI is set to |
-| `INTENT` | `cold-email` | Which rule bundle to load (`cold-email`, `op-ed`, `general`) |
+| `INTENT` | `cold-email` | Default rule bundle for cases that don't declare their own `intent` (`cold-email`, `exec-memo`, `performance-review`, `op-ed`, `pitch`, `general`) |
 | `FILTER` | empty | Only run corpus files whose name contains this substring (e.g. `FILTER=02`) |
 | `VERBOSE` | `0` | Dump every annotation per case, not just the summary |
 
+The harness loads the rule library **per case-intent**, caching by intent across the run. A mixed corpus (cold-email + exec-memo + ...) works in a single invocation — each new intent is fetched once, then reused.
+
 ### Cost
 
-With prompt caching on the rule-library block, a full 5-case run is roughly **$0.05-0.10** (Sonnet 4.6). First case pays the cache-write price; subsequent cases within ~5 minutes pay ~10% on the rule block.
+With prompt caching on the rule-library block, a full 6-case run is roughly **$0.05-0.10** (Sonnet 4.6). First case at each intent pays the cache-write price; subsequent same-intent cases within ~5 minutes pay ~10% on the rule block. Cases that switch intents pay another cache-write on the new bundle.
 
 ## Corpus format
 
@@ -35,7 +37,7 @@ Each case in `corpus/` is a JSON file:
 ```json
 {
   "name": "Human-readable name shown in the output",
-  "intent": "cold-email | op-ed | pitch | general",
+  "intent": "cold-email | exec-memo | performance-review | op-ed | pitch | general",
   "draft": "The full text the critic will read.",
 
   "expected_clean": false,
@@ -64,18 +66,19 @@ Each case in `corpus/` is a JSON file:
 
 ## What's in the corpus today
 
-| # | Case | Tests |
-|---|---|---|
-| 01 | Classic bad cold email | Stacks every common failure (generic opener, jargon, AI tells, vague ask). Recall ≥ 70% across 8 expected flags. |
-| 02 | Clean cold email | Tolerates up to 2 noise flags. Catches regressions where the critic starts over-flagging clean drafts. |
-| 03 | Vague ask isolated | Strong opener and specific personalization, but the ask is vague. Tests that the critic still catches the ask. |
-| 04 | Banned words stack | Eight banned/jargon words in a short email, but otherwise structurally fine. Tests that banned-jargon.md is being applied. |
-| 05 | Credentials dump | Pick-a-lane failure: lists three companies, four interest areas, vague job ask. Tests the named-failure-modes catalog (#4, #5). |
+| # | Case | Intent | Tests |
+|---|---|---|---|
+| 01 | Classic bad cold email | cold-email | Stacks every common failure (generic opener, jargon, AI tells, vague ask). Recall ≥ 70% across 8 expected flags. |
+| 02 | Clean cold email | cold-email | Tolerates up to 2 noise flags. Catches regressions where the critic starts over-flagging clean drafts. |
+| 03 | Vague ask isolated | cold-email | Strong opener and specific personalization, but the ask is vague. Tests that the critic still catches the ask. |
+| 04 | Banned words stack | cold-email | Eight banned/jargon words in a short email, but otherwise structurally fine. Tests that banned-jargon.md is being applied. |
+| 05 | Credentials dump | cold-email | Pick-a-lane failure: lists three companies, four interest areas, vague job ask. Tests the named-failure-modes catalog (#4, #5). |
+| 06 | Exec memo with buried lede | exec-memo | Hedge-stack memo with no TL;DR, unsourced numbers, vague next steps, trailing ask. Tests that `exec-memo-rules.md` is being applied (buried lede, hedge, vague ask, trailing ask) on top of the shared jargon / banned-word checks. |
 
 ## Adding a case
 
 1. Create `corpus/NN-short-name.json` (NN keeps the order deterministic)
-2. Set `intent` (usually `cold-email`)
+2. Set `intent` to whichever bundle the case is meant to exercise (`cold-email`, `exec-memo`, `op-ed`, `pitch`, `general`). The harness loads the matching rule bundle for you and caches it across cases sharing the intent.
 3. Paste the `draft` text
 4. List `expected_flags` — for each known issue, what `quote_contains`, which `categories` are acceptable, what `min_severity`
 5. Set `recall_threshold` (default 0.7 is reasonable for most cases; 0.5 for harder ones where the model often misses some flags)

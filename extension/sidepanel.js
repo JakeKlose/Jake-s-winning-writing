@@ -9,8 +9,11 @@ const $ = (id) => document.getElementById(id);
 
 const inExtension = typeof chrome !== 'undefined' && chrome.runtime && typeof chrome.runtime.sendMessage === 'function';
 
-const KEY_STORE = 'ww-coach.apikey';
-const MODEL_STORE = 'ww-coach.model';
+const KEY_STORE = 'ww-coach.apikey';            // local only (secret)
+const MODEL_STORE = 'ww-coach.model';            // synced across devices
+const VOICE_STORE = 'ww-coach.voice-profile';    // synced across devices
+const VOICE_MAX_BYTES = 7000;                    // safety margin under sync's 8KB-per-item limit
+const MIGRATED_FLAG = 'ww-coach.sync-migrated';  // one-time migration flag (local)
 
 const inline = {
   originalDraft: '',
@@ -28,38 +31,69 @@ const inline = {
 let stickyCardId = null;
 
 // ----- Storage abstraction -----
+//
+// Two scopes:
+//   - local (chrome.storage.local) for secrets like the API key
+//   - sync  (chrome.storage.sync)  for preferences and voice — follows the
+//                                  user across devices signed into the same
+//                                  Chrome profile. 8KB-per-item limit.
 
-function getStored(key) {
+function getStored(key, scope = 'local') {
   return new Promise((resolve) => {
-    if (inExtension && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get([key], (r) => resolve(r[key] || ''));
+    if (inExtension && chrome.storage && chrome.storage[scope]) {
+      chrome.storage[scope].get([key], (r) => resolve(r[key] || ''));
     } else {
       resolve(localStorage.getItem(key) || '');
     }
   });
 }
 
-function setStored(key, value) {
-  if (inExtension && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.set({ [key]: value });
+function setStored(key, value, scope = 'local') {
+  if (inExtension && chrome.storage && chrome.storage[scope]) {
+    chrome.storage[scope].set({ [key]: value });
   } else {
     localStorage.setItem(key, value);
   }
 }
 
+// One-time migration: copy preferences (model + send-interception) from
+// storage.local to storage.sync the first time the extension boots after this
+// upgrade. The API key stays local — we don't sync secrets.
+async function migrateLocalToSyncOnce() {
+  if (!inExtension || !chrome.storage || !chrome.storage.local || !chrome.storage.sync) return;
+  const flag = await getStored(MIGRATED_FLAG, 'local');
+  if (flag === 'true') return;
+  const localPrefs = await new Promise((r) =>
+    chrome.storage.local.get([MODEL_STORE, 'ww-coach.send-interception'], (x) => r(x || {}))
+  );
+  const toCopy = {};
+  if (localPrefs[MODEL_STORE]) toCopy[MODEL_STORE] = localPrefs[MODEL_STORE];
+  if (typeof localPrefs['ww-coach.send-interception'] === 'boolean') {
+    toCopy['ww-coach.send-interception'] = localPrefs['ww-coach.send-interception'];
+  }
+  if (Object.keys(toCopy).length) {
+    await new Promise((r) => chrome.storage.sync.set(toCopy, r));
+  }
+  await new Promise((r) => chrome.storage.local.set({ [MIGRATED_FLAG]: 'true' }, r));
+}
+
 async function loadSettings() {
-  $('api-key').value = await getStored(KEY_STORE);
-  const m = await getStored(MODEL_STORE);
+  await migrateLocalToSyncOnce();
+  $('api-key').value = await getStored(KEY_STORE, 'local');
+  const m = await getStored(MODEL_STORE, 'sync');
   if (m) $('model').value = m;
+  const voice = await getStored(VOICE_STORE, 'sync');
+  if (voice) $('voice-profile').value = voice;
+  updateVoiceInfo();
   const ruleSettings = await getRuleSourceSettings();
   $('rule-source').value = ruleSettings.source;
   $('github-base').value = ruleSettings.githubBase;
   updateRuleSourceVisibility();
   updateCacheInfo();
-  // Send-interception toggle
-  if (inExtension && chrome.storage && chrome.storage.local) {
+  // Send-interception toggle (synced).
+  if (inExtension && chrome.storage && chrome.storage.sync) {
     await new Promise((resolve) => {
-      chrome.storage.local.get(['ww-coach.send-interception'], (r) => {
+      chrome.storage.sync.get(['ww-coach.send-interception'], (r) => {
         $('send-interception').checked = r['ww-coach.send-interception'] === true;
         resolve();
       });
@@ -67,6 +101,33 @@ async function loadSettings() {
   } else {
     $('send-interception').checked = localStorage.getItem('ww-coach.send-interception') === 'true';
   }
+}
+
+function updateVoiceInfo() {
+  const el = $('voice-profile');
+  if (!el) return;
+  const len = (el.value || '').length;
+  const info = $('voice-profile-info');
+  if (!info) return;
+  if (len === 0) {
+    info.textContent = 'Synced across this Chrome profile via chrome.storage.sync. Max 7,000 chars.';
+    info.style.color = '';
+  } else if (len > VOICE_MAX_BYTES) {
+    info.textContent = `${len}/${VOICE_MAX_BYTES} chars — too long to sync (chrome.storage.sync caps each item at ~8KB). Trim before saving.`;
+    info.style.color = 'var(--bad)';
+  } else {
+    info.textContent = `${len}/${VOICE_MAX_BYTES} chars · synced across this Chrome profile.`;
+    info.style.color = '';
+  }
+}
+
+function persistVoice() {
+  const v = $('voice-profile').value;
+  if (v.length > VOICE_MAX_BYTES) {
+    setStatus(`Voice profile is ${v.length} chars; trim to ${VOICE_MAX_BYTES} or fewer to sync.`, 'err');
+    return;
+  }
+  setStored(VOICE_STORE, v, 'sync');
 }
 
 function updateRuleSourceVisibility() {
@@ -128,8 +189,8 @@ async function refreshRules() {
 
 async function onSendInterceptionChange() {
   const enabled = $('send-interception').checked;
-  if (inExtension && chrome.storage && chrome.storage.local) {
-    await new Promise((r) => chrome.storage.local.set({ 'ww-coach.send-interception': enabled }, r));
+  if (inExtension && chrome.storage && chrome.storage.sync) {
+    await new Promise((r) => chrome.storage.sync.set({ 'ww-coach.send-interception': enabled }, r));
     // Tell the background to broadcast to all Gmail tabs.
     chrome.runtime.sendMessage({ type: 'set-send-interception-broadcast', enabled }, (resp) => {
       const n = resp?.broadcastTo || 0;
@@ -143,9 +204,9 @@ async function onSendInterceptionChange() {
 
 function persistKey() {
   const k = $('api-key').value.trim();
-  if (k) setStored(KEY_STORE, k);
+  if (k) setStored(KEY_STORE, k, 'local');
 }
-function persistModel() { setStored(MODEL_STORE, $('model').value); }
+function persistModel() { setStored(MODEL_STORE, $('model').value, 'sync'); }
 
 // ----- Helpers -----
 
@@ -419,6 +480,7 @@ async function runCritique() {
       draft,
       intent: 'cold-email',
       rules,
+      voice: $('voice-profile').value.trim(),
     });
     inline.originalDraft = draft;
     inline.workingDraft = draft;
@@ -505,6 +567,7 @@ async function sendRefinementTurnHandler() {
       instruction,
       rules,
       intent: inline.intent || 'cold-email',
+      voice: $('voice-profile').value.trim(),
     });
     if (result.isEvaluation) {
       inline.chatHistory.push({ role: 'assistant', text: result.note, isEvaluation: true });
@@ -546,6 +609,7 @@ async function reCritique() {
       draft: inline.workingDraft,
       intent: inline.intent || 'cold-email',
       rules,
+      voice: $('voice-profile').value.trim(),
     });
     inline.summary = result.summary || '';
     inline.annotations = (result.annotations || []).map((a) => ({ ...a, status: 'open', start: -1, end: -1 }));
@@ -582,6 +646,8 @@ async function init() {
   await loadSettings();
   $('api-key').addEventListener('change', persistKey);
   $('model').addEventListener('change', persistModel);
+  $('voice-profile').addEventListener('input', updateVoiceInfo);
+  $('voice-profile').addEventListener('change', persistVoice);
   $('rule-source').addEventListener('change', onRuleSourceChange);
   $('github-base').addEventListener('change', onRuleSourceChange);
   $('refresh-rules').addEventListener('click', refreshRules);

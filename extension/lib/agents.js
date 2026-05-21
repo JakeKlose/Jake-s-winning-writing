@@ -322,18 +322,25 @@ export async function runInlineCritic({
   draft,
   intent = 'cold-email',
   rules = null,
+  voice = '',
   onEvent = () => {},
 }) {
   if (!draft || !draft.trim()) {
     return { summary: 'No draft to critique.', annotations: [], intent, word_count: 0, sources: [], raw: '', usage: {} };
   }
   const useRules = !!(rules && rules.markdown && Array.isArray(rules.sources) && rules.sources.length > 0);
+  const voiceBlock = voice && voice.trim()
+    ? { type: 'text', text: `# Writer voice profile\n\n${voice.trim()}\n\nTreat existing phrasings consistent with this voice as intentional. Only flag rule violations; do not flag stylistic choices the writer has marked as voice.`, cache_control: { type: 'ephemeral' } }
+    : null;
   const system = useRules
     ? [
         { type: 'text', text: rules.markdown, cache_control: { type: 'ephemeral' } },
+        ...(voiceBlock ? [voiceBlock] : []),
         { type: 'text', text: INLINE_CRITIC_INSTRUCTIONS },
       ]
-    : INLINE_CRITIC_FALLBACK_PROMPT;
+    : (voiceBlock
+        ? [voiceBlock, { type: 'text', text: INLINE_CRITIC_FALLBACK_PROMPT }]
+        : INLINE_CRITIC_FALLBACK_PROMPT);
 
   onEvent({
     type: 'step-start',
@@ -434,6 +441,7 @@ export async function runRefinementTurn({
   instruction,
   rules = null,
   intent = 'cold-email',
+  voice = '',
   onEvent = () => {},
 }) {
   if (!instruction || !instruction.trim()) {
@@ -444,12 +452,16 @@ export async function runRefinementTurn({
   }
 
   const useRules = !!(rules && rules.markdown && Array.isArray(rules.sources) && rules.sources.length > 0);
+  const voiceBlock = voice && voice.trim()
+    ? { type: 'text', text: `# Writer voice profile\n\n${voice.trim()}\n\nWhen rewriting, use the writer's voice above: their phrasings, sentence shapes, and word choices. The rule library is still authoritative; voice cannot override a rule.`, cache_control: { type: 'ephemeral' } }
+    : null;
   const system = useRules
     ? [
         { type: 'text', text: rules.markdown, cache_control: { type: 'ephemeral' } },
+        ...(voiceBlock ? [voiceBlock] : []),
         { type: 'text', text: REFINEMENT_PROMPT },
       ]
-    : REFINEMENT_PROMPT;
+    : (voiceBlock ? [voiceBlock, { type: 'text', text: REFINEMENT_PROMPT }] : REFINEMENT_PROMPT);
 
   let userMessage = `# Writing intent\n${intent}\n\n# Current draft\n\n${draft}\n`;
   if (history.length > 0) {

@@ -1,6 +1,6 @@
 # Winning Writing
 
-> 31 Claude skills for cold outreach, op-eds, pitches, press inquiries, and bios. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
+> 32 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, and performance reviews. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
 
 ## The shortest path
 
@@ -96,7 +96,7 @@ eval/      Regression harness — node eval/run.mjs replays a golden corpus agai
 
 ## The points
 
-Nine reference docs, each focused on one slice of the course:
+Eleven reference docs, each focused on one slice of the course:
 
 | File | Covers |
 |------|--------|
@@ -104,6 +104,8 @@ Nine reference docs, each focused on one slice of the course:
 | [banned-jargon.md](points/banned-jargon.md) | Words and phrases to kill on sight, with replacements |
 | [frameworks.md](points/frameworks.md) | BLUF, S.H.I.T., 7-part pitch, op-ed structure, gratitude formula |
 | [cold-email-rules.md](points/cold-email-rules.md) | Konrad's 10 rules + Heidi Roizen's mailing rules |
+| [exec-memo-rules.md](points/exec-memo-rules.md) | Decision-memo rules: TL;DR up front, one ask per memo, named decision criterion, sourced numbers, early-failure signal, the 60-second test |
+| [performance-review-rules.md](points/performance-review-rules.md) | Performance-review rules from Kramon: letter to the person not about them, lead with what you like then what you would like, near-term + long-term goals (including their next job), colleague feedback as multiplier, no psychoanalyzing or ambushing, close with thank-you, the house-on-fire test |
 | [kramon-master.md](points/kramon-master.md) | Full Kramon reference, all four sessions |
 | [examples-and-critiques.md](points/examples-and-critiques.md) | Model letters, op-ed headlines, before/after rewrites |
 | [ai-writing-rules.md](points/ai-writing-rules.md) | How to use AI without sounding like AI ("centaur" mode) |
@@ -125,6 +127,7 @@ Drop the `skills/` directory into `~/.claude/skills/` (or your Cowork folder) an
 | `gratitude-note-coach` | Thank-you notes, recommendation letters, recognition messages |
 | `dealing-with-reporters` | Crisis comms + press inquiries — Sorkin's 11 rules + AP attribution. Names the Sorkin (litigation-first) vs. Tylenol/Kramon (trust-first) school tension explicitly. |
 | `yourself-story` | Bios, LinkedIn About, intro slides, "tell me about yourself" — Bryant + Weinstein + the six Kramon model bios |
+| `performance-review-coach` | Drafting or critiquing an annual review, mid-year check-in, self-review, 360 feedback, or peer review. Catches the four classic failure modes: written-about-them, lead-with-the-negative, ambush, and psychoanalysis. Includes a "reframe the blunt manager line" kit for the in-meeting verbal version too. |
 | `winning-writing-critic` | Grading any draft against the full rubric and returning a rewrite |
 | `cross-model-review` | Independent second-model gate before send — must run on a different model than the drafter. Names the specific failure mode from a 14-mode catalog and predicts the recipient's most likely counter-question |
 
@@ -228,11 +231,21 @@ The pipeline implementation lives in [`ui/agents.js`](ui/agents.js); per-step pr
 
 Below the draft input (and again above the output after the pipeline runs), the Coach exposes a **Critique inline** button. One Sonnet call with the rule library cached as the system block returns span-level annotations: each one carries a `quote`, a `severity` (high / medium / low), a `category`, a one-sentence `why`, a `suggested` rewrite, and a `rule_source` pointing at the exact file in `points/` or `skills/` the rule came from.
 
+A **Critic intent** dropdown next to the Critique button picks the rule bundle: `cold-email`, `exec-memo`, `performance-review`, `op-ed`, `pitch`, or `general`. The choice is persisted. Each intent loads a different combination of `points/` docs and surgical skills — exec-memo, for example, pulls `exec-memo-rules.md` and adds `bluf-rewriter` to the surgical set so the critic flags buried ledes and hedge stacks; performance-review pulls `performance-review-rules.md` and the `warmth-and-competence` skill so the critic flags letter-to-the-person voice, ambushes, and psychoanalysis. Selection survives reloads.
+
 The annotated viewer paints the draft with severity-coded highlights. Hover any span for the rule card; click for the sticky version. Each card carries **Accept / Reject / Snooze**: Accept replaces the quote in a working draft (the original stays untouched until you click **Apply to draft input**); Reject and Snooze remove the highlight without changing the text. The sidebar lists all open flags including unmatched quotes (when the model's quote doesn't appear verbatim in the draft, surfaced as "unmatched" rather than silently dropped).
 
 Below the annotated viewer, a **refinement chat** takes plain-English follow-ups: *"cut 30 words," "move the ask earlier," "what's wrong with the opener?"*. Rewrites update the working draft and clear stale annotations; asking a question returns a 1–3 sentence evaluation styled distinctly (amber border) from rewrites (green) and errors (red). **Re-critique** runs the inline critic on the refined draft so you can see what's still broken. The same prompt-cached rule library backs every refinement turn so rewrites stay rule-compliant — every turn pays the cache-hit price (~10% of input cost) on the rule block after the first.
 
-The rule library is loaded at runtime from `points/*.md` and the SKILL.md files of the 12 surgical skills. **Edit a rule file, refresh the page, the critic immediately reflects the change.** No prompt rewrite, no code change — the 31 skills are the live operating system, not decoration.
+If the **About me** field is filled in, its content is passed to both the inline critic and the refinement turn as an additional cached system block. The critic uses it to avoid flagging your settled stylistic choices as rule violations; the refiner uses it to keep rewrites sounding like you. The voice block is ephemeral-cached alongside the rule library, so refinement turns reuse it at cache-hit cost.
+
+The rule library is loaded at runtime from `points/*.md` and the SKILL.md files of the surgical skills. **Edit a rule file, refresh the page, the critic immediately reflects the change.** No prompt rewrite, no code change — the skills are the live operating system, not decoration.
+
+#### Diff view
+
+After Accepting one or more flags (or after the refinement chat rewrites the draft), click **Show diff** in the inline-coach toolbar. A side-by-side view appears: original on the left with deletions struck through in red, working draft on the right with additions highlighted in green. Hover any deletion or insertion to see the rule that fired (category, severity, one-sentence why, source path). An **Edits applied** sidebar lists each accepted edit in order with the originalQuote → replacement and a link to the rule source.
+
+The diff is computed with a word-level LCS between the original and working drafts — refinement-chat rewrites show up too, just without a rule label (since they have no per-rule attribution). **Copy diff (markdown)** produces a shareable block with the edit log on top and both full drafts below, useful for review threads or before/after screenshots.
 
 #### Setup
 
@@ -284,6 +297,11 @@ Full install + usage walkthrough in [`extension/README.md`](extension/README.md)
 
 - **Rule source** — `Bundled snapshot` or `Live from GitHub`. Live mode pulls from `raw.githubusercontent.com/<owner>/<repo>/<branch>/points/...` and `skills/.../SKILL.md` with a 1-hour cache (chrome.storage.local) and a manual Refresh button. Falls back to the bundled snapshot on any network failure. The summary line under each critique badges which mode fired.
 - **Pre-send gate** — opt-in toggle. When on, intercepts both the Send button click and Cmd/Ctrl+Enter on `mail.google.com`; runs the `cross-model-review` skill against the rule library; shows a blocking modal with named failures + likely counter-question + Fix / Send-anyway. The modal is a positioned-fixed overlay; it does not modify Gmail's compose DOM.
+- **Voice profile** — a textarea for a few sentences in your own voice plus phrases you'd never use. The critic uses it to avoid flagging your settled style; the refiner uses it to keep rewrites sounding like you. Stored in `chrome.storage.sync` so it follows your Chrome profile across devices (8 KB hard limit per item; the panel surfaces a live char counter and refuses to save above 7 KB).
+
+### Storage layout
+
+Non-secret preferences (model, send-interception toggle, voice profile) live in `chrome.storage.sync` so they follow your Chrome profile across devices. The Anthropic API key stays in `chrome.storage.local` — secrets are never synced. A one-time migration on first boot after upgrading copies any existing local preferences into sync.
 
 ### What it does NOT do (yet)
 
@@ -301,7 +319,9 @@ export ANTHROPIC_API_KEY=sk-ant-...
 node eval/run.mjs
 ```
 
-A full 5-case run is ~$0.05-0.10 with prompt caching on the rule library. Exit code 0 = all pass, 1 = at least one case failed its threshold. Add cases as JSON in `eval/corpus/`. Full schema and authoring guidance in [`eval/README.md`](eval/README.md).
+A full 6-case run is ~$0.05-0.10 with prompt caching on the rule library. Exit code 0 = all pass, 1 = at least one case failed its threshold. Add cases as JSON in `eval/corpus/`. Full schema and authoring guidance in [`eval/README.md`](eval/README.md).
+
+The harness loads the rule library **per case-intent**, caching by intent across the run — so a corpus that mixes `cold-email` and `exec-memo` cases works in one pass without re-fetching the cold-email bundle for every case. Set the env var `INTENT` to override the default fallback for cases that don't declare their own `intent`.
 
 The harness mirrors the production critic prompt and rule loader; it doesn't share code with the browser side directly because of the ES-modules-in-Node configuration. Keep them in sync when either changes; the duplication is called out in the eval code's header comment.
 

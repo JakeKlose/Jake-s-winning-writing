@@ -270,9 +270,22 @@ function setSendInterceptionEnabled(on) {
   }
 }
 
-// Read initial setting on startup.
-if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-  chrome.storage.local.get(['ww-coach.send-interception'], (r) => {
-    setSendInterceptionEnabled(r['ww-coach.send-interception'] === true);
-  });
+// Read initial setting on startup. After the sync migration, the flag lives
+// in chrome.storage.sync; fall back to local for pre-migration installs.
+if (typeof chrome !== 'undefined' && chrome.storage) {
+  if (chrome.storage.sync) {
+    chrome.storage.sync.get(['ww-coach.send-interception'], (r) => {
+      if (typeof r['ww-coach.send-interception'] === 'boolean') {
+        setSendInterceptionEnabled(r['ww-coach.send-interception'] === true);
+      } else if (chrome.storage.local) {
+        chrome.storage.local.get(['ww-coach.send-interception'], (r2) => {
+          setSendInterceptionEnabled(r2['ww-coach.send-interception'] === true);
+        });
+      }
+    });
+  } else if (chrome.storage.local) {
+    chrome.storage.local.get(['ww-coach.send-interception'], (r) => {
+      setSendInterceptionEnabled(r['ww-coach.send-interception'] === true);
+    });
+  }
 }

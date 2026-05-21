@@ -12,6 +12,7 @@ const SEARCH_STORE = 'winning-writing.coach.search-enabled';
 const HUMANIZE_STORE = 'winning-writing.coach.humanize-enabled';
 const REVIEW_STORE = 'winning-writing.coach.review-enabled';
 const REVIEW_MODEL_STORE = 'winning-writing.coach.review-model';
+const INTENT_STORE = 'winning-writing.coach.critic-intent';
 
 // ---------- Init ----------
 
@@ -31,6 +32,8 @@ function loadStored() {
   if (review === 'false') $('enable-cross-review').checked = false;
   const storedReviewer = localStorage.getItem(REVIEW_MODEL_STORE);
   if (storedReviewer) $('reviewer-model').value = storedReviewer;
+  const storedIntent = localStorage.getItem(INTENT_STORE);
+  if (storedIntent && $('critic-intent')) $('critic-intent').value = storedIntent;
 }
 
 function persistKey() {
@@ -44,6 +47,7 @@ function persistSearch() { localStorage.setItem(SEARCH_STORE, $('enable-search')
 function persistHumanize() { localStorage.setItem(HUMANIZE_STORE, $('enable-humanize').checked ? 'true' : 'false'); }
 function persistReview() { localStorage.setItem(REVIEW_STORE, $('enable-cross-review').checked ? 'true' : 'false'); }
 function persistReviewModel() { localStorage.setItem(REVIEW_MODEL_STORE, $('reviewer-model').value); }
+function persistIntent() { if ($('critic-intent')) localStorage.setItem(INTENT_STORE, $('critic-intent').value); }
 
 async function loadAboutFromFile() {
   try {
@@ -627,6 +631,8 @@ const inline = {
   rulesLoaded: [],         // Array of rule source paths the critic ran against
   rulesIntent: null,       // Echoed intent the loader resolved to
   chatHistory: [],         // [{role: 'user'|'assistant', text, error?, isEvaluation?}]
+  editLog: [],             // [{id, annotationId, originalQuote, replacement, ruleId, ruleSource, category, severity, why}]
+  diffVisible: false,
 };
 
 const RULE_BASE = '..';    // relative to ui/, so points/ and skills/ resolve correctly
@@ -789,6 +795,7 @@ function handleAnnAction(annId, act) {
       const repl = isDelete ? '' : a.suggested;
       let before = inline.workingDraft.slice(0, current.start);
       let after = inline.workingDraft.slice(current.end);
+      const quoteAtAccept = inline.workingDraft.slice(current.start, current.end);
       if (isDelete) {
         before = before.replace(/\s+$/, '');
         after = after.replace(/^\s+/, '');
@@ -797,6 +804,17 @@ function handleAnnAction(annId, act) {
         }
       }
       inline.workingDraft = before + repl + after;
+      inline.editLog.push({
+        id: `edit-${inline.editLog.length}`,
+        annotationId: annId,
+        originalQuote: quoteAtAccept,
+        replacement: isDelete ? '' : repl,
+        ruleId: a.rule_id,
+        ruleSource: a.rule_source,
+        category: a.category,
+        severity: a.severity,
+        why: a.why,
+      });
     }
     a.status = 'accepted';
   } else if (act === 'reject') {
@@ -830,6 +848,7 @@ function renderInlineCoach() {
   renderAnnotatedDraft();
   renderInlineSidebar();
   renderChatTurns();
+  renderDiff();
 }
 
 function countAnnotations() {
@@ -890,6 +909,211 @@ function renderInlineSidebar() {
   });
 }
 
+// ----- Diff view -----
+//
+// Word-level LCS diff between originalDraft and workingDraft, with each
+// changed run cross-referenced against editLog so accepted edits are tagged
+// with the rule that fired. The refinement chat can rewrite the whole draft
+// (no editLog entry), so the diff is the source of truth for what changed
+// and editLog is the source of truth for why.
+
+function tokenizeForDiff(text) {
+  // Preserve whitespace as separate tokens so the rendered diff keeps spacing.
+  if (!text) return [];
+  return text.split(/(\s+)/).filter((t) => t.length);
+}
+
+function computeWordDiff(a, b) {
+  const at = tokenizeForDiff(a);
+  const bt = tokenizeForDiff(b);
+  const n = at.length;
+  const m = bt.length;
+  // Guard against very large inputs. 2000 x 2000 = 16MB Int32Array, acceptable.
+  if (n > 4000 || m > 4000) {
+    return { tooLarge: true, originalTokens: at, workingTokens: bt, ops: [] };
+  }
+  const dp = Array.from({ length: n + 1 }, () => new Int32Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = m - 1; j >= 0; j--) {
+      if (at[i] === bt[j]) dp[i][j] = dp[i + 1][j + 1] + 1;
+      else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+  const ops = [];
+  let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (at[i] === bt[j]) { ops.push({ op: '=', text: at[i] }); i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { ops.push({ op: '-', text: at[i] }); i++; }
+    else { ops.push({ op: '+', text: bt[j] }); j++; }
+  }
+  while (i < n) ops.push({ op: '-', text: at[i++] });
+  while (j < m) ops.push({ op: '+', text: bt[j++] });
+  return { tooLarge: false, ops };
+}
+
+// Collapse adjacent same-kind ops into runs for cleaner rendering.
+function groupDiffRuns(ops) {
+  const runs = [];
+  for (const o of ops) {
+    const last = runs[runs.length - 1];
+    if (last && last.op === o.op) last.text += o.text;
+    else runs.push({ op: o.op, text: o.text });
+  }
+  return runs;
+}
+
+// Try to match a diff run to an editLog entry by substring overlap. Returns
+// the editLog entry (or null if the run came from the refinement chat).
+function matchRunToEdit(run, side) {
+  if (!run.text || !run.text.trim()) return null;
+  const needle = run.text.trim();
+  for (const e of inline.editLog) {
+    if (side === '-' && e.originalQuote && (e.originalQuote === needle || e.originalQuote.includes(needle) || needle.includes(e.originalQuote))) return e;
+    if (side === '+' && e.replacement && (e.replacement === needle || e.replacement.includes(needle) || needle.includes(e.replacement))) return e;
+  }
+  return null;
+}
+
+function renderDiffSide(runs, side) {
+  let html = '';
+  for (const r of runs) {
+    if (r.op === '=') {
+      html += escapeHtmlForTrace(r.text);
+    } else if (r.op === side) {
+      const e = matchRunToEdit(r, side);
+      const cls = side === '-' ? 'diff-del' : 'diff-ins';
+      const sev = e ? ` diff-${e.severity}` : '';
+      const attrs = e
+        ? ` data-edit-id="${e.id}" data-rule="${escapeHtmlForTrace(e.ruleId || '')}" title="${escapeHtmlForTrace(e.category + ' — ' + (e.why || ''))}"`
+        : ' title="Changed via refinement chat (no per-rule attribution)"';
+      html += `<span class="${cls}${sev}"${attrs}>${escapeHtmlForTrace(r.text)}</span>`;
+    }
+    // Skip the opposite side's runs in this column.
+  }
+  return html.replace(/\n/g, '<br>');
+}
+
+function renderEditLogSidebar() {
+  if (inline.editLog.length === 0) {
+    return '<p class="empty">No accepted edits yet. The diff will still show changes made via the refinement chat.</p>';
+  }
+  let html = '<ol class="diff-log">';
+  for (const e of inline.editLog) {
+    const quoteHtml = escapeHtmlForTrace(e.originalQuote.length > 100 ? e.originalQuote.slice(0, 100) + '…' : e.originalQuote);
+    const replHtml = e.replacement
+      ? escapeHtmlForTrace(e.replacement.length > 100 ? e.replacement.slice(0, 100) + '…' : e.replacement)
+      : '<em>(deleted)</em>';
+    const sourceRow = e.ruleSource ? `<div class="diff-log-source">${ruleSourceLink(e.ruleSource)}</div>` : '';
+    html += `
+      <li class="diff-log-item diff-log-${e.severity}" data-edit-id="${e.id}">
+        <div class="diff-log-head">
+          <span class="diff-log-cat">${escapeHtmlForTrace(e.category)}</span>
+          <span class="diff-log-sev diff-log-sev-${e.severity}">${e.severity}</span>
+        </div>
+        <div class="diff-log-pair">
+          <div class="diff-log-quote"><span class="diff-log-tag">was</span> ${quoteHtml}</div>
+          <div class="diff-log-repl"><span class="diff-log-tag">now</span> ${replHtml}</div>
+        </div>
+        <div class="diff-log-why">${escapeHtmlForTrace(e.why || '')}</div>
+        ${sourceRow}
+      </li>`;
+  }
+  html += '</ol>';
+  return html;
+}
+
+function renderDiff() {
+  const section = $('inline-coach-diff-section');
+  if (!section) return;
+  if (!inline.diffVisible) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = '';
+
+  const left = $('diff-original');
+  const right = $('diff-working');
+  const log = $('diff-log');
+
+  if (!inline.originalDraft || !inline.workingDraft) {
+    left.innerHTML = '<p class="empty">No draft yet.</p>';
+    right.innerHTML = '<p class="empty">No working draft yet.</p>';
+    log.innerHTML = '';
+    return;
+  }
+
+  if (inline.originalDraft === inline.workingDraft) {
+    left.innerHTML = escapeHtmlForTrace(inline.originalDraft).replace(/\n/g, '<br>');
+    right.innerHTML = escapeHtmlForTrace(inline.workingDraft).replace(/\n/g, '<br>');
+    log.innerHTML = '<p class="empty">No changes yet — original and working drafts are identical.</p>';
+    return;
+  }
+
+  const diff = computeWordDiff(inline.originalDraft, inline.workingDraft);
+  if (diff.tooLarge) {
+    left.innerHTML = '<p class="empty">Draft too large for the word-level diff.</p>';
+    right.innerHTML = '<p class="empty">Draft too large for the word-level diff.</p>';
+    log.innerHTML = renderEditLogSidebar();
+    return;
+  }
+  const runs = groupDiffRuns(diff.ops);
+  left.innerHTML = renderDiffSide(runs, '-');
+  right.innerHTML = renderDiffSide(runs, '+');
+  log.innerHTML = renderEditLogSidebar();
+
+  // Cross-pane hover sync.
+  const wireHover = (root) => {
+    root.querySelectorAll('[data-edit-id]').forEach((el) => {
+      el.addEventListener('mouseenter', () => highlightEdit(el.dataset.editId, true));
+      el.addEventListener('mouseleave', () => highlightEdit(el.dataset.editId, false));
+    });
+  };
+  wireHover(left);
+  wireHover(right);
+  wireHover(log);
+}
+
+function highlightEdit(editId, on) {
+  document.querySelectorAll(`[data-edit-id="${editId}"]`).forEach((el) => {
+    el.classList.toggle('diff-hover', on);
+  });
+}
+
+function toggleDiff() {
+  inline.diffVisible = !inline.diffVisible;
+  const btn = $('inline-coach-diff');
+  if (btn) btn.textContent = inline.diffVisible ? 'Hide diff' : 'Show diff';
+  renderDiff();
+  if (inline.diffVisible) {
+    $('inline-coach-diff-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function copyDiffMarkdown() {
+  if (!inline.editLog.length && inline.originalDraft === inline.workingDraft) {
+    setStatus('Nothing changed yet.', 'warn');
+    return;
+  }
+  let md = `# Diff\n\n`;
+  if (inline.editLog.length) {
+    md += `## Edits applied (${inline.editLog.length})\n\n`;
+    inline.editLog.forEach((e, i) => {
+      const repl = e.replacement || '(deleted)';
+      md += `${i + 1}. **${e.category}** (${e.severity})\n`;
+      md += `   - was: ${e.originalQuote}\n`;
+      md += `   - now: ${repl}\n`;
+      md += `   - rule: ${e.ruleSource || 'unknown'}\n`;
+      if (e.why) md += `   - why: ${e.why}\n`;
+      md += '\n';
+    });
+  }
+  md += `\n## Original\n\n${inline.originalDraft}\n\n## Working\n\n${inline.workingDraft}\n`;
+  navigator.clipboard.writeText(md).then(
+    () => setStatus(`Copied diff to clipboard (${inline.editLog.length} accepted edit${inline.editLog.length === 1 ? '' : 's'}).`, 'ok'),
+    () => setStatus('Clipboard copy failed.', 'err'),
+  );
+}
+
 async function runInlineCritiqueOnDraft(source) {
   persistKey();
   const apiKey = $('api-key').value.trim();
@@ -906,28 +1130,32 @@ async function runInlineCritiqueOnDraft(source) {
   const origLabel = btn ? btn.textContent : '';
   if (btn) { btn.disabled = true; btn.textContent = 'Critiquing…'; }
   setStatus('Loading rule library…', 'ok');
+  const selectedIntent = ($('critic-intent') && $('critic-intent').value) || 'cold-email';
+  persistIntent();
   try {
-    const rules = await loadRulesForIntent('cold-email');
+    const rules = await loadRulesForIntent(selectedIntent);
     inline.rulesLoaded = rules.sources;
     inline.rulesIntent = rules.intent;
     const libNote = rules.sources.length
-      ? `${rules.sources.length} sources loaded (${rules.pointCount} points + ${rules.skillCount} skills). Running critic…`
+      ? `${rules.sources.length} sources loaded (${rules.pointCount} points + ${rules.skillCount} skills, intent ${selectedIntent}). Running critic…`
       : 'Rule library not reachable, falling back to embedded taxonomy…';
     setStatus(libNote, 'ok');
     const result = await runInlineCritic({
       apiKey,
       model: 'claude-sonnet-4-6',
       draft,
-      intent: 'cold-email',
+      intent: selectedIntent,
       rules,
+      voice: $('about-me').value.trim(),
       onEvent: handlePipelineEvent,
     });
     inline.source = source;
     inline.originalDraft = draft;
     inline.workingDraft = draft;
     inline.summary = result.summary || '';
-    inline.intent = result.intent || 'cold-email';
+    inline.intent = result.intent || selectedIntent;
     inline.annotations = (result.annotations || []).map((a) => ({ ...a, status: 'open', start: -1, end: -1 }));
+    inline.editLog = [];
     renderInlineCoach();
     $('inline-coach-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
     const n = inline.annotations.length;
@@ -953,6 +1181,7 @@ function acceptAllInline() {
 function resetInline() {
   inline.workingDraft = inline.originalDraft;
   inline.annotations.forEach((a) => { a.status = 'open'; });
+  inline.editLog = [];
   renderInlineCoach();
 }
 
@@ -1025,6 +1254,7 @@ async function sendRefinementTurn() {
       instruction,
       rules,
       intent: inline.intent || 'cold-email',
+      voice: $('about-me').value.trim(),
       onEvent: handlePipelineEvent,
     });
 
@@ -1045,6 +1275,7 @@ async function sendRefinementTurn() {
       });
       inline.workingDraft = result.rewrittenDraft;
       inline.annotations = [];
+      inline.editLog = [];
       inline.summary = `Draft refined in chat. Click Re-critique to flag the new version.`;
       renderInlineCoach();
       renderChatTurns();
@@ -1084,6 +1315,7 @@ async function reCritique() {
       draft: inline.workingDraft,
       intent: inline.intent || 'cold-email',
       rules,
+      voice: $('about-me').value.trim(),
       onEvent: handlePipelineEvent,
     });
     inline.summary = result.summary || '';
@@ -1143,6 +1375,9 @@ function init() {
   $('inline-coach-reset').addEventListener('click', resetInline);
   $('inline-coach-copy').addEventListener('click', copyWorkingDraft);
   $('inline-coach-apply').addEventListener('click', applyWorkingDraftToInput);
+  $('inline-coach-diff').addEventListener('click', toggleDiff);
+  $('diff-copy').addEventListener('click', copyDiffMarkdown);
+  if ($('critic-intent')) $('critic-intent').addEventListener('change', persistIntent);
   $('inline-coach-chat-send').addEventListener('click', sendRefinementTurn);
   $('inline-coach-recritique').addEventListener('click', reCritique);
   $('inline-coach-chat-reset').addEventListener('click', resetChat);

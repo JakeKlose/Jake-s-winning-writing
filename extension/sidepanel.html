@@ -54,6 +54,12 @@
           </div>
           <span class="sp-hint">When on, clicking Send (or Cmd/Ctrl+Enter) in Gmail runs the cross-model gate first. If it fails, a blocking modal names the failures; you can fix or Send anyway. Default off.</span>
         </label>
+
+        <label class="sp-field" style="margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line);">
+          <span class="sp-label">Voice profile</span>
+          <textarea id="voice-profile" rows="6" placeholder="A few sentences in your own voice, plus phrases you'd never use. The critic uses this to avoid flagging your style; the refiner uses it to keep rewrites sounding like you."></textarea>
+          <span class="sp-hint" id="voice-profile-info">Synced across this Chrome profile via <code>chrome.storage.sync</code>. Max 7,000 chars.</span>
+        </label>
       </div>
     </section>
 

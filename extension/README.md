@@ -18,8 +18,8 @@ extension/
 │   ├── agents.js          Copy of ui/agents.js — runInlineCritic + runRefinementTurn
 │   └── skill-loader.js    Extension-aware loader (uses chrome.runtime.getURL)
 └── rules/                 Snapshot of points/ and a curated set of skills/
-    ├── points/            5 rule docs
-    └── skills/            12 SKILL.md files
+    ├── points/            7 rule docs (cold-email + exec-memo + performance-review bundles share most of them)
+    └── skills/            13 SKILL.md files
 ```
 
 `rules/` is a snapshot. To pick up rule edits, copy from the repo root again (see [Updating rules](#updating-rules)).
@@ -32,9 +32,9 @@ extension/
 4. Pick this `extension/` folder
 5. Click the extension's puzzle-piece icon in the toolbar → **Pin** it for easy access
 6. Click the icon → side panel opens
-7. Open **Settings** in the panel, paste your `sk-ant-...` API key, pick a model (Sonnet 4.6 recommended)
+7. Open **Settings** in the panel, paste your `sk-ant-...` API key, pick a model (Sonnet 4.6 recommended), and (optional) drop a few sentences in your own voice into the **Voice profile** field
 
-The key is stored in `chrome.storage.local` and never leaves your machine. API calls go browser-direct to `api.anthropic.com`.
+The key is stored in `chrome.storage.local` and never leaves your machine. Non-secret preferences — model, send-interception toggle, voice profile — live in `chrome.storage.sync` so they follow your Chrome profile across devices. API calls go browser-direct to `api.anthropic.com`.
 
 ## Use
 
@@ -58,17 +58,32 @@ The key is stored in `chrome.storage.local` and never leaves your machine. API c
 
 The cog under the side panel header expands to:
 
-- **Anthropic API key** — `sk-ant-...`. Stored in `chrome.storage.local`. Never sent anywhere except `api.anthropic.com`.
-- **Model** — defaults to Sonnet 4.6. Used for both the inline critic and the pre-send gate. Opus and Haiku are alternatives.
+- **Anthropic API key** — `sk-ant-...`. Stored in `chrome.storage.local`. Never sent anywhere except `api.anthropic.com`. Secrets stay local; they do not sync.
+- **Model** — defaults to Sonnet 4.6. Used for both the inline critic and the pre-send gate. Opus and Haiku are alternatives. Stored in `chrome.storage.sync`.
 - **Rule source** — `Bundled snapshot` (default) or `Live from GitHub`. Live mode fetches `points/*.md` and `skills/*/SKILL.md` directly from `raw.githubusercontent.com/<owner>/<repo>/<branch>/...`. Default repo is `kalyvask/winning-writing/main`; change it to point at your own fork.
 - **Refresh rules** — wipes the cache. Use after editing a rule in your repo if you don't want to wait for the 1-hour TTL.
-- **Pre-send gate** — opt-in toggle. When on, intercepts the Send button click and Cmd/Ctrl+Enter on `mail.google.com`, runs the `cross-model-review` skill against the rule library, and either lets the send proceed or shows a blocking modal with named failure modes and the recipient's likely counter-question. A `Send anyway` button is always available as an escape hatch.
+- **Pre-send gate** — opt-in toggle. When on, intercepts the Send button click and Cmd/Ctrl+Enter on `mail.google.com`, runs the `cross-model-review` skill against the rule library, and either lets the send proceed or shows a blocking modal with named failure modes and the recipient's likely counter-question. A `Send anyway` button is always available as an escape hatch. Stored in `chrome.storage.sync`.
+- **Voice profile** — a free-text textarea for a few sentences in your own voice plus phrases you'd never use. The inline critic and refiner each receive it as an additional cached system block: the critic uses it to avoid flagging settled stylistic choices, the refiner uses it to keep rewrites sounding like you. Stored in `chrome.storage.sync` so it follows your Chrome profile across devices. The panel surfaces a live char counter; the field caps at 7 KB to stay under `chrome.storage.sync`'s 8 KB-per-item limit.
+
+### Storage scopes
+
+| Key | Scope | Why |
+|---|---|---|
+| `ww-coach.apikey` | `local` | Secret — never synced |
+| `ww-coach.model` | `sync` | Same model preference makes sense on every device you sign into |
+| `ww-coach.voice-profile` | `sync` | Voice should follow you |
+| `ww-coach.send-interception` | `sync` | Same gate behavior on every device |
+| `ww-coach.rule-source` / `ww-coach.github-base` | `local` | Per-machine config; live-fetch may behave differently behind different networks |
+| `ww-coach.rule-cache` | `local` | Large cache; not worth burning sync quota on |
+
+A one-time migration on first boot after upgrading copies any existing model / send-interception values from `local` to `sync`. The flag `ww-coach.sync-migrated` is set in `local` once that's done.
 
 ## What it does NOT do (yet)
 
 - **Inline highlights directly inside Gmail's compose body.** The side panel is the highlight surface; the compose body itself is left untouched. Painting spans into Gmail's contenteditable fights autosave, drifts on scroll/resize, and the DOM shifts between compose modes (popup, full, reply); that build is the next dedicated piece of work, not a quick add.
 - **Reply-thread context** — the import grabs the body, not the quoted thread.
-- **Voice file editing in-panel** — `voice-and-style.md` is still edited via the `voice-commit` and `voice-from-sent-mail` skills from Claude Code.
+- **Two-way sync with the repo `context/voice-and-style.md`** — the in-panel Voice profile is its own field. `voice-commit`, `voice-consolidator`, and `voice-from-sent-mail` still edit the repo file from Claude Code; paste the relevant excerpt into the panel field manually when you want it in the critic.
+- **Intent selector** — the side panel critic targets `cold-email` only. To run the critic against `exec-memo`, `performance-review`, `op-ed`, or `pitch` rules, use the Coach UI (`ui/coach.html`), which has a per-intent dropdown.
 
 ## Updating rules
 

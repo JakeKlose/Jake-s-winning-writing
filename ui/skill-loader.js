@@ -68,6 +68,43 @@ const INTENT_BUNDLES = {
       'kill-redundancy',
     ],
   },
+  'exec-memo': {
+    points: [
+      'core-rules.md',
+      'banned-jargon.md',
+      'ai-writing-rules.md',
+      'exec-memo-rules.md',
+    ],
+    skills: [
+      'em-dash-killer',
+      'jargon-killer',
+      'adverb-killer',
+      'be-specific',
+      'bluf-rewriter',
+      'headline-as-claim',
+      'kill-redundancy',
+      'pick-a-lane',
+      'irrelevant-detail-killer',
+    ],
+  },
+  'performance-review': {
+    points: [
+      'core-rules.md',
+      'banned-jargon.md',
+      'ai-writing-rules.md',
+      'performance-review-rules.md',
+    ],
+    skills: [
+      'em-dash-killer',
+      'jargon-killer',
+      'adverb-killer',
+      'be-specific',
+      'show-dont-tell',
+      'warmth-and-competence',
+      'kill-redundancy',
+      'irrelevant-detail-killer',
+    ],
+  },
   'general': {
     points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md'],
     skills: [

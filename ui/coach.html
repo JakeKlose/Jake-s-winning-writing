@@ -44,7 +44,18 @@
       <h2>Optional: existing draft</h2>
       <p class="desc">If you have one, paste it. Coach critiques line-by-line, then rewrites. Leave empty to draft from scratch.</p>
       <textarea id="draft-input" rows="5" placeholder="(optional)"></textarea>
-      <div class="row-buttons" style="margin-top: var(--s-3);">
+      <div class="row-buttons" style="margin-top: var(--s-3); align-items: center;">
+        <label style="display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--t-sm);">
+          <span style="color: var(--ink-muted);">Critic intent:</span>
+          <select id="critic-intent" style="font-size: var(--t-sm); padding: 4px 6px;">
+            <option value="cold-email">Cold email</option>
+            <option value="exec-memo">Exec memo</option>
+            <option value="performance-review">Performance review</option>
+            <option value="op-ed">Op-ed</option>
+            <option value="pitch">Pitch</option>
+            <option value="general">General</option>
+          </select>
+        </label>
         <button class="btn" id="critique-draft-inline">Critique this draft inline</button>
         <span class="hint" style="color: var(--ink-muted); font-size: var(--t-xs); align-self: center; margin-left: var(--s-2);">One Sonnet call (~$0.02, ~8s). Returns highlighted spans with Accept / Reject.</span>
       </div>
@@ -63,6 +74,7 @@
           <button class="btn" id="inline-coach-reset">Reset</button>
           <button class="btn" id="inline-coach-copy">Copy working draft</button>
           <button class="btn" id="inline-coach-apply">Apply to draft input</button>
+          <button class="btn" id="inline-coach-diff">Show diff</button>
         </div>
       </div>
 
@@ -82,6 +94,28 @@
           <button class="btn" id="inline-coach-chat-reset">Reset chat</button>
         </div>
       </div>
+    </section>
+
+    <section class="section" id="inline-coach-diff-section" style="margin-top: var(--s-6); display: none;">
+      <h2>Diff</h2>
+      <p class="desc">Original vs working draft, side-by-side. Hover any change to see the rule that fired. Changes from the refinement chat appear here too, without a rule label.</p>
+      <div class="diff-toolbar">
+        <button class="btn" id="diff-copy">Copy diff (markdown)</button>
+      </div>
+      <div class="diff-grid">
+        <div class="diff-pane">
+          <h3 class="diff-pane-title">Original</h3>
+          <div id="diff-original" class="diff-pane-body"></div>
+        </div>
+        <div class="diff-pane">
+          <h3 class="diff-pane-title">Working</h3>
+          <div id="diff-working" class="diff-pane-body"></div>
+        </div>
+      </div>
+      <aside class="diff-sidebar">
+        <h3>Edits applied</h3>
+        <div id="diff-log"></div>
+      </aside>
     </section>
 
     <div class="card">
