@@ -1,0 +1,97 @@
+{
+  "$comment": "Mode definitions for the winning-writing skill. Each mode names which rule tags apply, the target length, and any per-rule severity overrides for this mode. Adding a new mode means: pick a name, set the target/severity, and tag rules in catalog.json with the new mode.",
+  "modes": {
+    "default": {
+      "label": "Default (all rules)",
+      "description": "No filter. Every rule in catalog.json fires. Use when you don't know which mode applies or when you want a maximalist critique.",
+      "target_words": null,
+      "severity_overrides": {}
+    },
+    "cold-email": {
+      "label": "Cold email",
+      "description": "Unsolicited message to someone with more power than the sender. The 10 rules of cold outreach, plus zero-tolerance on AI tells (em-dash, consultant jargon, generic openers). Under 200 words.",
+      "target_words": 200,
+      "severity_overrides": {
+        "em-dash": "critical",
+        "ai-template-opener": "critical",
+        "vague-ask": "critical",
+        "pick-your-brain": "critical",
+        "grab-coffee": "critical",
+        "flattery-opener": "critical",
+        "missing-offer": "issue"
+      }
+    },
+    "memo": {
+      "label": "Exec memo / decision memo",
+      "description": "Document going up the chain to ask for a decision, surface a status, or defend a recommendation. The reader has 60 seconds. TL;DR up front, one ask per memo, sourced numbers, named decision criterion, early-failure signal.",
+      "target_words": null,
+      "severity_overrides": {
+        "buried-lede": "critical",
+        "unsourced-number": "critical",
+        "hedge-stack": "critical",
+        "vanity-metric": "issue",
+        "trailing-ask": "issue",
+        "unstructured-options": "issue",
+        "missing-failure-signal": "issue"
+      }
+    },
+    "essay": {
+      "label": "Personal essay / op-ed",
+      "description": "First-person narrative. Show-don't-tell, character arc not resume, earned emotional moments. Fragments and hedges OK in this mode.",
+      "target_words": null,
+      "severity_overrides": {
+        "show-dont-tell": "critical",
+        "fabricated-intimacy": "critical",
+        "resume-not-journey": "issue",
+        "character-thesis-test": "issue",
+        "hedge-stack": "warn"
+      },
+      "relaxed_rules": ["fragments-ok", "hedge-stack"]
+    },
+    "profile": {
+      "label": "Bio / About section / LinkedIn About",
+      "description": "Plain technical feature list, semicolon-separated. No competitor names, market positioning, internal framing, moats, or tier language. Says what's true and stops.",
+      "target_words": null,
+      "severity_overrides": {
+        "competitor-name-drop": "critical",
+        "tier-framing": "critical",
+        "internal-framing": "critical",
+        "driving-innovation": "critical",
+        "intersection-of": "critical",
+        "consultant-jargon": "critical",
+        "em-dash": "issue",
+        "emoji-in-prose": "issue",
+        "arrow-glyph": "issue"
+      }
+    },
+    "readme": {
+      "label": "Project README",
+      "description": "Plain feature list. No market positioning, tier framing, moat language, or competitor mentions. Describes what the project does. Same voice as profile.",
+      "target_words": null,
+      "severity_overrides": {
+        "competitor-name-drop": "critical",
+        "tier-framing": "critical",
+        "internal-framing": "critical",
+        "driving-innovation": "critical",
+        "intersection-of": "critical",
+        "consultant-jargon": "issue",
+        "emoji-in-prose": "issue",
+        "arrow-glyph": "issue"
+      }
+    },
+    "linkedin-post": {
+      "label": "LinkedIn post / long-form",
+      "description": "Public post. Aggressive on engagement-bait and corporate jargon; medium on length (over 200 is fine for thought leadership, over 600 is bloat).",
+      "target_words": 400,
+      "severity_overrides": {
+        "engagement-bait": "critical",
+        "driving-innovation": "critical",
+        "consultant-jargon": "critical",
+        "linkedin-essay-length": "warn",
+        "em-dash": "issue"
+      }
+    }
+  },
+  "severity_order": ["critical", "issue", "warn"],
+  "default_severity": "issue"
+}

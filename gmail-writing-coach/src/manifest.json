@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Writing Coach for Gmail and LinkedIn",
+  "version": "0.1.0",
+  "description": "Inline writing coach for Gmail and LinkedIn compose. Catches AI tells, jargon, vague asks, and missing offers. Powered by Anthropic.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "https://www.linkedin.com/*",
+    "https://api.anthropic.com/*"
+  ],
+  "action": {
+    "default_title": "Writing Coach"
+  },
+  "options_ui": {
+    "page": "src/options/index.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.ts",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["src/content/gmail.ts"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["src/content/linkedin.ts"],
+      "run_at": "document_idle"
+    }
+  ]
+}

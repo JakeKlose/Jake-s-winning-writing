@@ -1,0 +1,143 @@
+[
+  {
+    "id": "ce-bad-stack-001",
+    "skill": "cold-email",
+    "input": "Target: Sarah, VP of Product at Anthropic.\n\nDraft:\nHi Sarah,\n\nI hope this email finds you well. My name is Alex Kalyvas, I'm an MBA student passionate about AI products. I'd love to pick your brain about open roles over coffee whenever works for you.\n\nBest,\nAlex",
+    "expect": {
+      "phrases_in_output": [
+        "opener",
+        "ask"
+      ]
+    }
+  },
+  {
+    "id": "ce-clean-001",
+    "skill": "cold-email",
+    "input": "Target: Sarah, VP of Product at Anthropic.\n\nDraft:\nSubject: The agentic-eval question, from Stanford GSB\n\nHi Sarah,\n\nPaul Quan said you'd be the right person. I disagree with the 'reliability is a model problem' framing in last month's Lenny's podcast — I think it's an eval problem first. I've just built the receipts.\n\nAt Snowflake I built Data Cleanroom's first multi-agent orchestration framework with a deterministic abstention layer. Replaced a 12-person support team.\n\n10 minutes by phone next week. Three slots: Tue 3-3:30 PT, Wed 10:30-11 PT, Thu 4-4:30 PT. No is a perfectly fine answer.\n\nAlex",
+    "expect": {
+      "section_present": "checklist"
+    }
+  },
+  {
+    "id": "ce-credentials-dump-001",
+    "skill": "cold-email",
+    "input": "Target: Sarah, VP of Product at Anthropic.\n\nDraft:\nHi Sarah,\n\nI'm a Stanford GSB MBA with 7 years at Snowflake, Amazon, and IBM. I have experience in AI products, climate tech, fintech, and enterprise software. I'm interested in PM roles, FDE roles, and research-engineering roles across multiple teams at Anthropic.\n\nLet's chat.\n\nAlex",
+    "expect": {
+      "phrase_in_output": "pick a lane"
+    }
+  },
+  {
+    "id": "ce-vague-ask-001",
+    "skill": "cold-email",
+    "input": "Target: Sarah, VP of Product at Anthropic.\n\nDraft:\nHi Sarah,\n\nI'm working on a multi-agent eval framework you might find interesting. Happy to share if you want.\n\nAlex",
+    "expect": {
+      "phrase_in_output": "ask"
+    }
+  },
+  {
+    "id": "ce-missing-offer-001",
+    "skill": "cold-email",
+    "input": "Target: Sarah, VP of Product at Anthropic.\n\nDraft:\nHi Sarah,\n\nI'd love to learn about your work. Could we chat for 30 minutes next week? I have specific questions about Anthropic's product roadmap and would love your perspective on how to break into AI PM roles.\n\nAlex",
+    "expect": {
+      "phrase_in_output": "offer"
+    }
+  },
+  {
+    "id": "ce-investor-ask-001",
+    "skill": "cold-email",
+    "input": "Target: Heidi Roizen, partner at Threshold Ventures.\n\nDraft:\nSubject: 10 mins on the AI-eval thesis (Stanford GSB)\n\nHi Heidi,\n\nGlenn Kramon suggested you would have the most useful pushback on this. I disagree with the framing in last month's Pivotal podcast that agent reliability is a model problem - I think it is an eval problem first, and the receipts are now public.\n\nI built Snowflake's first multi-agent eval pipeline for Data Cleanroom; it cut customer support cases by half. Sharing because the pattern likely maps to your portfolio companies running agents in production.\n\n15 minutes by phone next week. Two slots: Tue 3-3:15 PT, Thu 10-10:15 PT. No is a perfectly fine answer.\n\nAlex",
+    "expect": {
+      "phrases_in_output": [
+        "like you",
+        "offer"
+      ]
+    }
+  },
+  {
+    "id": "ce-job-hunting-001",
+    "skill": "cold-email",
+    "input": "Target: Sarah Lin, VP Product at Anthropic.\n\nDraft:\nHi Sarah,\n\nLooking to apply to AI PM roles at Anthropic. Stanford MBA, 7 years shipping AI products. Happy to share my resume and have a chat anytime.\n\nThanks,\nAlex",
+    "expect": {
+      "phrases_in_output": [
+        "ask",
+        "offer"
+      ]
+    }
+  },
+  {
+    "id": "ce-vc-portfolio-001",
+    "skill": "cold-email",
+    "input": "Target: Vinod Khosla.\n\nDraft:\nHi Vinod,\n\nI know you don't hire consultants. I'm not one. I built Snowflake's first multi-agent orchestration framework for the Data Cleanroom and shipped it to production with a 50% reduction in customer onboarding time. From concept through execution, with the receipts on launch day.\n\nYour portfolio company Foobar is fighting the same battle I just won. 30 minutes by phone next week to share what worked and what did not.\n\nNo is a perfectly fine answer.\n\nAlex",
+    "expect": {
+      "section_present": "checklist"
+    }
+  },
+  {
+    "id": "ce-academic-001",
+    "skill": "cold-email",
+    "input": "Target: Professor Christopher Manning, Stanford NLP group.\n\nDraft:\nHi Professor Manning,\n\nI hope this email finds you well. I am a Stanford GSB MBA student passionate about LLM evaluation. I would love to pick your brain about your recent work on agentic evals over coffee whenever works for you.\n\nBest,\nAlex",
+    "expect": {
+      "phrases_in_output": [
+        "opener",
+        "ask"
+      ]
+    }
+  },
+  {
+    "id": "ce-press-pitch-001",
+    "skill": "cold-email",
+    "input": "Target: Casey Newton, Platformer.\n\nDraft:\nHi Casey,\n\nI saw your piece on agent eval discipline last month and wanted to push back gently on one section. My team at Snowflake shipped agents to production with a published eval suite, and the data point you cited about \"most teams don't test\" understates how hard the testing actually is - we found three distinct failure modes the literature missed.\n\nHappy to walk through the eval design on background. 15 minutes by phone any day next week.\n\nAlex",
+    "expect": {
+      "phrases_in_output": [
+        "something they don't know",
+        "specific"
+      ]
+    }
+  },
+  {
+    "id": "ce-warm-intro-followup-001",
+    "skill": "cold-email",
+    "input": "Target: Aakash Gupta (former founder).\n\nDraft:\nHi Aakash,\n\nPaul Quan sent over your intro - thank you for taking it. He thought we should connect on the AI PM transition story.\n\nThree-line summary: I shipped multi-agent orchestration at Snowflake before MBA; the patterns that worked were inversions of the consulting playbook your podcast critiques.\n\nWould love 15 minutes by phone. Tue 3 PT, Wed 10 PT, Thu 4 PT all open. Happy to send a specific question in advance if it helps.\n\nAlex",
+    "expect": {
+      "section_present": "checklist"
+    }
+  },
+  {
+    "id": "ce-cv-too-much-001",
+    "skill": "cold-email",
+    "input": "Target: Sarah, AI PM Director at Google DeepMind.\n\nDraft:\nHi Sarah,\n\nLet me introduce myself. I have 7 years of product experience across Snowflake (multi-agent orchestration), Amazon (ML inventory ordering, $64M savings), and IBM (enterprise AI). I just finished my Stanford MBA. Before that, I founded a sustainability TravelTech startup that raised an angel round. I went to LSE for undergrad and AUEB for my BSc, where I focused on supervised ML for corporate performance prediction. My passions span AI infrastructure, climate tech, and AI safety. I publish a Substack on agentic evals. I would love to discuss any open PM roles, FDE roles, or technical PM roles at Google DeepMind.\n\nThanks,\nAlex",
+    "expect": {
+      "phrase_in_output": "pick a lane"
+    }
+  },
+  {
+    "id": "ce-good-subject-line-001",
+    "skill": "cold-email",
+    "input": "Target: Brian Chesky, Airbnb CEO.\n\nDraft:\nSubject: Greek host, Mauritian guest, the trust problem I just solved at Snowflake\n\nHi Brian,\n\nGrew up between Athens and the Indian Ocean coast. Stayed in 200+ Airbnbs through MBA recruiting. The recurring trust failure your team is fighting maps directly to the one my Snowflake team solved last year with a deterministic abstention layer on top of multi-agent reasoning. I have receipts.\n\nWill come to SF for 20 minutes whenever works for you next month. No is a fine answer.\n\nHappy to fly to your speaker venue if useful - I can host the Stanford GSB AI Hub event you keynoted in 2024.\n\nAlex",
+    "expect": {
+      "phrases_in_output": [
+        "subject",
+        "offer"
+      ]
+    }
+  },
+  {
+    "id": "ce-investor-portfolio-shared-001",
+    "skill": "cold-email",
+    "input": "Target: a16z partner.\n\nDraft:\nHi,\n\nLike you, I grew up between three countries by the time I was 15. I built infrastructure for Snowflake's agent products and I think a16z's recent agentic infra thesis is half right - the eval discipline gap is bigger than the model discipline gap, and the receipts are below.\n\n15 minutes by phone, Tue 3 PT or Wed 10 PT.\n\nAlex",
+    "expect": {
+      "section_present": "checklist"
+    }
+  },
+  {
+    "id": "ce-flattery-only-001",
+    "skill": "cold-email",
+    "input": "Target: Aravind Srinivas, Perplexity CEO.\n\nDraft:\nHi Aravind,\n\nYou have built one of the most extraordinary AI products of our generation. Your work has been an enormous inspiration to me throughout my MBA. I would love to learn from you and would deeply appreciate the chance to chat about your journey.\n\nThank you for considering!\n\nAlex",
+    "expect": {
+      "phrases_in_output": [
+        "flattery",
+        "opener"
+      ]
+    }
+  }
+]

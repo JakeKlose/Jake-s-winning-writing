@@ -88,12 +88,21 @@ Done. Open Claude Code and try *"draft me a cold email to [person] asking for [t
 ## What's in here
 
 ```
-context/   Two priming files (about-me.md, voice-and-style.md) — point Claude at these once
-points/    Distilled rules and frameworks (the "what")
-skills/    Claude skills you can invoke from Claude Code or Cowork (the "how")
-ui/        Optional browser entry point — Draft Critic + LLM Coach with inline critic
-extension/ Optional Chrome MV3 extension — Coach in the Gmail side panel
-eval/      Regression harness — node eval/run.mjs replays a golden corpus against the live critic
+context/             Two priming files (about-me.md, voice-and-style.md) — point Claude at these once
+points/              Distilled rules and frameworks (the "what")
+skills/              Claude skills you can invoke from Claude Code or Cowork (the "how")
+ui/                  Optional browser entry point — Draft Critic + LLM Coach with inline critic
+extension/           Optional Chrome MV3 extension — Coach in the Gmail side panel
+eval/                Regression harness — node eval/run.mjs replays a golden corpus against the live critic
+
+catalog/             Mode-aware single-skill variant. Same rules, but tagged per mode
+                     (cold-email, memo, essay, profile, readme, linkedin-post) so the
+                     critic filters dynamically. JSON catalog at catalog/rules/catalog.json.
+gmail-writing-coach/ Separate Chrome MV3 extension that attaches to Gmail AND LinkedIn
+                     compose surfaces (overlay bubble, full-page thread, InMail). Vite +
+                     React + TS, calls Anthropic from the service worker.
+skill-evals/         Broader regression suite covering the catalog skill plus cold-email,
+                     pm-evaluator, pm-prd-drafter. 105 fixtures, deterministic matchers.
 ```
 
 ## The points

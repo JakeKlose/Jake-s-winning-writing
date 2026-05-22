@@ -1,0 +1,498 @@
+[
+  {
+    "id": "em-dash-cold-email-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nI wanted to reach out — quickly — about the PM role at Anthropic. I've been following your work for years.\n\nBest,\nAlex",
+    "expect": {
+      "must_flag_rule": "em-dash",
+      "phrase_in_output": "em-dash"
+    }
+  },
+  {
+    "id": "em-dash-profile-001",
+    "skill": "winning-writing",
+    "mode": "profile",
+    "input": "Product manager — formerly at Snowflake — focused on agentic systems.",
+    "expect": {
+      "must_flag_rule": "em-dash"
+    }
+  },
+  {
+    "id": "ai-template-opener-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nI hope this email finds you well. My name is Alex Kalyvas and I am writing to express my interest in the PM role.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "ai-template-opener"
+    }
+  },
+  {
+    "id": "pick-your-brain-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nWould love to pick your brain about AI products over coffee whenever works for you.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "pick-your-brain"
+    }
+  },
+  {
+    "id": "vague-ask-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nLove to chat about the AI PM role. Happy to chat anytime.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "vague-ask"
+    }
+  },
+  {
+    "id": "consultant-jargon-cold-email-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nI leverage cross-functional alignment to drive impactful deliverables and empower teams to ship.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "consultant-jargon"
+    }
+  },
+  {
+    "id": "intersection-of-001",
+    "skill": "winning-writing",
+    "mode": "profile",
+    "input": "I sit at the intersection of strategy, product, and execution, with deep experience driving innovation.",
+    "expect": {
+      "must_flag_rule": "intersection-of"
+    }
+  },
+  {
+    "id": "delve-tapestry-001",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "I want to delve into the rich tapestry of agentic AI systems and navigate the complexities of multi-agent orchestration.",
+    "expect": {
+      "must_flag_rule": "delve-tapestry"
+    }
+  },
+  {
+    "id": "buried-lede-memo-001",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Subject: Q3 pricing experiment\n\nHi team,\n\nOver the past several months, our team has been doing a lot of work to explore pricing options for the AI tier. We've been at the intersection of pricing strategy and machine learning, and I wanted to share some thoughts on where this could potentially go.\n\nAs you may know, we ran a number of experiments. The results were quite interesting.\n\nThe recommendation is to roll out the new pricing flow.\n\nBest,\nAlex",
+    "expect": {
+      "must_flag_rule": "buried-lede"
+    }
+  },
+  {
+    "id": "hedge-stack-memo-001",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "We believe this could potentially deliver some meaningful uplift. It's worth noting that the data is still being analyzed, but early signs are encouraging. We may want to consider a broader rollout.",
+    "expect": {
+      "must_flag_rule": "hedge-stack"
+    }
+  },
+  {
+    "id": "unsourced-number-memo-001",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Conversion went up 12% after the rollout. Engagement improved significantly. We saw better outcomes across the board.",
+    "expect": {
+      "must_flag_rule": "unsourced-number"
+    }
+  },
+  {
+    "id": "trailing-ask-memo-001",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Recommend we ship the new pricing flow by end of Q3. The data is strong.\n\nThanks for considering!\n\nAlex",
+    "expect": {
+      "must_flag_rule": "trailing-ask"
+    }
+  },
+  {
+    "id": "driving-innovation-profile-001",
+    "skill": "winning-writing",
+    "mode": "profile",
+    "input": "I'm passionate about building and scaling AI products that drive innovation in complex problem spaces.",
+    "expect": {
+      "must_flag_rule": "driving-innovation"
+    }
+  },
+  {
+    "id": "tier-framing-readme-001",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nA tier-1 agent orchestration framework with category-defining moats around tool execution and memory.",
+    "expect": {
+      "must_flag_rule": "tier-framing"
+    }
+  },
+  {
+    "id": "competitor-name-drop-readme-001",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nUnlike LangChain and LlamaIndex, our framework is agents-first.",
+    "expect": {
+      "must_flag_rule": "competitor-name-drop"
+    }
+  },
+  {
+    "id": "engagement-bait-linkedin-001",
+    "skill": "winning-writing",
+    "mode": "linkedin-post",
+    "input": "5 lessons from shipping my first AI product:\n\n1. Eval first.\n2. Cache prompts.\n3. Ship a deterministic fallback.\n4. Trace everything.\n5. Talk to users every week.\n\nWhat would you add? Drop a 💯 below if any of these resonated. 👇",
+    "expect": {
+      "must_flag_rule": "engagement-bait"
+    }
+  },
+  {
+    "id": "weak-subject-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Subject: Quick question\n\nHi Sarah,\n\nI saw your work on agents and wanted to ask about the team. I'd love to learn more.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "weak-subject"
+    }
+  },
+  {
+    "id": "self-diminishing-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nLike you, but at a vastly smaller scale, I've been building agent systems. I'd love to learn from you.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "self-diminishing"
+    }
+  },
+  {
+    "id": "flattery-opener-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nYou have transformed the AI industry. Your work on agentic systems is truly inspiring.\n\nI'd love to chat.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "flattery-opener"
+    }
+  },
+  {
+    "id": "show-dont-tell-essay-001",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "I was angry about the financial crisis. I felt powerless and sad. The whole experience changed me deeply and made me who I am today.",
+    "expect": {
+      "must_flag_rule": "show-dont-tell"
+    }
+  },
+  {
+    "id": "not-just-x-also-y-001",
+    "skill": "winning-writing",
+    "mode": "linkedin-post",
+    "input": "Shipping AI is not just a product launch — it's a movement that transforms how we work and live.",
+    "expect": {
+      "must_flag_rule": "not-just-x-also-y"
+    }
+  },
+  {
+    "id": "arrow-glyph-readme-001",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nDiscovery → drafting → review → ship.",
+    "expect": {
+      "must_flag_rule": "arrow-glyph"
+    }
+  },
+  {
+    "id": "weak-intensifier-001",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "This is really really important. Basically, we definitely need to ship this.",
+    "expect": {
+      "must_flag_rule": "weak-intensifier"
+    }
+  },
+  {
+    "id": "missing-failure-signal-memo-001",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Recommend we acquire CompanyX for $50M by end of Q3. Strategic fit is strong, integration timeline is 6 months.\n\nNext steps: legal review, board approval.",
+    "expect": {
+      "must_flag_rule": "missing-failure-signal"
+    }
+  },
+  {
+    "id": "length-cold-email-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nI hope this email finds you well. My name is Alex Kalyvas and I am writing to express my deep interest in the AI Product Manager position at Anthropic. I have been following Anthropic's work closely for the past three years and I am genuinely inspired by the company's mission to build safe and beneficial AI systems.\n\nI graduated from Stanford GSB this year with an MBA, where I focused on AI applications and product management. Prior to Stanford, I spent seven years at companies like Snowflake, Amazon, and IBM, where I shipped technical products including Snowflake's first multi-agent orchestration framework for Data Cleanroom. At Amazon, I led the cross-functional team that built ML-based inventory ordering models across eight EU countries, generating $64 million in net savings. Before that, at IBM, I worked on enterprise AI applications and learned the fundamentals of building software that survives contact with real customers.\n\nI am particularly drawn to Anthropic because of your work on constitutional AI, the Claude model family, and the recent push into agentic systems. I believe my background in agent orchestration and enterprise AI deployment makes me a strong fit. I am also deeply committed to AI safety and have written extensively about the challenges of deploying AI systems responsibly in enterprise contexts.\n\nI would love to chat about open roles whenever works for you. Happy to do coffee, a phone call, or whatever format you prefer. I am very flexible and can accommodate any time zone.\n\nThank you for considering my outreach, and I look forward to hearing from you soon.\n\nBest regards,\nAlex Kalyvas",
+    "expect": {
+      "must_flag_rule": "length-200"
+    }
+  },
+  {
+    "id": "grab-coffee-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nI saw your post on multi-agent eval pipelines. Would love to grab coffee sometime.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "grab-coffee"
+    }
+  },
+  {
+    "id": "generic-opener-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Subject: Hi from Stanford\n\nGood morning Sarah, my name is Alex Kalyvas and I am writing to express my interest in Anthropic.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "generic-opener"
+    }
+  },
+  {
+    "id": "picks-too-many-lanes-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nAt Snowflake I built multi-agent orchestration. At Amazon I led ML inventory ordering across 8 EU countries. At IBM I worked on enterprise AI. Now at Stanford GSB I am interested in AI products, climate tech, and fintech. Specifically I want to explore PM roles, FDE roles, and research engineering roles.\n\nWhich roles do you have open?\n\nAlex",
+    "expect": {
+      "must_flag_rule": "picks-too-many-lanes"
+    }
+  },
+  {
+    "id": "missing-offer-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nWould you have 30 minutes to chat next week? I have specific questions about Anthropic's roadmap and would love your perspective on breaking into AI PM roles.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "missing-offer"
+    }
+  },
+  {
+    "id": "closing-no-personality-001",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nI built Snowflakes multi-agent eval framework. Sharing because the pattern likely applies to Claude.\n\n10 minutes next Tuesday at 3 PT? No is fine.\n\nBest regards,\nAlex",
+    "expect": {
+      "must_flag_rule": "closing-no-personality"
+    }
+  },
+  {
+    "id": "vanity-metric-memo-001",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Q3 launch summary:\n\nWe got 250K pageviews on the marketing page and 18K signups in the first week. The campaign was a big success.\n\nNext steps: scale the funnel.",
+    "expect": {
+      "must_flag_rule": "vanity-metric"
+    }
+  },
+  {
+    "id": "unstructured-options-memo-001",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "We considered three options for the AI pricing tier. Option A: usage-based with a free tier. Option B: tiered subscription. Option C: usage-based without a free tier.\n\nRecommendation: Option C.",
+    "expect": {
+      "must_flag_rule": "unstructured-options"
+    }
+  },
+  {
+    "id": "fabricated-intimacy-essay-001",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "Looking back, I realize how much that moment shaped me. The weight of what we built together still resonates today. I am forever changed by the people who believed in me when I doubted myself most.",
+    "expect": {
+      "must_flag_rule": "fabricated-intimacy"
+    }
+  },
+  {
+    "id": "resume-not-journey-essay-001",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "I graduated from AUEB in 2014. Then I joined IBM as an associate consultant. After 2 years I moved to Amazon as a senior PM. Then to Snowflake as a staff PM. Then to Stanford GSB. Each step taught me something.",
+    "expect": {
+      "must_flag_rule": "resume-not-journey"
+    }
+  },
+  {
+    "id": "character-thesis-test-essay-001",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "My background taught me that perseverance matters. The hardships of growing up made me stronger. I believe in the power of hard work and the importance of community.",
+    "expect": {
+      "must_flag_rule": "character-thesis-test"
+    }
+  },
+  {
+    "id": "internal-framing-readme-001",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nOur cupcake-layer architecture lets the 60-second loop converge faster than the legacy platform play. Includes the standard widgetizer.",
+    "expect": {
+      "must_flag_rule": "internal-framing"
+    }
+  },
+  {
+    "id": "emoji-in-prose-readme-001",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nThis project does three things: 🚀 ship fast, 🔥 break things, and 💯 own the outcome. Use the CLI to get started 🎉.",
+    "expect": {
+      "must_flag_rule": "emoji-in-prose"
+    }
+  },
+  {
+    "id": "linkedin-essay-length-001",
+    "skill": "winning-writing",
+    "mode": "linkedin-post",
+    "input": "I have been thinking about AI product management lately. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. There are five lessons I want to share, but first some background on my journey through Snowflake, Amazon, and IBM. ",
+    "expect": {
+      "must_flag_rule": "linkedin-essay-length"
+    }
+  },
+  {
+    "id": "em-dash-memo-002",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Recommend we ship the new flow — assuming Legal approves — by end of Q3.",
+    "expect": {
+      "must_flag_rule": "em-dash"
+    }
+  },
+  {
+    "id": "em-dash-readme-002",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nAgent runtime — async tools, retry budgets — for production use.",
+    "expect": {
+      "must_flag_rule": "em-dash"
+    }
+  },
+  {
+    "id": "consultant-jargon-readme-002",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nFoobar leverages cutting-edge tooling to empower developers and align stakeholders around impactful outcomes.",
+    "expect": {
+      "must_flag_rule": "consultant-jargon"
+    }
+  },
+  {
+    "id": "driving-innovation-linkedin-002",
+    "skill": "winning-writing",
+    "mode": "linkedin-post",
+    "input": "Excited to share my new role driving innovation across the enterprise AI space. Passionate about solving complex problems and building & scaling at the intersection of ML and product.",
+    "expect": {
+      "must_flag_rule": "driving-innovation"
+    }
+  },
+  {
+    "id": "ai-template-opener-002",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nI am reaching out because I saw your job posting. I am writing to express my deep interest.\n\nAlex",
+    "expect": {
+      "must_flag_rule": "ai-template-opener"
+    }
+  },
+  {
+    "id": "delve-tapestry-memo-002",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Recommend we delve into the tapestry of options before committing to a robust solution.",
+    "expect": {
+      "must_flag_rule": "delve-tapestry"
+    }
+  },
+  {
+    "id": "delve-tapestry-linkedin-003",
+    "skill": "winning-writing",
+    "mode": "linkedin-post",
+    "input": "Cutting-edge agentic systems are game-changers that transform how we work.",
+    "expect": {
+      "must_flag_rule": "delve-tapestry"
+    }
+  },
+  {
+    "id": "weak-intensifier-essay-002",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "I was very very happy. It was really really meaningful. Basically everything actually changed.",
+    "expect": {
+      "must_flag_rule": "weak-intensifier"
+    }
+  },
+  {
+    "id": "not-just-x-also-y-readme-002",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nFoobar is not just an agent framework. It is a movement.",
+    "expect": {
+      "must_flag_rule": "not-just-x-also-y"
+    }
+  },
+  {
+    "id": "arrow-glyph-profile-002",
+    "skill": "winning-writing",
+    "mode": "profile",
+    "input": "Stanford GSB → AI PM at Snowflake → multi-agent orchestration framework → cut onboarding 50%.",
+    "expect": {
+      "must_flag_rule": "arrow-glyph"
+    }
+  },
+  {
+    "id": "buried-lede-memo-003",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Hi team,\n\nA lot has happened this quarter on the AI tier project. There are some thoughts I want to share about the path forward.\n\nThe team explored several approaches and we believe one is most promising.\n\nIn this memo I will outline my thinking.",
+    "expect": {
+      "must_flag_rule": "buried-lede"
+    }
+  },
+  {
+    "id": "hedge-stack-memo-002",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "We could potentially see meaningful improvement. It may be worth considering an expanded rollout. We believe this might warrant additional investment.",
+    "expect": {
+      "must_flag_rule": "hedge-stack"
+    }
+  },
+  {
+    "id": "trailing-ask-cold-email-002",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Hi Sarah,\n\nWould love your thoughts on AI product roles at Anthropic. I have been following your team's work closely.\n\nAppreciate any guidance!\n\nAlex",
+    "expect": {
+      "must_flag_rule": "trailing-ask"
+    }
+  },
+  {
+    "id": "intersection-of-linkedin-002",
+    "skill": "winning-writing",
+    "mode": "linkedin-post",
+    "input": "Excited about my next chapter at the intersection of AI, product, and policy.",
+    "expect": {
+      "must_flag_rule": "intersection-of"
+    }
+  },
+  {
+    "id": "engagement-bait-linkedin-002",
+    "skill": "winning-writing",
+    "mode": "linkedin-post",
+    "input": "Three lessons from a product launch:\n1. Eval first.\n2. Cache prompts.\n3. Trace everything.\n\nWhat would you add? 👇",
+    "expect": {
+      "must_flag_rule": "engagement-bait"
+    }
+  },
+  {
+    "id": "show-dont-tell-profile-002",
+    "skill": "winning-writing",
+    "mode": "profile",
+    "input": "Greek-Mauritian PM. I am deeply passionate about making the world better through technology. My journey has taught me resilience and empathy.",
+    "expect": {
+      "must_flag_rule": "show-dont-tell"
+    }
+  },
+  {
+    "id": "competitor-name-drop-profile-002",
+    "skill": "winning-writing",
+    "mode": "profile",
+    "input": "Builder of agent orchestration tools. Unlike LangChain or LlamaIndex, my approach focuses on observability first.",
+    "expect": {
+      "must_flag_rule": "competitor-name-drop"
+    }
+  }
+]

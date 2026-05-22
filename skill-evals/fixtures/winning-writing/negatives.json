@@ -1,0 +1,137 @@
+[
+  {
+    "id": "fragment-in-essay-personal-block-ok",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "Athens, 2012. Banks closing. My grandmother counted euros under the kitchen light, twice.",
+    "expect": {
+      "must_NOT_flag_rule": "fragment"
+    }
+  },
+  {
+    "id": "clean-cold-email-no-false-positives",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Subject: Athens GSB, the multi-agent eval question\n\nHi Sarah,\n\nPaul Quan said you'd be the person to ask. I disagree with the 'agent reliability is mostly a model problem' framing in last month's Lenny's podcast. I think it's an eval problem first, and I've just built the receipts.\n\nI built Snowflake's first multi-agent orchestration framework for Data Cleanroom and shipped it with a deterministic abstention layer. It replaced a 12-person support team. Happy to walk through the eval design.\n\n10 minutes by phone next week to compare notes. Three slots: Tue 3-3:30 PT, Wed 10:30-11 PT, Thu 4-4:30 PT. No is a perfectly fine answer.\n\nWriting this from the Stanford library on a Sunday because the deadline I'm chasing is real.\n\nAlex",
+    "expect": {
+      "must_NOT_flag_rule": "ai-template-opener"
+    }
+  },
+  {
+    "id": "clean-memo-with-bluf-no-false-positives",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Recommend we roll out the new pricing flow by end of Q3.\n\nResults: +12% conversion (signups → first paid week, n=18,000, p<0.01, [link to query]). Risk if we wait: comp ships parity in 6 weeks per [link to memo].\n\nFailure signal: if week-1 paid retention drops below 38% (current baseline 42%), we roll back. We'll know by week 3.\n\nAsk: approve by Friday so sprint planning starts Monday.",
+    "expect": {
+      "must_NOT_flag_rule": "buried-lede"
+    }
+  },
+  {
+    "id": "primary-adverb-is-not-empty-intensifier",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "The cost reduction comes primarily from caching long contexts; secondarily from switching to Haiku for the planner step.",
+    "expect": {
+      "must_NOT_flag_rule": "weak-intensifier"
+    }
+  },
+  {
+    "id": "appropriate-em-dash-in-essay",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "We took the bus to Patras — six hours of wheat fields and abandoned petrol stations — and arrived to find my uncle waiting on the platform.",
+    "expect": {
+      "must_NOT_flag_rule": "em-dash"
+    }
+  },
+  {
+    "id": "show-dont-tell-passes-in-essay",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "The bank teller behind the plexiglass shook her head. The man in front of me knocked once, slowly, on the glass. Then he turned around and walked out without his hat.",
+    "expect": {
+      "must_NOT_flag_rule": "show-dont-tell"
+    }
+  },
+  {
+    "id": "no-tier-framing-in-feature-list",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nAgent orchestration framework. Features:\n- async tool execution with retry budgets\n- deterministic abstention rules (cold start, low confidence, budget exhausted)\n- per-tenant auth with HMAC-signed webhooks\n- CI-fail-on-drift eval harness",
+    "expect": {
+      "must_NOT_flag_rule": "tier-framing"
+    }
+  },
+  {
+    "id": "expected-em-dash-in-essay-quoted-line",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "My uncle used to say, \"the village will eat you alive — and then feed you breakfast.\" We laughed every time.",
+    "expect": {
+      "must_NOT_flag_rule": "em-dash"
+    }
+  },
+  {
+    "id": "em-dash-in-quote-cold-email-passes",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "Subject: The Hertzberg quote\n\nHi Sarah,\n\nHeidi Roizen once wrote: \"Make your ask as small as possible — and offer something specific in return.\" I think that captures it.\n\n10 minutes by phone next Tuesday at 3 PT to discuss eval pipelines. Three slots if Tuesday is bad. No is a perfectly fine answer.\n\nAlex",
+    "expect": {
+      "must_NOT_flag_rule": "vague-ask"
+    }
+  },
+  {
+    "id": "specific-coffee-suggestion-passes",
+    "skill": "winning-writing",
+    "mode": "cold-email",
+    "input": "I see you cycle the Old La Honda loop on Sundays. Would love to join one ride and ask my two questions there.",
+    "expect": {
+      "must_NOT_flag_rule": "grab-coffee"
+    }
+  },
+  {
+    "id": "memo-with-explicit-sources-passes",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Pricing flow A/B ran 6 weeks. Conversion +12% (signups -> first paid week, n=18,000, p<0.01, [link to dashboard]). Retention +3pp at week 4 ([link to cohort query]). Confidence high.",
+    "expect": {
+      "must_NOT_flag_rule": "unsourced-number"
+    }
+  },
+  {
+    "id": "no-buried-lede-in-clean-memo",
+    "skill": "winning-writing",
+    "mode": "memo",
+    "input": "Recommend approving the Q3 AI tier rollout by Friday. ARR impact +$2.1M based on the 6-week pricing test. Risk: comp parity in 6 weeks. Failure signal: D7 retention below 38%; rollback within 14 days.",
+    "expect": {
+      "must_NOT_flag_rule": "buried-lede"
+    }
+  },
+  {
+    "id": "feature-list-not-internal-framing",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nAgent orchestration runtime.\n\n- async tool execution with retry budgets\n- deterministic abstention (cold start, low confidence, budget exhausted)\n- per-tenant auth via HMAC-signed webhooks\n- CI-fail-on-drift eval harness\n- OpenTelemetry traces",
+    "expect": {
+      "must_NOT_flag_rule": "internal-framing"
+    }
+  },
+  {
+    "id": "real-comparison-not-competitor-drop",
+    "skill": "winning-writing",
+    "mode": "readme",
+    "input": "# Foobar\n\nWritten in Rust, single static binary, no runtime deps.",
+    "expect": {
+      "must_NOT_flag_rule": "competitor-name-drop"
+    }
+  },
+  {
+    "id": "character-thesis-passes-when-specific",
+    "skill": "winning-writing",
+    "mode": "essay",
+    "input": "I learned about money the night my mother counted euros under the kitchen light and ran out before she got to the electricity bill. Athens, 2012.",
+    "expect": {
+      "must_NOT_flag_rule": "character-thesis-test"
+    }
+  }
+]

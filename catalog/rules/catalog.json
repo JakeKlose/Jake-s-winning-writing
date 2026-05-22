@@ -1,0 +1,434 @@
+{
+  "$comment": "Rule catalog for the winning-writing skill. Each rule has an id (kebab-case), a name (human-readable label), a description (the rule itself), modes (list of modes the rule applies to; 'default' is auto-injected), a base severity (critical | issue | warn), and 1-3 before/after examples. To add a rule, append an object below and tag it with the modes it applies to. To retire a rule, set 'retired': true rather than deleting (so historical eval runs stay reproducible).",
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "em-dash",
+      "name": "Em-dash use",
+      "description": "Em-dashes (—) and double-hyphens (--) read as AI-generated in 2026. Replace with comma, period, parenthesis, or colon depending on what the dash was doing (aside, apposition, tone shift, connective).",
+      "modes": ["cold-email", "linkedin-post", "memo", "profile", "readme"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "I wanted to reach out — quickly — about the PM role.",
+          "after": "I wanted to reach out (quickly) about the PM role."
+        },
+        {
+          "before": "If — and only if — Q3 hits, we expand.",
+          "after": "If, and only if, Q3 hits we expand."
+        }
+      ]
+    },
+    {
+      "id": "not-just-x-also-y",
+      "name": "'Not just X, also Y' construction",
+      "description": "AI loves the 'it's not just X, it's Y' construction. Cut it. Rewrite as one direct sentence.",
+      "modes": ["cold-email", "memo", "essay", "linkedin-post", "profile", "readme"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "It's not just a product launch — it's a movement.",
+          "after": "It's a product launch with a movement behind it."
+        }
+      ]
+    },
+    {
+      "id": "delve-tapestry",
+      "name": "AI-tell vocabulary",
+      "description": "Words that pattern-match to LLM output: delve, tapestry, navigate the complexities, robust solution, cutting-edge, game-changer, transformative, leverage (verb form). Replace with plain English or cut the sentence.",
+      "modes": ["cold-email", "memo", "essay", "linkedin-post", "profile", "readme"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "I want to delve into the tapestry of agentic systems.",
+          "after": "I want to understand how agentic systems are being deployed."
+        },
+        {
+          "before": "We built a robust, cutting-edge solution.",
+          "after": "We built the inventory ordering model. It saved $64M."
+        }
+      ]
+    },
+    {
+      "id": "ai-template-opener",
+      "name": "Templated cold-email opener",
+      "description": "Phrases that mark an email as a template: 'I hope this email finds you well,' 'I am writing to,' 'I am reaching out because,' 'My name is X.' Open with something the recipient does not know.",
+      "modes": ["cold-email"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "I hope this email finds you well. My name is Alex and I am writing to ask...",
+          "after": "I disagree with your take on multi-agent eval pipelines, and I think I can help."
+        }
+      ]
+    },
+    {
+      "id": "weak-intensifier",
+      "name": "Empty intensifier",
+      "description": "Adverbs that add no information: very, really, actually, basically, simply, clearly, obviously, literally, totally, definitely, fundamentally. Cut on sight. Keep adverbs that add real information (primarily, currently, increasingly, internally).",
+      "modes": ["cold-email", "memo", "essay", "linkedin-post", "profile", "readme"],
+      "severity": "warn",
+      "examples": [
+        {
+          "before": "This is really really important.",
+          "after": "This is critical."
+        },
+        {
+          "before": "Basically, we shipped on time.",
+          "after": "We shipped on time."
+        }
+      ]
+    },
+    {
+      "id": "consultant-jargon",
+      "name": "Consultant jargon",
+      "description": "Words on Rachel's banned list: leverage, align, alignment, synergize, empower, enable, drive (when it means 'lead'), strategize, deliverables, utilize, incentivize, facilitate, impactful. These confirm the consultant stereotype that Elon, Vinod, Andreessen explicitly hire against. Replace with plain English.",
+      "modes": ["cold-email", "memo", "profile", "readme", "linkedin-post"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "I leverage stakeholder alignment to drive impactful deliverables.",
+          "after": "I led the Snowflake Data Cleanroom team. We cut onboarding time 50%."
+        }
+      ]
+    },
+    {
+      "id": "intersection-of",
+      "name": "'At the intersection of'",
+      "description": "Rachel called this the most expensive intersection in Silicon Valley. Variants: 'where X meets Y,' 'the convergence of A, B, and C.' Pick one lane.",
+      "modes": ["cold-email", "profile", "linkedin-post"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "I sit at the intersection of strategy, product, and execution.",
+          "after": "I'm a product manager. I shipped X. Here's the receipt."
+        }
+      ]
+    },
+    {
+      "id": "pick-your-brain",
+      "name": "'Pick your brain'",
+      "description": "Generic ask with no value to the recipient. Offer something instead, or make the ask specific (a decision they can help with, a podcast they can speak on).",
+      "modes": ["cold-email"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "I'd love to pick your brain over coffee.",
+          "after": "I'm choosing between two PM roles and I'd like 10 minutes for your take on the bigger trade-off."
+        }
+      ]
+    },
+    {
+      "id": "grab-coffee",
+      "name": "'Grab coffee' without specifics",
+      "description": "Suggesting coffee is the default move. Pick something specific to them: a cycling ride if they cycle, a swim if they swim, a walk on the dish if they're at Stanford. The specificity proves you researched them.",
+      "modes": ["cold-email"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "I'd love to grab coffee whenever works for you.",
+          "after": "I see you cycle the Old La Honda loop on weekends. I'd love to join one Sunday and ask my two questions there."
+        }
+      ]
+    },
+    {
+      "id": "driving-innovation",
+      "name": "Brand-by-bot phrases",
+      "description": "Rachel's wall of shame: 'driving innovation,' 'building and scaling,' 'passionate about complex problems,' 'I'm drawn to,' 'I build and scale to maximize impact,' 'I'm left brain and right brain.' Turn what's unique into generic slop. Replace with specifics.",
+      "modes": ["cold-email", "profile", "linkedin-post", "readme"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "I'm passionate about building and scaling AI products to drive innovation.",
+          "after": "At Snowflake I built Data Cleanroom's multi-agent orchestration framework. Cut support cases by half."
+        }
+      ]
+    },
+    {
+      "id": "generic-opener",
+      "name": "Generic cold-email opener",
+      "description": "'My name is X' is in the header. 'Good morning' assumes their time zone. 'I am writing to' is throat-clearing. Open with the secret about the future or the mutual contact, not pleasantries.",
+      "modes": ["cold-email"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "Good morning, my name is Alex Kalyvas and I am writing to you about...",
+          "after": "Paul Quan encouraged me to introduce myself. He thought you'd want to know about [secret about the future]."
+        }
+      ]
+    },
+    {
+      "id": "flattery-opener",
+      "name": "Opens with recipient's accomplishments",
+      "description": "'You have transformed industry after industry,' 'Your work on X is so inspiring.' They know what they've done. Tell them something they don't know about themselves, their industry, or the future.",
+      "modes": ["cold-email"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "You have transformed industry after industry, and I'm so inspired by your work.",
+          "after": "I can help Alexa help patients needing personalized follow-up care."
+        }
+      ]
+    },
+    {
+      "id": "vague-ask",
+      "name": "Vague ask",
+      "description": "Asks without a time, format, or specific question. 'Whenever works,' 'happy to chat anytime,' 'would love to connect.' Make the ask as small and specific as possible. Leave the door open for no.",
+      "modes": ["cold-email"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "Would love to connect whenever works for you.",
+          "after": "10 minutes by phone next week to ask one question about your portfolio's AI infrastructure thesis. No is a perfectly fine answer."
+        }
+      ]
+    },
+    {
+      "id": "picks-too-many-lanes",
+      "name": "Resume dump",
+      "description": "Cold emails that cover three companies, four interest areas, and a vague ask all in one. Pick ONE lane that's most relevant to the recipient. Link LinkedIn for the rest.",
+      "modes": ["cold-email"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "At Snowflake I did X, at Amazon I did Y, at IBM I did Z, and I'm interested in AI, climate, and fintech.",
+          "after": "At Snowflake I built the Data Cleanroom multi-agent framework. That's exactly the problem your portfolio company [Name] is solving. Here's a specific suggestion."
+        }
+      ]
+    },
+    {
+      "id": "self-diminishing",
+      "name": "Self-diminishing 'like you' move",
+      "description": "'Like you, but at a vastly smaller scale.' They already know that. The 'like you' move requires specific, genuine, non-diminishing comparison.",
+      "modes": ["cold-email"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "Like you, but at a vastly smaller scale, I've built products.",
+          "after": "Like you, I grew up moving between three countries before I was 15."
+        }
+      ]
+    },
+    {
+      "id": "length-200",
+      "name": "Over 200 words (cold email)",
+      "description": "Cold emails over 200 words don't get read. The fix is rarely 'edit lightly'; it's pick one lane and cut the others.",
+      "modes": ["cold-email"],
+      "severity": "issue",
+      "examples": []
+    },
+    {
+      "id": "weak-subject",
+      "name": "Weak subject line",
+      "description": "'Quick question,' 'Hoping to connect,' 'Thank you,' 'Stanford MBA seeking PM role.' Subject lines that the recipient has seen 50 times this week. Lead with a specific shared moment, your most distinctive credential, or a small named institution.",
+      "modes": ["cold-email"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "Subject: Quick question",
+          "after": "Subject: Ex-Olympic-trials swimmer turned PM"
+        }
+      ]
+    },
+    {
+      "id": "missing-offer",
+      "name": "Pure ask, no offer",
+      "description": "Cold emails that only take, never give. The single best way to quintuple CEO response rates is to stop asking and start offering: invite them to speak, to a podcast, to a class. CEOs manage 12-18 months ahead and a lunch request gets ignored.",
+      "modes": ["cold-email"],
+      "severity": "issue",
+      "examples": []
+    },
+    {
+      "id": "closing-no-personality",
+      "name": "Personality-free closing",
+      "description": "'Best,' 'Sincerely,' 'Regards.' Sign-off can carry one specific detail: where you are, what you're doing right now, what you're reading.",
+      "modes": ["cold-email"],
+      "severity": "warn",
+      "examples": []
+    },
+    {
+      "id": "buried-lede",
+      "name": "Buried lede",
+      "description": "TL;DR or recommendation not in the first paragraph. The reader has 60 seconds. First line is the bottom line.",
+      "modes": ["memo"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "Over the past several months we've been exploring options for the pricing flow. The team did a number of experiments. Some were interesting. We landed on a recommendation, which is...",
+          "after": "Recommend we roll out new pricing flow by end of Q3. 12% conversion lift, p<0.01, n=18,000. Risk if we wait: comp loses parity."
+        }
+      ]
+    },
+    {
+      "id": "hedge-stack",
+      "name": "Hedge stack",
+      "description": "Every claim wrapped in 'could,' 'may,' 'potentially,' 'we believe.' Reader can't tell what you're actually claiming. State what's known; flag what's uncertain explicitly.",
+      "modes": ["memo", "essay"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "We believe this could potentially deliver some meaningful uplift.",
+          "after": "Pricing test ran 6 weeks. +12% conversion, p<0.01. Confidence is high on the headline, low on the long-tail segments."
+        }
+      ]
+    },
+    {
+      "id": "unsourced-number",
+      "name": "Unsourced number",
+      "description": "Numbers without provenance read as fabricated. Cite the query, the doc, the dashboard at the point of use.",
+      "modes": ["memo"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "Conversion went up 12%.",
+          "after": "Conversion +12% (signups → first paid week, n=18,000, p<0.01, [link to query])."
+        }
+      ]
+    },
+    {
+      "id": "vanity-metric",
+      "name": "Vanity metric",
+      "description": "Metrics that don't tie to outcomes: pageviews, signups (without activation), followers, demo requests (without conversion). Use metrics that map to the decision the reader is making.",
+      "modes": ["memo"],
+      "severity": "issue",
+      "examples": []
+    },
+    {
+      "id": "trailing-ask",
+      "name": "Trailing ask",
+      "description": "'Thanks for considering!' instead of an explicit ask. Tell the reader what you want them to do and by when.",
+      "modes": ["memo", "cold-email"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "Thanks for considering!",
+          "after": "Please approve by Friday so the team can start sprint planning Monday."
+        }
+      ]
+    },
+    {
+      "id": "unstructured-options",
+      "name": "Options without a criterion",
+      "description": "Listing three options without naming what you're optimizing for. The reader cannot tell why you picked the one you picked.",
+      "modes": ["memo"],
+      "severity": "issue",
+      "examples": []
+    },
+    {
+      "id": "missing-failure-signal",
+      "name": "Recommendation with no failure signal",
+      "description": "A recommendation that doesn't say how it could fail and by when you'd know. Reviewers can't trust a recommendation that doesn't acknowledge what could go wrong.",
+      "modes": ["memo"],
+      "severity": "issue",
+      "examples": []
+    },
+    {
+      "id": "show-dont-tell",
+      "name": "Show-don't-tell failure",
+      "description": "Abstract emotional summaries with no scene. 'I was angry.' Replace with the body signal, the room, the line of dialogue, the moment. The 'could a director recreate this?' test.",
+      "modes": ["essay", "cold-email", "profile"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "I felt powerless watching my country in crisis.",
+          "after": "Athens, 2012. The ATM line wrapped twice around the block. My grandmother counted euros under the kitchen light, twice."
+        }
+      ]
+    },
+    {
+      "id": "fabricated-intimacy",
+      "name": "Fabricated intimacy",
+      "description": "Emotional crescendo without earned details. Teasing intimacy you won't pay off. The thesis line should fail the 'anybody could say that' test before you ship.",
+      "modes": ["essay"],
+      "severity": "critical",
+      "examples": []
+    },
+    {
+      "id": "resume-not-journey",
+      "name": "Resume order, not character journey",
+      "description": "Chronological resume instead of a character arc. Personal essays / bios that march through job 1, job 2, job 3 instead of tracing a through-line.",
+      "modes": ["essay", "profile"],
+      "severity": "issue",
+      "examples": []
+    },
+    {
+      "id": "character-thesis-test",
+      "name": "Thesis line fails the 'anybody could say that' test",
+      "description": "If the load-bearing thesis sentence could be said by any other person in your demographic, it's not yours. Rewrite until it's a sentence only you could write.",
+      "modes": ["essay"],
+      "severity": "issue",
+      "examples": []
+    },
+    {
+      "id": "competitor-name-drop",
+      "name": "Competitor name-drop / market positioning",
+      "description": "Mentioning competitors, market position, or 'category leader' framing in a profile or README. Plain feature lists only.",
+      "modes": ["profile", "readme"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "Unlike LangChain or LlamaIndex, our framework is built for agents-first workflows.",
+          "after": "Agent orchestration framework. Async tool execution, retry budgets, deterministic abstention."
+        }
+      ]
+    },
+    {
+      "id": "tier-framing",
+      "name": "Tier / moat / strategy framing",
+      "description": "Words like 'tier 1,' 'moat,' 'strategic advantage,' 'category-defining' in profile or README. Says nothing about what the thing actually does.",
+      "modes": ["profile", "readme"],
+      "severity": "critical",
+      "examples": []
+    },
+    {
+      "id": "internal-framing",
+      "name": "Internal framing / inside-joke metaphor",
+      "description": "Phrases meant for one team that mean nothing outside it: 'cupcake layer,' '60-second loop,' 'the platform play.' Replace with what the code does.",
+      "modes": ["profile", "readme"],
+      "severity": "issue",
+      "examples": []
+    },
+    {
+      "id": "emoji-in-prose",
+      "name": "Inline emoji in prose",
+      "description": "Emojis used as bullets, decoration, or hand-wavy emphasis inside profile/README/memo prose. Section emoji as a heading prefix is fine; inline emojis sprinkled in sentences are not.",
+      "modes": ["profile", "readme", "memo"],
+      "severity": "warn",
+      "examples": []
+    },
+    {
+      "id": "arrow-glyph",
+      "name": "Arrow glyph in prose",
+      "description": "→, ⇒, » used in profile/README prose. Replace with words: 'leads to,' 'becomes,' 'maps to.'",
+      "modes": ["profile", "readme"],
+      "severity": "warn",
+      "examples": [
+        {
+          "before": "Discovery → drafting → review → ship.",
+          "after": "Discovery, drafting, review, ship."
+        }
+      ]
+    },
+    {
+      "id": "engagement-bait",
+      "name": "Engagement-bait closer",
+      "description": "'Thoughts? 👇' 'Drop a 💯 if you agree.' 'What did I miss?' as a CTA, not as a real question. Cut. Make the post say something or cut it.",
+      "modes": ["linkedin-post"],
+      "severity": "critical",
+      "examples": [
+        {
+          "before": "Drop a 💯 if you agree.",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "id": "linkedin-essay-length",
+      "name": "LinkedIn post over 600 words",
+      "description": "LinkedIn posts over ~600 words are usually three posts shoved together. Pick the strongest argument and cut the others.",
+      "modes": ["linkedin-post"],
+      "severity": "warn",
+      "examples": []
+    }
+  ]
+}

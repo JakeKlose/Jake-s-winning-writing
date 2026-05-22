@@ -1,0 +1,109 @@
+# gmail-writing-coach
+
+Chrome extension (MV3) that adds an inline writing coach to Gmail and LinkedIn compose. Catches AI tells, jargon, vague asks, and missing offers as you type. Powered by the Anthropic API.
+
+Built on the same rule library as the `winning-writing`, `cold-email`, `alex-profile`, and `connection-finder` Claude skills, ported into the extension at build time.
+
+## What's in v0
+
+| Surface | Status |
+|---|---|
+| Gmail compose | Working end-to-end. Detects compose dialogs, parses recipient from To field, runs the live critique on typing-pause, exposes a pre-send checklist. |
+| LinkedIn DM compose | Working. Covers the overlay bubble (`.msg-overlay-bubble`), the full-page thread reply box (`.msg-thread`), and the InMail modal (`.artdeco-modal` with `.msg-form__subject`). Recipient parser walks ~9 selector candidates plus pill chips. Panel re-anchors when LinkedIn's pushState navigates between `/feed`, `/messaging`, and `/in/<profile>`. |
+
+## What's in the bundle
+
+```
+gmail-writing-coach/
+├── src/
+│   ├── manifest.json                 MV3 manifest (sidePanel, storage, content scripts)
+│   ├── background/service-worker.ts  Holds API key, calls Anthropic
+│   ├── content/
+│   │   ├── gmail.ts                  Compose-dialog observer for Gmail
+│   │   ├── linkedin.ts               Compose-dialog observer for LinkedIn (stub)
+│   │   └── panel.tsx                 React panel injected next to compose
+│   ├── lib/
+│   │   ├── recipient.ts              Parse To: field on each surface
+│   │   ├── rules/cold-email.ts       Local regex detectors for the deterministic rules
+│   │   ├── alex-profile.ts           Bundled snapshot of the alex-profile skill
+│   │   ├── checklist.ts              S.H.I.T. + 10 rules pre-send checks
+│   │   └── types.ts                  Shared message types
+│   ├── options/
+│   │   ├── index.html
+│   │   └── options.tsx               API key + model picker
+│   └── styles/tailwind.css
+├── vite.config.ts
+├── tailwind.config.js
+├── postcss.config.js
+├── tsconfig.json
+└── package.json
+```
+
+## Build
+
+```bash
+cd gmail-writing-coach
+npm install
+npm run build
+```
+
+Output lands in `dist/`. Load that folder as an unpacked extension:
+
+1. Open `chrome://extensions`.
+2. Toggle **Developer mode** in the top right.
+3. Click **Load unpacked**.
+4. Pick the `dist/` folder.
+5. Click the extension's icon → **Options** → paste your `sk-ant-...` key → **Save**.
+
+For development, `npm run dev` watches and rebuilds `dist/` on file changes; reload the extension in `chrome://extensions` to pick up changes.
+
+## Use
+
+**Gmail:**
+1. Open Gmail, start a compose (or reply).
+2. The coach panel appears at the bottom right.
+3. Type — the panel re-critiques on each pause (1.5s debounce).
+4. Click **find** under "Connection angle" once you've added recipient notes.
+5. Click **run** under "Pre-send checklist" before sending.
+
+**LinkedIn:**
+The panel attaches automatically to any of these surfaces when they appear:
+- the bottom-right overlay bubble
+- the full-page conversation reply box at `/messaging/thread/<id>`
+- the InMail modal (recognizable by its subject input)
+
+When LinkedIn pushState-navigates between surfaces, the script re-scans within 500ms and re-attaches. Closing a surface tears down its panel cleanly.
+
+## What gets sent to Anthropic
+
+- The compose body text.
+- The recipient's name / email / LinkedIn URL when parseable.
+- Any notes you paste into the panel.
+
+That's it. No attachments, no inbox scan, no auth tokens, no telemetry. Calls go browser-direct from the service worker to `api.anthropic.com`.
+
+## Live rule library vs. bundled snapshot
+
+For v0, the rules and the alex-profile content are bundled at build time (`src/lib/rules/cold-email.ts`, `src/lib/alex-profile.ts`). To pick up a rule change in the upstream skill, edit the file here and rebuild.
+
+A live-fetch mode (point at `raw.githubusercontent.com/...`) is a follow-up. Same shape as the `winning-writing/extension/lib/skill-loader.js` "Live from GitHub" toggle.
+
+## Architecture notes
+
+- **Service worker holds the key.** Content scripts post a message to the background; the background makes the Anthropic call and returns the result. Content scripts never see the key.
+- **Local detection runs in the content script.** Regex-based rules (em-dash, consultant jargon, weak intensifier) run synchronously on every typing-pause without an API call. Only the higher-order rules (vague-ask, missing-offer, picks-too-many-lanes) call the model.
+- **Prompt caching on the alex-profile block.** Every critique and connection-angle call passes the profile as a cached system block, so repeat calls within ~5 minutes pay ~10% of input cost on those tokens.
+- **DOM observers, not MutationObserver.** Both content scripts poll every 800-1200ms for new compose surfaces. Polling is robust to Gmail's view transitions; observer-based attachment had race conditions in earlier prototypes.
+
+## What this does NOT do (yet)
+
+- **In-compose inline highlights.** The panel is the highlight surface; the compose body itself is untouched. Painting spans into Gmail's contenteditable fights autosave; same constraint as the existing `winning-writing/extension`.
+- **Auto-rewrite.** Suggestions only. The user accepts or rejects in their head, then edits.
+- **LinkedIn voice / video messages or recruiter-only flows.** Only text composers covered.
+- **Other email providers.** Gmail only. Outlook Web would be a separate content script.
+- **Attachments or rich formatting.** Plain-text body only.
+- **Accounts / cloud sync.** API key + model preference are per-browser via `chrome.storage.local`.
+
+## License
+
+MIT.
