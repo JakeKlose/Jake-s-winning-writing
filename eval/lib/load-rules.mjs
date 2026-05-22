@@ -16,15 +16,12 @@ const INTENT_BUNDLES = {
       'core-rules.md',
     ],
     skills: [
-      'em-dash-killer',
-      'jargon-killer',
-      'adverb-killer',
-      'be-specific',
-      'show-dont-tell',
+      'style-tells',
+      'vividness',
       'tell-them-something-new',
       'warmth-and-competence',
       'headline-as-claim',
-      'kill-redundancy',
+      'compression',
       'fun-angle',
       'pick-a-lane',
       'irrelevant-detail-killer',
@@ -32,11 +29,11 @@ const INTENT_BUNDLES = {
   },
   'op-ed': {
     points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md', 'frameworks.md', 'kramon-master.md'],
-    skills: ['em-dash-killer', 'jargon-killer', 'adverb-killer', 'be-specific', 'show-dont-tell', 'headline-as-claim', 'kill-redundancy', 'irrelevant-detail-killer'],
+    skills: ['style-tells', 'vividness', 'headline-as-claim', 'compression', 'irrelevant-detail-killer'],
   },
   'general': {
     points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md'],
-    skills: ['em-dash-killer', 'jargon-killer', 'adverb-killer', 'be-specific', 'show-dont-tell', 'kill-redundancy'],
+    skills: ['style-tells', 'vividness', 'compression'],
   },
 };
 

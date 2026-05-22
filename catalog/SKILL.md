@@ -79,7 +79,7 @@ Severity for a fired rule comes from the rule's `severity` field, unless the act
 
 - For cold outreach specifically, this skill is usually invoked from the `cold-email` orchestrator, which pulls in `alex-profile` (who is sending) and `recipient-research` (who is receiving). The rules here apply to the language and structure; the other two skills provide the raw material.
 - For PRDs and exec memos, this skill works alongside the `pm-evaluation-framework` skills (`pm-prd-drafter`, `pm-evaluator`).
-- Surgical-edit subskills like `em-dash-killer`, `jargon-killer`, `adverb-killer` (in the public `kalyvask/winning-writing` repo) do single-pass rewrites for one rule at a time. This skill is the multi-rule critic.
+- Surgical-edit subskills like `style-tells`, `vividness`, `compression` (in the public `kalyvask/winning-writing` repo) do single-pass rewrites for one cluster of rules at a time, picked via the skill's own `--target` or `--mode` arg. This skill is the multi-rule critic.
 
 ## The 10 rules of cold outreach (reference)
 

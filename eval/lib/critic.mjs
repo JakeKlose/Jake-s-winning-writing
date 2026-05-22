@@ -6,7 +6,7 @@ const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 
 const INLINE_CRITIC_INSTRUCTIONS = `You are a writing critic. Read the user's draft below and return STRICT JSON with span-level annotations against the rule library loaded above.
 
-The rule library above is the AUTHORITATIVE source of truth. Every annotation must trace back to a rule in one of the source files in the library. Set \`rule_source\` to the EXACT source path from the library (e.g. "points/named-failure-modes.md" or "skills/em-dash-killer") of the rule you're applying. Do not invent paths; only use paths that appear in the library.
+The rule library above is the AUTHORITATIVE source of truth. Every annotation must trace back to a rule in one of the source files in the library. Set \`rule_source\` to the EXACT source path from the library (e.g. "points/named-failure-modes.md" or "skills/style-tells") of the rule you're applying. Do not invent paths; only use paths that appear in the library.
 
 Output schema:
 
@@ -18,7 +18,7 @@ Output schema:
     {
       "quote": "<exact substring from the draft, character-for-character>",
       "rule_id": "<short kebab-case slug for this rule, e.g. 'vague-ask', 'em-dash', 'pick-your-brain'>",
-      "rule_source": "<source path from the library, e.g. 'points/named-failure-modes.md' or 'skills/em-dash-killer'>",
+      "rule_source": "<source path from the library, e.g. 'points/named-failure-modes.md' or 'skills/style-tells'>",
       "severity": "high" | "medium" | "low",
       "category": "<human-readable label, e.g. 'Vague ask', 'Em-dash', 'Generic flattery'>",
       "suggested": "<rewrite, or \\"(delete)\\" to cut it>",

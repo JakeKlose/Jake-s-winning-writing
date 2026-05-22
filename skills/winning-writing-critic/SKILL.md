@@ -113,8 +113,8 @@ If the draft is squarely in one of the specialized skills' lanes, hand it off:
 | VC pitch, mission statement, "tell me about yourself" | `pitch-coach` |
 | Thank-you note, gratitude letter | `gratitude-note-coach` |
 | Memo or update where the lede is buried | `bluf-rewriter` |
-| Anything where the user wants it shorter | `concision-drill` |
-| Anything full of jargon | `jargon-killer` |
+| Anything where the user wants it shorter | `compression --mode target-count` |
+| Anything full of jargon | `style-tells --target jargon` |
 
 If the draft is mixed (e.g., a cold email that's pitching a thesis, or a memo that's also a personal essay), stay here and grade against the full rubric.
 

@@ -154,8 +154,8 @@ For every competence claim, add a warmth move. For every warmth move, anchor it 
 Run the following skills in order:
 - `tell-them-something-new` — make sure the opener earns its place
 - `warmth-and-competence` — find the load-bearing sentence
-- `show-dont-tell` — turn any summary into a scene
-- `jargon-killer` and `adverb-killer` — surface scrub
+- `vividness --mode scene-level` — turn any summary into a scene
+- `style-tells --target jargon` and `style-tells --target adverbs` — surface scrub
 - `humanize` (optional, for casual contexts) — roughen slightly if too polished
 
 ## Output format

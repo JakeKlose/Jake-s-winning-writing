@@ -17,11 +17,12 @@ Both are templates. Edit them. The specificity is the whole point — the more "
 
 ## Updating them over time
 
-Editing the files by hand works but rarely happens once they're set up. Two skills grow them incrementally instead:
+Editing the files by hand works but rarely happens once they're set up. The `voice-update` skill grows them incrementally from one of three sources:
 
-- **`voice-commit`** — invoke whenever you notice a voice rule that isn't captured ("save this to my voice file: I never use 'leverage' as a verb"). Proposes a diff into the right section of the right file, asks for approval, writes on yes.
-- **`voice-consolidator`** — invoke periodically (weekly, after a major writing project, or when Coach is missing a known preference). Reads Claude Code's auto-memory at `~/.claude/projects/<project>/memory/` and proposes merges with source citations.
+- **`voice-update --source manual`** — invoke whenever you notice a voice rule that isn't captured ("save this to my voice file: I never use 'leverage' as a verb"). Proposes a diff into the right section of the right file, asks for approval, writes on yes.
+- **`voice-update --source memory`** — invoke periodically (weekly, after a major writing project, or when Coach is missing a known preference). Reads Claude Code's auto-memory at `~/.claude/projects/<project>/memory/` and proposes merges with source citations.
+- **`voice-update --source sent-mail`** — audits the voice files against the last 20–50 sent Gmail messages. Catches drift between aspirational and actual voice.
 
-Both skills follow the same merge philosophy: preserve what's there, add what's new, flag contradictions, never paraphrase your exact words. Auto-writing is intentionally not supported — every change is approved per file before it lands.
+Same merge philosophy across all three: preserve what's there, add what's new, flag contradictions, never paraphrase your exact words. Auto-writing is intentionally not supported — every change is approved per file before it lands.
 
-See [`skills/voice-commit/SKILL.md`](../skills/voice-commit/SKILL.md) and [`skills/voice-consolidator/SKILL.md`](../skills/voice-consolidator/SKILL.md).
+See [`skills/voice-update/SKILL.md`](../skills/voice-update/SKILL.md).

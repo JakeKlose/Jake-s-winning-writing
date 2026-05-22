@@ -7,7 +7,7 @@ description: Read the user's recent cold-outreach sent mail, look up which messa
 
 The rest of the toolkit asks "is this email well-written?" This skill asks the only question that actually matters: "did the email get a reply, and what did the messages that replied have in common?"
 
-Composes with `voice-from-sent-mail` (which audits voice files) and `voice-commit` (which writes them). This skill produces outcome data; the other two propose voice updates if patterns emerge.
+Composes with `voice-update --source sent-mail` (which audits voice files against sent mail). This skill produces outcome data; voice-update proposes voice updates if patterns emerge.
 
 ## Why this exists
 
@@ -79,7 +79,7 @@ If the user just says "/sent-mail-outcome-tracker" with no args, use defaults an
 
 8. **Surface what broke.** Among the no-reply messages, identify which `named-failure-modes.md` failure modes are over-represented vs the replied set. "5 of 7 no-replies opened with a credentials dump (`named-failure-modes:credentials-dump`). 1 of 18 replied messages did." Quote one example per failure mode that the no-reply set hit and the replied set didn't, anonymized.
 
-9. **Propose rule changes if the data warrants it.** If a pattern is strong (e.g., subject lines under 6 words reply at 40%, longer ones reply at 8%) and the rule library doesn't reflect it, suggest a diff to `points/cold-email-rules.md`. Wait for explicit approval. Never auto-write. For approved changes, hand off to `voice-commit`.
+9. **Propose rule changes if the data warrants it.** If a pattern is strong (e.g., subject lines under 6 words reply at 40%, longer ones reply at 8%) and the rule library doesn't reflect it, suggest a diff to `points/cold-email-rules.md`. Wait for explicit approval. Never auto-write. For approved changes, hand off to `voice-update --source manual`.
 
 10. **End with one concrete experiment.** Pick the single highest-EV change the data suggests, name it, and propose how to test it over the next 10 messages. "Next experiment: cut subject lines to 5 words or fewer. Track reply rate on the next 10 cold emails and re-run this skill in 4 weeks."
 
@@ -124,7 +124,7 @@ The report has six fixed sections, in order:
 ## What you do NOT do
 
 - Do NOT quote any recipient's name or any private content from their replies. Anonymize recipients by role ("a senior partner at a Series B firm," "a Stanford professor"). Summarize the reply outcome category; do not paste the recipient's words.
-- Do NOT auto-write to any file. All proposed rule updates go through diff + approval, same as `voice-from-sent-mail`. The actual write happens via `voice-commit`.
+- Do NOT auto-write to any file. All proposed rule updates go through diff + approval, same as `voice-update --source sent-mail`. The actual write happens via `voice-update --source manual`.
 - Do NOT contact recipients. This skill is strictly read-only over Gmail.
 - Do NOT generalize from a sample under 10 messages. If N < 10, mark patterns "suggestive" not "conclusive." If N < 5, refuse to report patterns at all.
 - Do NOT count auto-replies (out-of-office, vacation responder, calendar acknowledgments) as replies. They are not signal.
@@ -190,4 +190,4 @@ Cut subject lines to 5 words or fewer for the next 10 cold emails. Re-run this s
 ```
 
 6. Per proposed update: "Want me to apply (a) the subject-length rule and (b) the credentials-dump severity bump?"
-7. For each yes, hand off to `voice-commit` to write the file. Echo back what changed.
+7. For each yes, hand off to `voice-update --source manual` to write the file. Echo back what changed.

@@ -42,19 +42,16 @@ Each skill has frontmatter that tells Claude when to auto-invoke it.
 ### Surgical edits
 | Skill | Triggers when |
 |-------|---------------|
-| [concision-drill](concision-drill/SKILL.md) | Cutting to a target word count without losing substance |
-| [jargon-killer](jargon-killer/SKILL.md) | Scrubbing banned words and AI tells |
-| [em-dash-killer](em-dash-killer/SKILL.md) | Removing em-dashes (the #1 AI tell in 2026) |
-| [adverb-killer](adverb-killer/SKILL.md) | Cutting -ly adverbs and empty intensifiers (very, really, actually, basically) |
-| [be-specific](be-specific/SKILL.md) | Replacing generic category nouns with concrete ones — "dog" → German shepherd, "engineer" → John on the payments team |
+| [style-tells](style-tells/SKILL.md) | Scrubs em-dashes, empty adverbs, and consultant jargon. Three targets behind one skill: `--target em-dashes\|adverbs\|jargon\|all` |
+| [vividness](vividness/SKILL.md) | Pushes abstract → concrete at two scales. `--mode noun-level\|scene-level\|both`. "Dog" → "German shepherd"; "I was angry" → body signal + room + dialogue |
+| [compression](compression/SKILL.md) | Cuts to a target word count and/or kills redundancy. `--mode target-count\|redundancy\|both`, `--target-words N` |
 | [tell-them-something-new](tell-them-something-new/SKILL.md) | Cutting opener sentences that recap what the recipient already knows — replace with a secret about the future |
 | [warmth-and-competence](warmth-and-competence/SKILL.md) | Auditing a draft on Fiske's two-axis model — warmth + competence — and finding the load-bearing sentence that hits both |
 | [headline-as-claim](headline-as-claim/SKILL.md) | Rewriting section titles, slide titles, and subject lines from category labels ("Product," "Market") into bold arguable claims |
 | [bluf-rewriter](bluf-rewriter/SKILL.md) | Re-organizing so the bottom line is up front |
 | [humanize](humanize/SKILL.md) | Roughening up a too-clean draft — contractions, dropped subjects, exactly one harmless micro-typo |
-| [pick-a-lane](pick-a-lane/SKILL.md) | Diagnosing drafts that tell three half-stories instead of one full one — different from concision-drill, this cuts whole stories, not just words |
-| [irrelevant-detail-killer](irrelevant-detail-killer/SKILL.md) | Cuts cinematic details that are vivid but don't serve the main point — different from concision-drill (cuts words) and pick-a-lane (cuts stories); this cuts within a story |
-| [kill-redundancy](kill-redundancy/SKILL.md) | Cuts phrases where one half implies the other — "going forward," "as I mentioned," "reduce so they are smaller" |
+| [pick-a-lane](pick-a-lane/SKILL.md) | Diagnosing drafts that tell three half-stories instead of one full one — different from compression, this cuts whole stories, not just words |
+| [irrelevant-detail-killer](irrelevant-detail-killer/SKILL.md) | Cuts cinematic details that are vivid but don't serve the main point — different from compression (cuts words) and pick-a-lane (cuts stories); this cuts within a story |
 
 ## How they fit together
 

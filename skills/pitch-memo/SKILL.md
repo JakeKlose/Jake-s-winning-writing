@@ -120,13 +120,13 @@ One-line description. Plain English. No buzzwords. *"AI co-pilot for notaries."*
 These come from `points/` and apply to every section of the memo:
 
 - **BLUF.** Each section opens with the conclusion, not the buildup.
-- **Specific over abstract.** "47 of 100 PMs interviewed" beats "many people we talked to." Use `be-specific`.
-- **Banned jargon.** No synergy/leverage/drive/strategize/empower/at the intersection of. Use `jargon-killer`.
-- **No em-dashes in the deliverable.** Use commas, periods, colons. (See `em-dash-killer`.)
+- **Specific over abstract.** "47 of 100 PMs interviewed" beats "many people we talked to." Use `vividness --mode noun-level`.
+- **Banned jargon.** No synergy/leverage/drive/strategize/empower/at the intersection of. Use `style-tells --target jargon`.
+- **No em-dashes in the deliverable.** Use commas, periods, colons. (See `style-tells --target em-dashes`.)
 - **Show, don't tell.** Quote a customer with attribution, don't paraphrase. Cite a specific number, don't say "significant."
 - **A "secret about the future"** belongs in the Why-Now section. (See `tell-them-something-new`.)
 - **Address the strongest counterargument** in Competition, not a strawman.
-- **Adverb hygiene.** No empty intensifiers ("very," "really," "actually"). Use `adverb-killer`.
+- **Adverb hygiene.** No empty intensifiers ("very," "really," "actually"). Use `style-tells --target adverbs`.
 
 ## Length
 

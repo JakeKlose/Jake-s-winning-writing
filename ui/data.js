@@ -288,7 +288,7 @@ export const PRINCIPLES = [
     category: 'Eliminate irrelevant detail',
     source: 'Kramon — Winning Writing',
     items: [
-      'In narrative writing, cut cinematic details that don\'t serve the main point. Different from cutting words (concision-drill) and different from cutting stories (pick-a-lane). This cuts within a story.',
+      'In narrative writing, cut cinematic details that don\'t serve the main point. Different from cutting words (compression) and different from cutting stories (pick-a-lane). This cuts within a story.',
       'The two questions for every detail: (1) Does it serve the main point? (2) If I cut it, what is lost — texture, or argument?',
       'Categories that usually don\'t earn their place: atmospheric color of an unrelated environment, weather/season when not load-bearing, secondary characters who don\'t reappear, architecture beyond what the scene needs, backstory of bit players, cultural texture lists (foods, music, holidays).',
       'What to keep: one sensory detail that proves the writer was there; details that pay off later (Chekhov\'s gun); the detail that lands the emotional weight; a number/name/date that anchors the scene.',
@@ -306,7 +306,7 @@ export const PRINCIPLES = [
       'Verb-implied results: "Reduce the size of teams so they are smaller" (the verb already says smaller); "Increase headcount so we have more people."',
       'Tautological qualifiers: "free gift," "new innovation," "past history," "future plans," "end result," "personal opinion," "9am in the morning."',
       'Doubled qualification: "definitely commit," "absolutely critical," "completely unique," "totally finished" — if the verb or noun is absolute, the intensifier is redundant.',
-      'Run order on a wordy draft: jargon-killer → adverb-killer → kill-redundancy → concision-drill.',
+      'Run order on a wordy draft: style-tells --target jargon → style-tells --target adverbs → compression --mode redundancy → compression --mode target-count.',
     ],
   },
   {
@@ -318,7 +318,7 @@ export const PRINCIPLES = [
       'The lane scoring rubric: each candidate story rates 1-5 on cinematic (scene + date + image), you (shows a quality of mind unique to you), ask (serves the recipient\'s interest). Highest total wins.',
       'The canonical class before/after teaches the move: same person, same facts, four paragraphs of resume-dump → one cinematic scene with the rest of the biography demoted to supporting context. Twice the impact, same length.',
       'After picking the lane: the other stories become evidence bullets at the bottom (one sentence each), a single throwaway line at the end ("I\'ve also done X, Y, Z, but the card-counting years are the ones that taught me"), or cut entirely (your LinkedIn handles them).',
-      'Distinct from concision-drill: that skill cuts words at the sentence level. Pick-a-lane cuts whole stories.',
+      'Distinct from compression: that skill cuts words at the sentence level. Pick-a-lane cuts whole stories.',
       'When NOT to apply: a resume (multi-lane by design), a status update (enumerative), a year-in-review (enumerative), a technical post-mortem (each section is a different lane and that\'s correct).',
       'After the rewrite, run the Bryant test: would the reader want to have a beer with you AND hire you? If only one, you\'ve leaned too far on one axis.',
     ],

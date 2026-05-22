@@ -1,7 +1,7 @@
 # Winning Writing
 
 
-> 34 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, performance reviews, and reply-rate tracking. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
+> 28 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, performance reviews, and reply-rate tracking. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
 
 ## The shortest path
 
@@ -10,7 +10,7 @@ git clone https://github.com/kalyvask/winning-writing
 cp -r winning-writing/skills/* ~/.claude/skills/
 ```
 
-Open Claude Code (or Cowork), drop a draft into the chat, and say *"critique this cold email"* — Claude auto-triggers `cold-email-coach`, runs the rubric, calls in `recipient-research`, `connection-finder`, `tell-them-something-new`, `em-dash-killer`, `humanize`, and whichever else applies. The skills compose. No UI to open, nothing to paste between windows.
+Open Claude Code (or Cowork), drop a draft into the chat, and say *"critique this cold email"* — Claude auto-triggers `cold-email-coach`, runs the rubric, calls in `recipient-research`, `connection-finder`, `tell-them-something-new`, `style-tells`, `humanize`, and whichever else applies. The skills compose. No UI to open, nothing to paste between windows.
 
 ## Four ways to use this
 
@@ -30,13 +30,13 @@ Point Cowork at the repo folder. The skills get picked up automatically. Set Set
 
 | Mode | Calls | Time | Est. cost | What it does |
 |---|---|---|---|---|
-| **Single-shot + polish** *(default)* | 2–5 | 40–90s | $0.12–0.18 | Opus 4.7 drafts in one call; a Haiku planner reads the email and decides which surgical passes to run (em-dash, adverb, jargon, humanize, warmth-competence); only the relevant passes execute. The planner is the agent — it routes around skills that aren't needed. |
+| **Single-shot + polish** *(default)* | 2–5 | 40–90s | $0.12–0.18 | Opus 4.7 drafts in one call; a Haiku planner reads the email and decides which surgical passes to run (style-tells, humanize, warmth-and-competence); only the relevant passes execute. The planner is the agent — it routes around skills that aren't needed. |
 | **Full agentic** | 7–10 | 60–150s | $0.30–0.80 | Per-step pipeline: researcher (Sonnet + `web_search`) → connection-finder (Sonnet) → drafter (Opus 4.7) → surgical edits (Haiku, parallel) → warmth + competence audit (Sonnet) → rubric scorer (Sonnet). Every step is a separate call with its own prompt and model. Streaming trace shows latency + tokens per step and an "Inspect output" details block for each. |
 | **Single-shot** | 1 | 30–80s | $0.10 | Original behavior. One Opus call with the full megaprompt. Fast and cheap but the routing is invisible. |
 
 The single-shot mode is one call with embedded instructions — it's not really agentic, it just looks like one big prompt to the model. The two new modes route between agents explicitly: single-shot+polish has a planner deciding what to apply, full-agentic has a chain of specialized agents composing into a final output. Both stream to the UI in real time so you can audit each step.
 
-**Claude Code is still the most powerful path** — it auto-routes between all 31 skills based on what you're doing, has tool access for file edits, and skips the browser entirely. The Coach UI exists for people who want a form, plus now an agentic pipeline they can inspect step by step.
+**Claude Code is still the most powerful path** — it auto-routes between all 28 skills based on what you're doing, has tool access for file edits, and skips the browser entirely. The Coach UI exists for people who want a form, plus now an agentic pipeline they can inspect step by step.
 
 Beyond the three pipeline modes, the Coach also ships a **span-level inline critic** that highlights specific words and sentences against the rule library, with Accept / Reject / Snooze per flag and a refinement chat for multi-turn iteration. See [The UI](#the-ui-optional-now-agentic) below.
 
@@ -57,8 +57,8 @@ The rules are not in the model's training — they're loaded from `skills/` and 
 Five pieces:
 
 - **`points/`** — distilled rules and frameworks. The "what."
-- **`skills/`** — 34 focused Claude skills (`SKILL.md` files). The "how."
-- **`context/`** — `about-me.md` + `voice-and-style.md` so Claude writes in your voice, not generic AI voice. Update them incrementally via `voice-commit` (manual merge), `voice-consolidator` (batch pull from Claude Code's auto-memory), or `voice-from-sent-mail` (audit recent Gmail sent mail against the voice file).
+- **`skills/`** — 28 focused Claude skills (`SKILL.md` files). The "how."
+- **`context/`** — `about-me.md` + `voice-and-style.md` so Claude writes in your voice, not generic AI voice. Update them incrementally via `voice-update --source manual` (one rule at a time), `voice-update --source memory` (batch pull from Claude Code's auto-memory), or `voice-update --source sent-mail` (audit recent Gmail sent mail against the voice file).
 - **`ui/`** — optional browser pages: an offline draft critic, and a Claude-powered Coach with a span-level inline critic and refinement chat. Not needed if you're already in Claude Code.
 - **`extension/`** — Chrome MV3 extension that runs the inline critic in the side panel and imports the active Gmail compose. Personal-use, load unpacked.
 
@@ -156,32 +156,26 @@ Drop the `skills/` directory into `~/.claude/skills/` (or your Cowork folder) an
 
 | Skill | When it triggers |
 |-------|------------------|
-| `concision-drill` | Cutting a draft to a target word count without losing substance |
-| `jargon-killer` | Scrubbing banned words and AI tells |
-| `em-dash-killer` | Removing em-dashes — the #1 AI tell in 2026 |
-| `adverb-killer` | Cutting empty -ly adverbs and intensifiers (very, really, actually, basically, clearly, obviously) |
-| `be-specific` | Replacing generic category nouns with concrete ones — "dog" → German shepherd, "engineer" → John on the payments team |
-| `show-dont-tell` | Turning abstract narrative summaries into vivid scenes — "I was angry" → body signal, room, dialogue, moment. The "could a director recreate this?" test. |
+| `style-tells` | Scrubs the three surface tells that flag prose as AI-generated, padded, or jargon-heavy. Three targets behind one skill: `--target em-dashes\|adverbs\|jargon\|all`. Em-dashes (the #1 AI tell in 2026), empty intensifiers and -ly adverbs, the Silicon Valley / consultant kill-list plus AI-tell phrases. |
+| `vividness` | Pushes a draft from abstract toward concrete at two scales. `--mode noun-level\|scene-level\|both`. Noun-level replaces "dog" with "German shepherd," "many" with "47 of 100." Scene-level turns "I was angry" into body signal + room + dialogue + moment. The "could a director recreate this?" test. |
+| `compression` | Cuts to a target word count and/or kills redundancy. `--mode target-count\|redundancy\|both`, `--target-words N`. Target-count hits a specific number (200 for cold email, 6 for product summary). Redundancy catches phrases the verb or context already implied ("going forward," "as I mentioned," "reduce so they are smaller," "free gift"). |
 | `headline-as-claim` | Rewriting slide titles, section headings, and subject lines from category labels into bold arguable claims |
 | `humanize` | Roughening up a too-clean draft — contractions, dropped subjects, the occasional safe typo. Skips automatically on high-stakes pieces. |
 | `bluf-rewriter` | Re-organizing so the bottom line is up front |
 | `warmth-and-competence` | Auditing on Fiske's two-axis model and finding the one sentence that proves both axes |
 | `pick-a-lane` | Diagnosing drafts that tell three half-stories instead of one full one. Cuts whole stories, not just words. |
-| `irrelevant-detail-killer` | Cuts cinematic details that are vivid but don't serve the main point. The third-pass refinement after pick-a-lane and show-don't-tell. |
-| `kill-redundancy` | Cuts phrases where one half implies the other ("going forward," "as I mentioned," "reduce so they are smaller"). Distinct from jargon-killer, adverb-killer, and concision-drill. |
+| `irrelevant-detail-killer` | Cuts cinematic details that are vivid but don't serve the main point. The third-pass refinement after pick-a-lane and vividness. |
 | `feedback-rephraser` | Rewrites blunt downward or peer feedback (perf reviews, 1:1 talking points, Slack DMs) as "what I like + what I would like" focused on the work, ideally phrased as a question. Catches trait-attacks, stop-without-replacement, psychoanalysis, and declared-not-asked patterns. |
 
 ### Maintaining your voice over time
 
-The two skills below grow your `context/` files incrementally, so the toolkit gets smarter about you with each session instead of staying frozen at whatever you wrote on day one. Both always propose a diff first — they never auto-write.
+The skill below grows your `context/` files incrementally, so the toolkit gets smarter about you with each session instead of staying frozen at whatever you wrote on day one. Always proposes a diff first — never auto-writes.
 
 | Skill | When it triggers |
 |-------|------------------|
-| `voice-commit` | Manual one-off merge — when you say "save this to my voice file," "remember this style," "this isn't how I write." Routes style notes to `voice-and-style.md` and identity/career notes to `about-me.md` |
-| `voice-consolidator` | Batch pull from Claude Code's auto-memory — when you say "consolidate my voice" or "what has Claude learned about my style?" Reads `~/.claude/projects/<project>/memory/` and proposes merges with citation |
-| `voice-from-sent-mail` | Reads your last 20–50 sent Gmail messages via the connected Gmail MCP, returns three sections (confirmations / drift candidates / new patterns) against `voice-and-style.md` and `banned-jargon.md`, then proposes per-diff approval. Use when the file feels aspirational and you want it grounded in what you actually send. Composes with `voice-commit` for the writes. |
+| `voice-update` | Updates `context/voice-and-style.md` or `context/about-me.md` from one of three sources, picked via `--source manual\|memory\|sent-mail`. **manual:** one dictated rule, sample, or career fact ("save this," "remember this style"). **memory:** batch pull from Claude Code's auto-memory in `~/.claude/projects/<slug>/memory/`, with citation per addition. **sent-mail:** reads the last 20–50 sent Gmail messages via the connected Gmail MCP, returns confirmations / drift candidates / new patterns. Routes style notes to `voice-and-style.md` and identity/career notes to `about-me.md`. Per-file approval, not batched. |
 
-The pattern borrows from two established shapes: a structured user-triggered logging command (the user says "save this," the system writes only what's authorized), and a merge prompt that preserves old content, merges new content, and flags contradictions instead of overwriting. Auto-learning from every draft is intentionally not supported — it would reinforce AI-tells the model rationalized away. Manual merge with diff approval is the right shape. `voice-from-sent-mail` is the exception: sent mail is ground truth, not a draft the model talked you into.
+Auto-learning from every draft is intentionally not supported — it would reinforce AI-tells the model rationalized away. Manual merge with diff approval is the right shape. The sent-mail source is the exception: sent mail is ground truth, not a draft the model talked you into.
 
 ### Closing the outcome loop
 
@@ -191,7 +185,7 @@ The rest of the toolkit asks "is this email well-written?" The skill below asks 
 |-------|------------------|
 | `sent-mail-outcome-tracker` | Reads cold-outreach sent mail and the matching inbound threads, classifies each by outcome (meeting / intro / substantive / decline / deferral / no reply), surfaces the patterns that correlate with replies (subject length, named connection, ask specificity, day-of-week), names the `named-failure-modes.md` patterns over-represented in the no-reply set, and proposes one concrete experiment to run on the next ten messages. Read-only over Gmail. Anonymizes recipients by role. Use when the user says "did my cold emails get replies," "what's my reply rate," "track outcomes," or "/sent-mail-outcome-tracker." |
 
-Composes with `voice-from-sent-mail` (which audits voice files) and `voice-commit` (which writes them). This skill produces outcome data; the other two propose voice updates if the patterns are strong enough. The eval harness measures critic recall against a golden corpus; this skill measures whether the resulting emails actually reach their intended outcome. Both belong, and they answer different questions.
+Composes with `voice-update --source sent-mail` (which audits voice files against sent mail). This skill produces outcome data; voice-update proposes voice updates if the patterns are strong enough. The eval harness measures critic recall against a golden corpus; this skill measures whether the resulting emails actually reach their intended outcome. Both belong, and they answer different questions.
 
 Each skill has a `SKILL.md` with frontmatter, a checklist, and pointers back to the relevant `points/` file.
 
@@ -240,7 +234,7 @@ This is the one that runs Claude end-to-end from the browser. (Identical capabil
 
 **What runs depends on the mode:**
 
-In **single-shot + polish**, Opus 4.7 drafts the full output (dossier → connections → subject lines → email → rubric) in one call. Then a Haiku planner reads the email and decides which surgical passes to apply (`em-dash-killer`, `adverb-killer`, `jargon-killer`, `humanize`, `warmth-and-competence`). Only the relevant ones run. Skipped passes show as "skipped" in the trace — that's the planner doing its job.
+In **single-shot + polish**, Opus 4.7 drafts the full output (dossier → connections → subject lines → email → rubric) in one call. Then a Haiku planner reads the email and decides which surgical passes to apply (`style-tells` targeting em-dashes / adverbs / jargon, `humanize`, `warmth-and-competence`). Only the relevant ones run. Skipped passes show as "skipped" in the trace — that's the planner doing its job.
 
 In **full agentic**, the pipeline is decomposed into eight specialized steps, each with its own system prompt and its own model. The researcher uses Sonnet + `web_search` to build a dossier with citations. The connection-finder cross-references it against your about-me. The drafter (Opus 4.7) composes the email from those upstream outputs. Surgical passes run in parallel (Haiku each). Warmth-and-competence audit and rubric scorer run on Sonnet. Each step renders as a card in the pipeline trace the moment it starts, turns green when done with latency + token counts, and offers an "Inspect output" details block.
 

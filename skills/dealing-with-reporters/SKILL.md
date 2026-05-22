@@ -168,8 +168,8 @@ When drafting from scratch:
 ## Companion skills
 
 - `winning-writing-critic` — runs after you draft, for the rubric pass
-- `be-specific` — Sorkin's rule 10 is the be-specific rule applied to journalism
-- `jargon-killer` — sound bites die under jargon
+- `vividness --mode noun-level` — Sorkin's rule 10 is the be-specific rule applied to journalism
+- `style-tells --target jargon` — sound bites die under jargon
 - `bluf-rewriter` — Sorkin's rule 7 is BLUF applied to spoken sound bites
 
 ## The litmus test

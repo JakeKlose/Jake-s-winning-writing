@@ -245,9 +245,9 @@ const STEP_LABELS = {
   'polish-planner': 'Polish planner',
   researcher: 'Researcher',
   'connection-finder': 'Connection finder',
-  'em-dash-killer': 'Em-dash killer',
-  'adverb-killer': 'Adverb killer',
-  'jargon-killer': 'Jargon killer',
+  'style-tells (em-dashes)': 'Style tells — em-dashes',
+  'style-tells (adverbs)': 'Style tells — adverbs',
+  'style-tells (jargon)': 'Style tells — jargon',
   humanize: 'Humanize',
   'warmth-and-competence': 'Warmth + competence',
   rubric: 'Rubric scorer',
@@ -733,7 +733,7 @@ function ruleSourceLink(source) {
   if (source === 'fallback') {
     return `<span class="ann-card-source ann-card-source-fallback" title="Rule library not loaded — using embedded taxonomy">fallback</span>`;
   }
-  // points/foo.md → ../points/foo.md ; skills/em-dash-killer → ../skills/em-dash-killer/SKILL.md
+  // points/foo.md → ../points/foo.md ; skills/style-tells → ../skills/style-tells/SKILL.md
   let href;
   if (source.startsWith('points/')) href = `${RULE_BASE}/${source}`;
   else if (source.startsWith('skills/')) href = `${RULE_BASE}/${source}/SKILL.md`;
