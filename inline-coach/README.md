@@ -1,8 +1,10 @@
-# gmail-writing-coach
+# inline-coach
 
 Chrome extension (MV3) that adds an inline writing coach to Gmail and LinkedIn compose. Catches AI tells, jargon, vague asks, and missing offers as you type. Powered by the Anthropic API.
 
 Built on the same rule library as the `winning-writing`, `cold-email`, `alex-profile`, and `connection-finder` Claude skills, ported into the extension at build time.
+
+Sibling extension: [`../side-panel-coach`](../side-panel-coach/) is a vanilla-JS side-panel extension with multi-intent rule loading and a pre-send gate. Pick this one if you want the coach to auto-attach inline wherever you compose; pick that one if you want the side-panel UX or multi-intent critique (memo, perf review, op-ed, pitch). Internal storage keys still use the legacy `gmail-writing-coach.*` namespace; do not change those without writing a migration.
 
 ## What's in v0
 
@@ -14,7 +16,7 @@ Built on the same rule library as the `winning-writing`, `cold-email`, `alex-pro
 ## What's in the bundle
 
 ```
-gmail-writing-coach/
+inline-coach/
 ├── src/
 │   ├── manifest.json                 MV3 manifest (sidePanel, storage, content scripts)
 │   ├── background/service-worker.ts  Holds API key, calls Anthropic
@@ -42,7 +44,7 @@ gmail-writing-coach/
 ## Build
 
 ```bash
-cd gmail-writing-coach
+cd inline-coach
 npm install
 npm run build
 ```
@@ -86,7 +88,7 @@ That's it. No attachments, no inbox scan, no auth tokens, no telemetry. Calls go
 
 For v0, the rules and the alex-profile content are bundled at build time (`src/lib/rules/cold-email.ts`, `src/lib/alex-profile.ts`). To pick up a rule change in the upstream skill, edit the file here and rebuild.
 
-A live-fetch mode (point at `raw.githubusercontent.com/...`) is a follow-up. Same shape as the `winning-writing/extension/lib/skill-loader.js` "Live from GitHub" toggle.
+A live-fetch mode (point at `raw.githubusercontent.com/...`) is a follow-up. Same shape as the `winning-writing/side-panel-coach/lib/skill-loader.js` "Live from GitHub" toggle.
 
 ## Architecture notes
 
@@ -97,7 +99,7 @@ A live-fetch mode (point at `raw.githubusercontent.com/...`) is a follow-up. Sam
 
 ## What this does NOT do (yet)
 
-- **In-compose inline highlights.** The panel is the highlight surface; the compose body itself is untouched. Painting spans into Gmail's contenteditable fights autosave; same constraint as the existing `winning-writing/extension`.
+- **In-compose inline highlights.** The panel is the highlight surface; the compose body itself is untouched. Painting spans into Gmail's contenteditable fights autosave; same constraint as the sibling `winning-writing/side-panel-coach`.
 - **Auto-rewrite.** Suggestions only. The user accepts or rejects in their head, then edits.
 - **LinkedIn voice / video messages or recruiter-only flows.** Only text composers covered.
 - **Other email providers.** Gmail only. Outlook Web would be a separate content script.

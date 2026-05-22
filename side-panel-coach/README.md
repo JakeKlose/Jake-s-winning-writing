@@ -1,13 +1,15 @@
-# Winning Writing Coach — Chrome extension
+# side-panel-coach — Chrome side-panel extension
 
-A Chrome side panel that runs the inline cold-email critic against the bundled rule library, with one-click import of the active Gmail compose draft.
+A Chrome side panel that runs the multi-intent critic against the bundled rule library, with one-click import of the active Gmail compose draft. Multi-intent (cold-email, exec-memo, performance-review, op-ed, pitch, general), optional pre-send gate, opt-in GitHub live-fetch rule mode.
+
+Sibling extension: [`../inline-coach`](../inline-coach/) auto-attaches to Gmail and LinkedIn compose surfaces. Pick this one if you want the side-panel UX and multi-intent rule loader; pick that one if you want the coach to appear inline wherever you compose.
 
 Same skills, same prompt-cached rule library, same Accept / Reject / Refine flow as the [Coach UI](../ui/coach.html) — but it lives in the side panel next to Gmail.
 
 ## What's in the bundle
 
 ```
-extension/
+side-panel-coach/
 ├── manifest.json          MV3 manifest
 ├── background.js          Service worker (routes get-compose-text)
 ├── content-script.js      Reads the active Gmail compose body
@@ -19,7 +21,7 @@ extension/
 │   └── skill-loader.js    Extension-aware loader (uses chrome.runtime.getURL)
 └── rules/                 Snapshot of points/ and a curated set of skills/
     ├── points/            7 rule docs (cold-email + exec-memo + performance-review bundles share most of them)
-    └── skills/            14 SKILL.md files
+    └── skills/            SKILL.md snapshots for the bundled surgical and intent skills
 ```
 
 `rules/` is a snapshot. To pick up rule edits, copy from the repo root again (see [Updating rules](#updating-rules)).
@@ -29,7 +31,7 @@ extension/
 1. Open `chrome://extensions`
 2. Toggle **Developer mode** in the top right
 3. Click **Load unpacked**
-4. Pick this `extension/` folder
+4. Pick this `side-panel-coach/` folder
 5. Click the extension's puzzle-piece icon in the toolbar → **Pin** it for easy access
 6. Click the icon → side panel opens
 7. Open **Settings** in the panel, paste your `sk-ant-...` API key, pick a model (Sonnet 4.6 recommended), and (optional) drop a few sentences in your own voice into the **Voice profile** field
@@ -82,7 +84,7 @@ A one-time migration on first boot after upgrading copies any existing model / s
 
 - **Inline highlights directly inside Gmail's compose body.** The side panel is the highlight surface; the compose body itself is left untouched. Painting spans into Gmail's contenteditable fights autosave, drifts on scroll/resize, and the DOM shifts between compose modes (popup, full, reply); that build is the next dedicated piece of work, not a quick add.
 - **Reply-thread context** — the import grabs the body, not the quoted thread.
-- **Two-way sync with the repo `context/voice-and-style.md`** — the in-panel Voice profile is its own field. `voice-commit`, `voice-consolidator`, and `voice-from-sent-mail` still edit the repo file from Claude Code; paste the relevant excerpt into the panel field manually when you want it in the critic.
+- **Two-way sync with the repo `context/voice-and-style.md`** — the in-panel Voice profile is its own field. `voice-update` (with `--source manual`, `--source memory`, or `--source sent-mail`) still edits the repo file from Claude Code; paste the relevant excerpt into the panel field manually when you want it in the critic.
 - **Intent selector** — the side panel critic targets `cold-email` only. To run the critic against `exec-memo`, `performance-review`, `op-ed`, or `pitch` rules, use the Coach UI (`ui/coach.html`), which has a per-intent dropdown.
 
 ## Updating rules
@@ -91,16 +93,16 @@ A one-time migration on first boot after upgrading copies any existing model / s
 
 ```powershell
 # from the repo root
-$src = "."; $dst = ".\extension\rules"
+$src = "."; $dst = ".\side-panel-coach\rules"
 Copy-Item "$src\points\*.md" "$dst\points\" -Force
-foreach ($s in @("em-dash-killer","jargon-killer","adverb-killer","be-specific","show-dont-tell","tell-them-something-new","warmth-and-competence","headline-as-claim","kill-redundancy","fun-angle","pick-a-lane","irrelevant-detail-killer")) {
+foreach ($s in @("style-tells","vividness","compression","tell-them-something-new","warmth-and-competence","headline-as-claim","fun-angle","pick-a-lane","irrelevant-detail-killer")) {
   Copy-Item "$src\skills\$s\SKILL.md" "$dst\skills\$s\SKILL.md" -Force
 }
 ```
 
 Then click **Reload** on the extension card in `chrome://extensions`.
 
-(On macOS / Linux: `cp -r points/*.md extension/rules/points/` and a similar loop for the skills.)
+(On macOS / Linux: `cp -r points/*.md side-panel-coach/rules/points/` and a similar loop for the skills.)
 
 ## Why a snapshot, not a live fetch?
 

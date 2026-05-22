@@ -1,6 +1,6 @@
 ---
 name: pick-a-lane
-description: Diagnoses drafts that tell three half-stories instead of one full story, and rewrites them around the single strongest narrative thread. Implements Konrad's rule 7 and Adam Bryant's "stay in your lane" advice — distinct from concision-drill (which cuts words) because pick-a-lane cuts whole stories. Use when a bio, cold email, op-ed, or pitch reads as a resume regurgitation, when the writer is dumping multiple accomplishments instead of telling one fully, or when a paragraph keeps turning corners. Triggers on "pick a lane," "stay in your lane," "too many stories," "resume dump," "before/after rewrite," "compress the narrative," "feels like a CV."
+description: Diagnoses drafts that tell three half-stories instead of one full story, and rewrites them around the single strongest narrative thread. Implements Konrad's rule 7 and Adam Bryant's "stay in your lane" advice — distinct from compression (which cuts words) because pick-a-lane cuts whole stories. Use when a bio, cold email, op-ed, or pitch reads as a resume regurgitation, when the writer is dumping multiple accomplishments instead of telling one fully, or when a paragraph keeps turning corners. Triggers on "pick a lane," "stay in your lane," "too many stories," "resume dump," "before/after rewrite," "compress the narrative," "feels like a CV."
 ---
 
 # Pick a lane
@@ -15,7 +15,7 @@ Pick a lane. Tell one story in full. Trust that the reader who wants the rest ca
 
 > *"Pick a lane, and stay in it. Don't stray all over the highway by regurgitating your resume. Stay on that story and tell it right."* — Adam Bryant (via Glenn Kramon's class)
 
-This is distinct from `concision-drill`. Concision cuts adverbs and throat-clearing. Pick-a-lane cuts whole biographical episodes. They run different surgeries.
+This is distinct from `compression`. Compression cuts adverbs and throat-clearing. Pick-a-lane cuts whole biographical episodes. They run different surgeries.
 
 ## What "all over the highway" looks like
 
@@ -159,6 +159,6 @@ A half-told good story is worse than a full-told decent one. The lane is the str
 ## Companion skills
 
 - `yourself-story` — for bio/about-me/tell-me-about-yourself drafts. Often the right skill to run *before* pick-a-lane, because yourself-story helps you generate material and pick-a-lane helps you choose.
-- `show-dont-tell` — once the lane is picked, this skill makes the scene cinematic.
-- `concision-drill` — for word-level cuts after the structural cut.
+- `vividness --mode scene-level` — once the lane is picked, this skill makes the scene cinematic.
+- `compression --mode target-count` — for word-level cuts after the structural cut.
 - `warmth-and-competence` — the Bryant test in skill form.

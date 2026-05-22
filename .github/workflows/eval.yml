@@ -7,7 +7,7 @@ on:
       - 'skills/**'
       - 'points/**'
       - 'ui/agents.js'
-      - 'extension/lib/**'
+      - 'side-panel-coach/lib/**'
       - 'eval/**'
       - '.github/workflows/eval.yml'
   pull_request:
@@ -16,7 +16,7 @@ on:
       - 'skills/**'
       - 'points/**'
       - 'ui/agents.js'
-      - 'extension/lib/**'
+      - 'side-panel-coach/lib/**'
       - 'eval/**'
       - '.github/workflows/eval.yml'
   workflow_dispatch:

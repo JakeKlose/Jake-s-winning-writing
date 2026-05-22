@@ -56,7 +56,7 @@ The patterns that show up most often. Detect any of these constructions and rewr
 
 ## Output format
 
-Two passes, same shape as em-dash-killer.
+Two passes, same shape as style-tells.
 
 ### Pass 1 — Inventory
 

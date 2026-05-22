@@ -89,7 +89,7 @@ Each case in `corpus/` is a JSON file:
 - **Refinement chat** — separate harness needed since it's multi-turn and the rewritten output is harder to assert against
 - **Cross-model gate** — tested by the existing single-shot+polish pipeline, not the inline critic
 - **The full agentic pipeline** — only the inline critic runs here. The pipeline is a different orchestration.
-- **Gmail compose extraction** — the content-script DOM selectors live in `extension/content-script.js`; they'd need a Puppeteer-based test against a real Gmail page, which is out of scope for v1.
+- **Gmail compose extraction** — the content-script DOM selectors live in `side-panel-coach/content-script.js`; they'd need a Puppeteer-based test against a real Gmail page, which is out of scope for v1.
 
 ## Architecture
 

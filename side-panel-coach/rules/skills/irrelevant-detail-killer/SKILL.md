@@ -1,6 +1,6 @@
 ---
 name: irrelevant-detail-killer
-description: Cuts cinematic details that don't serve the main point. The opposite move from be-specific and show-don't-tell. Those add sensory detail; this skill removes detail that's vivid but distracts from the argument. Use when a narrative paragraph has impressive sensory texture (sounds, colors, weather, mechanics of an unrelated scene) that the reader has to push past to get to the point. Triggers on "eliminate irrelevant detail," "tighten the narrative," "the details are great but distract," "this paragraph wanders," "too much texture."
+description: Cuts cinematic details that don't serve the main point. The opposite move from vividness. Vividness adds sensory detail; this skill removes detail that's vivid but distracts from the argument. Use when a narrative paragraph has impressive sensory texture (sounds, colors, weather, mechanics of an unrelated scene) that the reader has to push past to get to the point. Triggers on "eliminate irrelevant detail," "tighten the narrative," "the details are great but distract," "this paragraph wanders," "too much texture."
 ---
 
 # Irrelevant detail killer
@@ -22,13 +22,13 @@ If the answer to 1 is no and the answer to 2 is *texture*, cut it. If the answer
 
 ## When this differs from sibling skills
 
-- **`concision-drill`** cuts words (adverbs, hedges, throat-clearing). This skill cuts whole *details* — full sensory descriptions, eccentric characters, atmospheric paragraphs.
+- **`compression`** cuts words (adverbs, hedges, throat-clearing). This skill cuts whole *details* — full sensory descriptions, eccentric characters, atmospheric paragraphs.
 - **`pick-a-lane`** cuts whole *stories*. This skill cuts within a story — removing details that survive after you've picked the right story but don't earn their place.
-- **`show-dont-tell`** adds cinematic detail to abstract prose. This skill removes cinematic detail when the prose is already concrete but going off-piste.
+- **`vividness --mode scene-level`** adds cinematic detail to abstract prose. This skill removes cinematic detail when the prose is already concrete but going off-piste.
 
 In a typical workflow:
 1. Run `pick-a-lane` to choose the story.
-2. Run `show-dont-tell` to make the chosen story cinematic.
+2. Run `vividness --mode scene-level` to make the chosen story cinematic.
 3. Run *this skill* to remove the cinematic detail that the second pass over-supplied.
 
 ## The pattern that wastes texture

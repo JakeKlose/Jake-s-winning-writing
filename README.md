@@ -40,11 +40,17 @@ The single-shot mode is one call with embedded instructions — it's not really 
 
 Beyond the three pipeline modes, the Coach also ships a **span-level inline critic** that highlights specific words and sentences against the rule library, with Accept / Reject / Snooze per flag and a refinement chat for multi-turn iteration. See [The UI](#the-ui-optional-now-agentic) below.
 
-### 4. Chrome extension (Gmail side panel)
+### 4. Chrome extensions — pick by where you compose
 
-`extension/` ships a Manifest V3 extension that puts the inline critic in the Chrome side panel next to Gmail. One click imports the active compose body; the critic runs against the same bundled rule library (5 point docs + 12 SKILL.md files snapshotted into `extension/rules/`). API key sits in `chrome.storage.local`; calls go browser-direct to `api.anthropic.com`. No backend.
+> **Composing in Gmail or LinkedIn? → [`inline-coach`](inline-coach/)**
+> **Critiquing memos, performance reviews, op-eds, or pitches? → [`side-panel-coach`](side-panel-coach/)**
 
-Load unpacked from `chrome://extensions` — full install in [`extension/README.md`](extension/README.md).
+Two MV3 extensions, same bundled rule library, different surfaces. Install one or both.
+
+- **[`inline-coach/`](inline-coach/)** — auto-attaches to Gmail compose AND LinkedIn DM surfaces (overlay bubble, full-page thread, InMail). Recipient parsing, connection-angle suggestions, S.H.I.T. pre-send checklist. Cold-email intent. Vite + React + TS; `npm run build` once before loading.
+- **[`side-panel-coach/`](side-panel-coach/)** — opens in Chrome's side panel when you click the toolbar icon. One-click import of the active Gmail compose. Multi-intent rule loader (cold-email, exec-memo, performance-review, op-ed, pitch, general), opt-in pre-send gate, opt-in "Live from GitHub" rule source. Gmail only. Vanilla JS, no build step.
+
+API key in `chrome.storage.local`; calls go browser-direct to `api.anthropic.com`. No backend on either. Load unpacked from `chrome://extensions`.
 
 ## How it works in one sentence
 
@@ -60,7 +66,7 @@ Five pieces:
 - **`skills/`** — 28 focused Claude skills (`SKILL.md` files). The "how."
 - **`context/`** — `about-me.md` + `voice-and-style.md` so Claude writes in your voice, not generic AI voice. Update them incrementally via `voice-update --source manual` (one rule at a time), `voice-update --source memory` (batch pull from Claude Code's auto-memory), or `voice-update --source sent-mail` (audit recent Gmail sent mail against the voice file).
 - **`ui/`** — optional browser pages: an offline draft critic, and a Claude-powered Coach with a span-level inline critic and refinement chat. Not needed if you're already in Claude Code.
-- **`extension/`** — Chrome MV3 extension that runs the inline critic in the side panel and imports the active Gmail compose. Personal-use, load unpacked.
+- **`side-panel-coach/`** and **`inline-coach/`** — two Chrome MV3 extensions backed by the same rule library. `side-panel-coach` opens in Chrome's side panel on click and supports multiple critic intents; `inline-coach` auto-attaches to Gmail and LinkedIn compose surfaces. Personal-use, load unpacked.
 
 Built because most cold emails, op-eds, and memos read the same — hedged, jargon-heavy, AI-flavored. The principles here are opinionated and the banned-word list is enforced. I drafted with Claude as a sparring partner, then rewrote every line by hand so it doesn't sound like one. If you spot a "delve," a "tapestry," or five short sentences in a row, open an issue — that's the bug this repo exists to prevent.
 
@@ -80,7 +86,7 @@ If you forked or cloned this repo, do these seven steps in order before running 
 
 6. **(Optional) Set your Anthropic API key for the Coach UI or the Chrome extension.** Skip this step entirely if you're using Claude Code or Cowork — those don't need a separate key. If you do want the UI or the extension: get a key at [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys). For the UI, paste it into the API field on first load (persists in localStorage on your machine only), or drop it into a gitignored `ui/.local-key.js` file. For the extension, paste it into the panel's Settings (persists in `chrome.storage.local`). The repo ships with no keys.
 
-7. **(Optional) Install the Chrome extension.** Open `chrome://extensions`, toggle Developer mode, click Load unpacked, point at `extension/`. Pin the icon. Click it next to Gmail and the inline critic opens in the side panel. Full instructions in [`extension/README.md`](extension/README.md).
+7. **(Optional) Install one of the Chrome extensions.** Open `chrome://extensions`, toggle Developer mode, click Load unpacked, point at `side-panel-coach/` for the side-panel UX or build `inline-coach/` first (`npm install && npm run build` inside it, then load `dist/`) for the auto-attaching inline UX. Pin the icon. Full instructions in [`side-panel-coach/README.md`](side-panel-coach/README.md) and [`inline-coach/README.md`](inline-coach/README.md).
 
 Done. Open Claude Code and try *"draft me a cold email to [person] asking for [thing]"* — Claude will run the full pipeline.
 
@@ -91,15 +97,17 @@ context/             Two priming files (about-me.md, voice-and-style.md) — poi
 points/              Distilled rules and frameworks (the "what")
 skills/              Claude skills you can invoke from Claude Code or Cowork (the "how")
 ui/                  Optional browser entry point — Draft Critic + LLM Coach with inline critic
-extension/           Optional Chrome MV3 extension — Coach in the Gmail side panel
+side-panel-coach/    Chrome MV3 extension — Coach in the Gmail side panel. Vanilla JS,
+                     no build step. Multi-intent rule loader, pre-send gate, opt-in
+                     GitHub live-fetch.
+inline-coach/        Chrome MV3 extension that auto-attaches to Gmail AND LinkedIn
+                     compose surfaces (overlay bubble, full-page thread, InMail). Vite +
+                     React + TS, calls Anthropic from the service worker.
 eval/                Regression harness — node eval/run.mjs replays a golden corpus against the live critic
 
 catalog/             Mode-aware single-skill variant. Same rules, but tagged per mode
                      (cold-email, memo, essay, profile, readme, linkedin-post) so the
                      critic filters dynamically. JSON catalog at catalog/rules/catalog.json.
-gmail-writing-coach/ Separate Chrome MV3 extension that attaches to Gmail AND LinkedIn
-                     compose surfaces (overlay bubble, full-page thread, InMail). Vite +
-                     React + TS, calls Anthropic from the service worker.
 skill-evals/         Broader regression suite covering the catalog skill plus cold-email,
                      pm-evaluator, pm-prd-drafter. 105 fixtures, deterministic matchers.
 ```
@@ -281,14 +289,35 @@ Coach auto-loads it when the API key field is empty. The file is in `.gitignore`
 
 Designed to deploy as-is to GitHub Pages (the offline page).
 
-## The Chrome extension
+## The Chrome extensions
 
-`extension/` ships a Manifest V3 extension that runs the inline critic in Chrome's side panel next to Gmail. Same prompt-cached rule library, same Accept / Reject / Refine flow as the Coach UI — but loaded by clicking the toolbar icon, with one-click import of the active compose body.
+> **Composing in Gmail or LinkedIn? → [`inline-coach`](inline-coach/) auto-attaches inline**
+> **Critiquing memos, performance reviews, op-eds, or pitches? → [`side-panel-coach`](side-panel-coach/) runs multi-intent in the side panel**
 
-### What's in the bundle
+Two MV3 extensions, same rule library, different surfaces. Install one or both — they don't share storage or state.
+
+### `inline-coach` — auto-attaches to Gmail and LinkedIn compose
+
+Lives inline next to every compose box. Auto-attaches to Gmail compose dialogs and the three LinkedIn DM surfaces (overlay bubble, full-page thread reply, InMail modal). Re-anchors as LinkedIn pushState-navigates between feed, messaging, and profile views. Recipient parsing, connection-angle suggestions, S.H.I.T. pre-send checklist. Cold-email intent only at the moment. TypeScript + Vite + React + Tailwind.
+
+**Build and install**
 
 ```
-extension/
+cd inline-coach
+npm install
+npm run build
+```
+
+Then load `inline-coach/dist/` as an unpacked extension. Full walkthrough in [`inline-coach/README.md`](inline-coach/README.md).
+
+### `side-panel-coach` — multi-intent critic in the side panel
+
+Opens in Chrome's side panel when you click the toolbar icon. Same prompt-cached rule library, same Accept / Reject / Refine flow as the Coach UI, with one-click import of the active Gmail compose body. The reason to reach for this one: multi-intent rule loader (cold-email, exec-memo, performance-review, op-ed, pitch, general), opt-in pre-send gate that intercepts Send + Cmd/Enter, opt-in GitHub live-fetch rule mode. Gmail only.
+
+**What's in the bundle**
+
+```
+side-panel-coach/
 ├── manifest.json          MV3 manifest, sidePanel + storage + scripting
 ├── background.js          Service worker — routes get-compose-text
 ├── content-script.js      Reads the Gmail compose body (stable role/aria selectors)
@@ -296,17 +325,17 @@ extension/
 ├── lib/agents.js          runInlineCritic + runRefinementTurn (mirror of ui/agents.js)
 ├── lib/skill-loader.js    Dual-mode loader (chrome.runtime.getURL inside the extension,
 │                          relative paths in a browser tab for preview testing)
-└── rules/                 Snapshot of 5 points/ docs + 12 skills/ SKILL.md files
+└── rules/                 Snapshot of points/ docs + skills/ SKILL.md files
 ```
 
-### Install (unpacked, personal use)
+**Install (unpacked, personal use)**
 
-1. Open `chrome://extensions`, toggle **Developer mode**, click **Load unpacked**, point at `extension/`
+1. Open `chrome://extensions`, toggle **Developer mode**, click **Load unpacked**, point at `side-panel-coach/`
 2. Pin the extension icon
 3. Click it → side panel opens; in **Settings**, paste your `sk-ant-...` key (stored in `chrome.storage.local`)
 4. Open Gmail, start a Compose, click **Import from Gmail compose** in the panel, then **Critique**
 
-Full install + usage walkthrough in [`extension/README.md`](extension/README.md).
+Full install + usage walkthrough in [`side-panel-coach/README.md`](side-panel-coach/README.md).
 
 ### Settings shipped
 
@@ -336,7 +365,7 @@ node eval/run.mjs
 
 A full 6-case run is ~$0.05-0.10 with prompt caching on the rule library. Exit code 0 = all pass, 1 = at least one case failed its threshold. Add cases as JSON in `eval/corpus/`. Full schema and authoring guidance in [`eval/README.md`](eval/README.md).
 
-Wired to GitHub Actions at [`.github/workflows/eval.yml`](.github/workflows/eval.yml). The workflow runs on every push and pull request that touches `skills/`, `points/`, `eval/`, `ui/agents.js`, or `extension/lib/`. README-only edits skip the run so the API budget stays bounded. The badge at the top of this file reflects the most recent main-branch status. Set `ANTHROPIC_API_KEY` as a repo secret to enable the gate.
+Wired to GitHub Actions at [`.github/workflows/eval.yml`](.github/workflows/eval.yml). The workflow runs on every push and pull request that touches `skills/`, `points/`, `eval/`, `ui/agents.js`, or `side-panel-coach/lib/`. README-only edits skip the run so the API budget stays bounded. The badge at the top of this file reflects the most recent main-branch status. Set `ANTHROPIC_API_KEY` as a repo secret to enable the gate.
 
 The harness loads the rule library **per case-intent**, caching by intent across the run — so a corpus that mixes `cold-email` and `exec-memo` cases works in one pass without re-fetching the cold-email bundle for every case. Set the env var `INTENT` to override the default fallback for cases that don't declare their own `intent`.
 

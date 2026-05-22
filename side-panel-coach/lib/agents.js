@@ -256,7 +256,7 @@ Below the table, add a "## Flags" section with anything the user should verify b
 // itself supplies the taxonomy; this block only specifies the output contract.
 const INLINE_CRITIC_INSTRUCTIONS = `You are a writing critic. Read the user's draft below and return STRICT JSON with span-level annotations against the rule library loaded above.
 
-The rule library above is the AUTHORITATIVE source of truth. Every annotation must trace back to a rule in one of the source files in the library. Set \`rule_source\` to the EXACT source path from the library (e.g. "points/named-failure-modes.md" or "skills/em-dash-killer") of the rule you're applying. Do not invent paths; only use paths that appear in the library.
+The rule library above is the AUTHORITATIVE source of truth. Every annotation must trace back to a rule in one of the source files in the library. Set \`rule_source\` to the EXACT source path from the library (e.g. "points/named-failure-modes.md" or "skills/style-tells") of the rule you're applying. Do not invent paths; only use paths that appear in the library.
 
 Output schema:
 
@@ -268,7 +268,7 @@ Output schema:
     {
       "quote": "<exact substring from the draft, character-for-character>",
       "rule_id": "<short kebab-case slug for this rule, e.g. 'vague-ask', 'em-dash', 'pick-your-brain'>",
-      "rule_source": "<source path from the library, e.g. 'points/named-failure-modes.md' or 'skills/em-dash-killer'>",
+      "rule_source": "<source path from the library, e.g. 'points/named-failure-modes.md' or 'skills/style-tells'>",
       "severity": "high" | "medium" | "low",
       "category": "<human-readable label, e.g. 'Vague ask', 'Em-dash', 'Generic flattery'>",
       "suggested": "<rewrite, or \\"(delete)\\" to cut it>",
@@ -624,9 +624,9 @@ export async function runSingleShotWithPolish({
 
   // Step 3: surgical passes (sequential — each operates on the output of the previous)
   const passPromptMap = {
-    'em-dash': { name: 'em-dash-killer', prompt: EM_DASH_PROMPT },
-    'adverb': { name: 'adverb-killer', prompt: ADVERB_PROMPT },
-    'jargon': { name: 'jargon-killer', prompt: JARGON_PROMPT },
+    'em-dash': { name: 'style-tells (em-dashes)', prompt: EM_DASH_PROMPT },
+    'adverb': { name: 'style-tells (adverbs)', prompt: ADVERB_PROMPT },
+    'jargon': { name: 'style-tells (jargon)', prompt: JARGON_PROMPT },
     'humanize': { name: 'humanize', prompt: HUMANIZE_PROMPT },
     'warmth-competence': { name: 'warmth-and-competence', prompt: WARMTH_COMPETENCE_PROMPT },
   };
@@ -788,9 +788,9 @@ ${inputs.draft ? `# Existing draft to use as a starting point\n${inputs.draft}` 
 
   // Step 4: parallel surgical edits (em-dash + adverb + jargon, plus humanize if requested)
   const surgicalConfigs = [
-    { name: 'em-dash-killer', prompt: EM_DASH_PROMPT },
-    { name: 'adverb-killer', prompt: ADVERB_PROMPT },
-    { name: 'jargon-killer', prompt: JARGON_PROMPT },
+    { name: 'style-tells (em-dashes)', prompt: EM_DASH_PROMPT },
+    { name: 'style-tells (adverbs)', prompt: ADVERB_PROMPT },
+    { name: 'style-tells (jargon)', prompt: JARGON_PROMPT },
   ];
   if (inputs.humanize) {
     surgicalConfigs.push({ name: 'humanize', prompt: HUMANIZE_PROMPT });
