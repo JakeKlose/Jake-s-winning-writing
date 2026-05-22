@@ -41,6 +41,43 @@ function parseArgs(argv: string[]) {
   return args;
 }
 
+// Sentinel error: when every fixture would fail the same way (insufficient
+// credit, invalid API key, model not available), we throw this to abort
+// the run early instead of repeating the same error 105 times.
+class FatalApiError extends Error {
+  constructor(public summary: string, public detail: string) {
+    super(summary);
+  }
+}
+
+function classifyFatalApiError(message: string): { summary: string; detail: string } | null {
+  if (/credit balance is too low/i.test(message)) {
+    return {
+      summary: 'Insufficient credit balance on the Anthropic API key.',
+      detail: 'Top up at https://console.anthropic.com/settings/plans, then re-run.',
+    };
+  }
+  if (/invalid x-api-key|authentication_error/i.test(message)) {
+    return {
+      summary: 'Anthropic API key is invalid or expired.',
+      detail: 'Check ANTHROPIC_API_KEY. Generate a new one at https://console.anthropic.com/settings/keys.',
+    };
+  }
+  if (/model.*not.*found|invalid.*model/i.test(message)) {
+    return {
+      summary: 'The configured model is not available on this API key.',
+      detail: 'Override with MODEL=claude-haiku-4-5-20251001 (or another model your account has access to).',
+    };
+  }
+  if (/rate.?limit/i.test(message)) {
+    return {
+      summary: 'Anthropic rate limit hit.',
+      detail: 'Re-run after the limit window resets, or use a different key.',
+    };
+  }
+  return null;
+}
+
 async function runOne(client: Anthropic, model: string, skillsDir: string, fixture: Fixture): Promise<FixtureResult> {
   const t0 = Date.now();
   try {
@@ -55,10 +92,15 @@ async function runOne(client: Anthropic, model: string, skillsDir: string, fixtu
     const match = matchFixture(fixture, text);
     return { fixture, pass: match.pass, reason: match.reason, output: text, durationMs: Date.now() - t0 };
   } catch (err) {
+    const message = (err as Error).message;
+    const fatal = classifyFatalApiError(message);
+    if (fatal) {
+      throw new FatalApiError(fatal.summary, fatal.detail);
+    }
     return {
       fixture,
       pass: false,
-      reason: `Error: ${(err as Error).message}`,
+      reason: `Error: ${message}`,
       output: '',
       durationMs: Date.now() - t0,
     };
@@ -107,12 +149,24 @@ async function main() {
   const client = new Anthropic({ apiKey });
   const allResults: SkillResult[] = [];
 
-  for (const skill of skillsToRun) {
-    const result = await runSkill(client, model, skillsDir, fixturesDir, skill);
-    if (result.total > 0) {
-      printSkillResult(result, args.verbose);
+  try {
+    for (const skill of skillsToRun) {
+      const result = await runSkill(client, model, skillsDir, fixturesDir, skill);
+      if (result.total > 0) {
+        printSkillResult(result, args.verbose);
+      }
+      allResults.push(result);
     }
-    allResults.push(result);
+  } catch (err) {
+    if (err instanceof FatalApiError) {
+      console.error('');
+      console.error(`Aborting: ${err.summary}`);
+      console.error(`         ${(err as FatalApiError).detail}`);
+      console.error('');
+      console.error('Not a code bug. No fixture re-runs needed once this is resolved.');
+      process.exit(2);
+    }
+    throw err;
   }
 
   const totals = printSummary(allResults);
