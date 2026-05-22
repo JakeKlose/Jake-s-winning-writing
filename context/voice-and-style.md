@@ -98,11 +98,19 @@ What's working: leads with the number. Names the gap. The thesis is one sentence
 
 What's working: a date, a time, a name, a concrete action, a quote. No editorializing — the scene lands the punch.
 
-### Sample 3 — pitching yourself, short
+### Sample 3 — pitching yourself, short ("Why [Company]?" answer, ~95 words)
 
-> *"`[Three or four sentences pitching yourself. Three concrete examples with three numbers, no abstractions. Close with a one-line thesis about where you're betting next.]`"*
+> *"I use Claude every day. Most of what I do with it ends up on a public GitHub for the students I tutor: a cold-email skill from top-VC playbooks, a recruiting AI agent, a PM evaluation framework, FDE simulations, Stanford notes for kids who'd never see them otherwise. Three years ago none of these would have been an evening of work for me. Claude changed that."*
 
-What's working: three concrete examples, three numbers, no abstractions. Closes with a thesis that signals direction without being grandiose.
+**Context:** Submitted as the "Why Anthropic?" answer for the GTM Strategy & Special Projects role, May 2026. I picked it over a 310-word version that led with the Athens backstory and listed Snowflake / Amazon numbers.
+
+**What's working:**
+- **No credentials.** The resume carries Snowflake / Amazon; the Why answer is for what the resume can't show.
+- **One beat.** Just the Claude-for-students piece. Warmth and competence ride on the same demonstration.
+- **A 5-item concrete list with one moral payoff line** ("Stanford notes for kids who'd never see them otherwise") that does the equity work without ever saying "equity" or "access."
+- **A verifiable claim about Claude** ("three years ago none of these would have been an evening of work") that the reader can validate by clicking the GitHub link.
+- **No "I want to..." closer.** The implicit ask. The reader infers.
+- **Backstory absent.** Athens lives in longer formats; here it would have eaten the word budget.
 
 ### Sample 4 — closing line of a memo
 
@@ -124,6 +132,7 @@ What's working: small ask first, big ask second. "Then you decide" — confident
 | Format | Target |
 |--------|--------|
 | Cold email | Under 200 words |
+| Application "Why?" answer | 95–200 words — one beat, no credentials, verifiable claim |
 | Op-ed | 500–800 words |
 | Memo | As short as possible — usually 300–400 |
 | Substack post | 800–1,500 words |
@@ -140,3 +149,7 @@ What's working: small ask first, big ask second. "Then you decide" — confident
 7. **For verb-substitution and grammar exercises, default to the smallest possible edit.** Preserve modals ("should," "can"), softeners ("want to," "hope to"), and the original subject. The architectural rewrite is a separate offer, not the default. The Konrad aggressive-reframe register is correct for cold emails and op-eds; it is wrong for in-class drills where the assignment is to swap one verb. Lead with the surgical version; offer the architectural one second if asked.
 8. **For cost / number disclosures under uncertainty, use "at least $N" not "around $N."** *"At least $100 million"* floors the figure and protects against worse news landing later. *"Around $100M"* signals you don't know and gives the reader nothing solid to anchor on.
 9. **For confirmation of a story / report / leak, lead with "Yes."** *"Yes, the report is accurate"* or *"Yes, we can confirm"* — Sorkin's rule. Builds trust instantly. Then add the necessary context. Beats hedging or pivoting.
+10. **For "Why [Company]?" answers, drop the credentials.** The resume already carries them. The "Why" answer is for the thing the resume can't show — usually a specific way the company's product has changed what you actually do. Lead with that, ideally with a link a reader can verify in 30 seconds. *Origin: Anthropic GTM Strategy & Special Projects application, May 2026 — I picked the 95-word version over the 310-word version because the longer one was pre-verifying credentials the resume already carried.*
+11. **One beat per short answer.** Warmth + credentials + role-fit don't combine in 100–200 words. Pick one beat and trust other questions in the form to carry the rest. Stacking dilutes all three. Pair this with rule #6 ("when in doubt, cut") — together they mean: pick the strongest single move, then trim until only that move remains.
+12. **No "I want to..." or "...is where I want to be" closers in short prompts.** Implicit ask. The reader infers. Stating the position cheapens the demonstration that just preceded it. (In longer formats — memos, op-eds, 500+-word essays — an explicit close still works. The rule is short-form only.)
+13. **Backstory is a payoff, not an opener — and only when there's room for the payoff to land.** Athens / debt-crisis framing at 100 words = wasted setup. At 300 words it can earn a closer. At 500+ words it can carry a full arc. Match the backstory weight to the slot; never lead with backstory when the form is short.
