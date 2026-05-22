@@ -1,6 +1,8 @@
 # Winning Writing
 
-> 33 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, and performance reviews. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
+[![eval](https://github.com/kalyvask/winning-writing/actions/workflows/eval.yml/badge.svg)](https://github.com/kalyvask/winning-writing/actions/workflows/eval.yml)
+
+> 34 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, performance reviews, and reply-rate tracking. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
 
 ## The shortest path
 
@@ -56,7 +58,7 @@ The rules are not in the model's training — they're loaded from `skills/` and 
 Five pieces:
 
 - **`points/`** — distilled rules and frameworks. The "what."
-- **`skills/`** — 31 focused Claude skills (`SKILL.md` files). The "how."
+- **`skills/`** — 34 focused Claude skills (`SKILL.md` files). The "how."
 - **`context/`** — `about-me.md` + `voice-and-style.md` so Claude writes in your voice, not generic AI voice. Update them incrementally via `voice-commit` (manual merge), `voice-consolidator` (batch pull from Claude Code's auto-memory), or `voice-from-sent-mail` (audit recent Gmail sent mail against the voice file).
 - **`ui/`** — optional browser pages: an offline draft critic, and a Claude-powered Coach with a span-level inline critic and refinement chat. Not needed if you're already in Claude Code.
 - **`extension/`** — Chrome MV3 extension that runs the inline critic in the side panel and imports the active Gmail compose. Personal-use, load unpacked.
@@ -172,6 +174,16 @@ The two skills below grow your `context/` files incrementally, so the toolkit ge
 | `voice-from-sent-mail` | Reads your last 20–50 sent Gmail messages via the connected Gmail MCP, returns three sections (confirmations / drift candidates / new patterns) against `voice-and-style.md` and `banned-jargon.md`, then proposes per-diff approval. Use when the file feels aspirational and you want it grounded in what you actually send. Composes with `voice-commit` for the writes. |
 
 The pattern borrows from two established shapes: a structured user-triggered logging command (the user says "save this," the system writes only what's authorized), and a merge prompt that preserves old content, merges new content, and flags contradictions instead of overwriting. Auto-learning from every draft is intentionally not supported — it would reinforce AI-tells the model rationalized away. Manual merge with diff approval is the right shape. `voice-from-sent-mail` is the exception: sent mail is ground truth, not a draft the model talked you into.
+
+### Closing the outcome loop
+
+The rest of the toolkit asks "is this email well-written?" The skill below asks the only question that actually matters: "did the email get a reply, and what did the messages that replied have in common?"
+
+| Skill | When it triggers |
+|-------|------------------|
+| `sent-mail-outcome-tracker` | Reads cold-outreach sent mail and the matching inbound threads, classifies each by outcome (meeting / intro / substantive / decline / deferral / no reply), surfaces the patterns that correlate with replies (subject length, named connection, ask specificity, day-of-week), names the `named-failure-modes.md` patterns over-represented in the no-reply set, and proposes one concrete experiment to run on the next ten messages. Read-only over Gmail. Anonymizes recipients by role. Use when the user says "did my cold emails get replies," "what's my reply rate," "track outcomes," or "/sent-mail-outcome-tracker." |
+
+Composes with `voice-from-sent-mail` (which audits voice files) and `voice-commit` (which writes them). This skill produces outcome data; the other two propose voice updates if the patterns are strong enough. The eval harness measures critic recall against a golden corpus; this skill measures whether the resulting emails actually reach their intended outcome. Both belong, and they answer different questions.
 
 Each skill has a `SKILL.md` with frontmatter, a checklist, and pointers back to the relevant `points/` file.
 
@@ -321,6 +333,8 @@ node eval/run.mjs
 ```
 
 A full 6-case run is ~$0.05-0.10 with prompt caching on the rule library. Exit code 0 = all pass, 1 = at least one case failed its threshold. Add cases as JSON in `eval/corpus/`. Full schema and authoring guidance in [`eval/README.md`](eval/README.md).
+
+Wired to GitHub Actions at [`.github/workflows/eval.yml`](.github/workflows/eval.yml). The workflow runs on every push and pull request that touches `skills/`, `points/`, `eval/`, `ui/agents.js`, or `extension/lib/`. README-only edits skip the run so the API budget stays bounded. The badge at the top of this file reflects the most recent main-branch status. Set `ANTHROPIC_API_KEY` as a repo secret to enable the gate.
 
 The harness loads the rule library **per case-intent**, caching by intent across the run — so a corpus that mixes `cold-email` and `exec-memo` cases works in one pass without re-fetching the cold-email bundle for every case. Set the env var `INTENT` to override the default fallback for cases that don't declare their own `intent`.
 
