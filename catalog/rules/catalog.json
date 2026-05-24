@@ -429,6 +429,36 @@
       "modes": ["linkedin-post"],
       "severity": "warn",
       "examples": []
+    },
+    {
+      "id": "fragment-chain",
+      "name": "Chain of short fragments",
+      "description": "Three or more short sentences/fragments back-to-back (each under ~6 words) reads as AI rhythm. Short sentences are fine for emphasis. A chain of them creates the staccato that pattern-matches to LLM output. Mix lengths: one short for punch, surrounding longs to carry content.",
+      "modes": ["cold-email", "memo", "essay", "linkedin-post", "profile"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "Next year I want you here. California. Same apartment, finally. Tax law works from anywhere.",
+          "after": "California, finally. Next year I want you here with me, in the same apartment for the first time in over a year."
+        }
+      ]
+    },
+    {
+      "id": "uniform-rhythm",
+      "name": "Uniform sentence length",
+      "description": "Two or more consecutive sentences within ~2 words of each other in length, especially when their syntactic structure is parallel ('You X. You Y. You Z.' or 'I X. I Y.'). AI defaults to uniform sentence length even when individual sentences are well-crafted. Vary length deliberately: combine short twins into one longer sentence, or extend one sentence with a clause so the rhythm breaks.",
+      "modes": ["cold-email", "memo", "essay", "linkedin-post", "profile"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "Through the long job search, you never once said 'maybe come back early.' Every late call when I was anxious about another rejection, you said: keep going.",
+          "after": "Through the long job search, on every late call when I was anxious about another rejection, you never once said 'maybe come back early.' You said: keep going."
+        },
+        {
+          "before": "Thank you for being the steady one. You married me when I was unemployable on paper. You book the next flight before I have to ask.",
+          "after": "Thank you for being the steady one. You married me when I was unemployable on paper, and you book the next flight before I have to ask."
+        }
+      ]
     }
   ]
 }

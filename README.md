@@ -1,7 +1,7 @@
 # Winning Writing
 
 
-> 29 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, performance reviews, spoken-delivery talks, and reply-rate tracking. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
+> 30 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, performance reviews, spoken-delivery talks, and reply-rate tracking. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
 
 ## The shortest path
 
@@ -167,6 +167,7 @@ Drop the `skills/` directory into `~/.claude/skills/` (or your Cowork folder) an
 | Skill | When it triggers |
 |-------|------------------|
 | `style-tells` | Scrubs the three surface tells that flag prose as AI-generated, padded, or jargon-heavy. Three targets behind one skill: `--target em-dashes\|adverbs\|jargon\|all`. Em-dashes (the #1 AI tell in 2026), empty intensifiers and -ly adverbs, the Silicon Valley / consultant kill-list plus AI-tell phrases. |
+| `rhythm-killer` | Fixes the two sentence-rhythm tells that mark prose as AI-generated even after surface tells are scrubbed. Two targets behind one skill: `--target fragment-chain\|uniform-length\|all`. fragment-chain catches three or more short sentences back-to-back; uniform-length catches consecutive sentences within ~2 words of each other, especially with parallel structure ("You X. You Y. You Z."). |
 | `vividness` | Pushes a draft from abstract toward concrete at two scales. `--mode noun-level\|scene-level\|both`. Noun-level replaces "dog" with "German shepherd," "many" with "47 of 100." Scene-level turns "I was angry" into body signal + room + dialogue + moment. The "could a director recreate this?" test. |
 | `compression` | Cuts to a target word count and/or kills redundancy. `--mode target-count\|redundancy\|both`, `--target-words N`. Target-count hits a specific number (200 for cold email, 6 for product summary). Redundancy catches phrases the verb or context already implied ("going forward," "as I mentioned," "reduce so they are smaller," "free gift"). |
 | `headline-as-claim` | Rewriting slide titles, section headings, and subject lines from category labels into bold arguable claims |
