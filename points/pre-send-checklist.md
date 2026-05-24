@@ -78,6 +78,41 @@ Cut on sight:
 - [ ] *"Delve into"*, *"Tapestry of"*, *"Navigate the complexities"*
 - [ ] *"Just following up"* — write a new email instead
 
+## Angry exchanges (the special case)
+
+If you are replying to an email that made you angry — or writing the opening shot of one you expect will go badly — stop and run this checklist *before* drafting, not after. Once it's sent, you cannot take it back.
+
+Two load-bearing rules from Kramon (Session 8):
+
+1. **Your emails might be shared.** Write every line as if the other person will forward the full thread to (a) their boss, (b) their lawyer, (c) the Twitter account that ruins reputations, or (d) all three. The audience for an angry email is never just the recipient.
+2. **Have a plan for getting what you want.** Anger without a plan is just venting. Before drafting, write down — in one sentence — what outcome you actually want from this exchange. Then write the email backward from that outcome. If the line you're about to send does not move you toward that outcome, cut it.
+
+### Checklist
+
+- [ ] **Outcome named** — in one sentence, what do I want from this person at the end of the exchange?
+- [ ] **Sleep on it** — for any email I would not be comfortable seeing on the front page of the NYT in 12 hours. If I can wait, wait.
+- [ ] **No psychoanalyzing** — am I diagnosing their motives ("you clearly meant to insult me," "you're lashing out because…")? Cut. Describe behavior, not the imagined intent behind it.
+- [ ] **No sarcasm** — readers and recipients cannot tell. It always reads as contempt later.
+- [ ] **No name-calling, no diagnosis labels** — *"you lack EQ,"* *"you're toxic,"* *"you've always been petty"*. These are the lines that get screenshotted.
+- [ ] **No escalating adjectives** — *"deeply,"* *"frankly,"* *"clearly,"* *"obviously"* are amplifiers that read as condescension. Cut them.
+- [ ] **Specific actions, not character claims** — *"you missed our last three meetings"* is fact; *"you don't care about this"* is character. Stick to facts.
+- [ ] **One clear ask** — what specifically do you want the recipient to do? If there is no ask, you are venting, not writing.
+- [ ] **An off-ramp for them** — give them a way to back down without losing face. (*"I may have read your last note more harshly than you meant it. If that's the case, would love to reset."*) People rarely concede when they have to grovel to do it.
+- [ ] **Pre-read by one trusted person** — for any high-stakes thread (board, investor, employer, ex-cofounder, legal). The cost of a second pair of eyes is zero; the cost of one bad line on the record is permanent.
+- [ ] **Front-page test** — would I be okay with this exact email, with my name on it, on the front page of the NYT tomorrow?
+
+### Cautionary case study: the dean-of-engineering thread
+
+Glenn Kramon (Session 8) walked the class through a real six-email exchange between himself and an engineering-school dean. It started with a friendly *"would you help promote a student newsletter?"* and ended with both parties accusing each other of low EQ, invoking the pandemic, and exchanging passive-aggressive sign-offs.
+
+The full thread is worth reading once (it's in the Session 8 slides), but the lesson compresses to this: **at every escalation point, both parties had the option to stop or de-escalate, and at every one of them chose neither.** Each email made the next one worse. By the fourth exchange the original ask was forgotten and the only operating principle on either side was being right.
+
+The diagnostic move that breaks the loop is the same as the rule at the top: *what do I want from this person at the end of the exchange?* If the answer is *"to make them admit they were wrong,"* you have already lost — that outcome is not under your control. If the answer is *"to get them to introduce me to one specific colleague,"* most of the angry lines drop out of the next email by themselves, because they do not serve the goal.
+
+### The Marshawn Lynch rule (tough questions, no comment)
+
+Sometimes the right move is to say nothing. Marshawn Lynch's *"I have nothing to say, not even no comment"* is the gold standard for refusing to engage when engaging is the trap. In writing form: a one-line *"I don't have anything useful to add here. Wishing you the best."* — and then go silent. Resist the urge to explain why you're declining; the explanation is just another email they can quote.
+
 ## Final pass
 
 - [ ] **Read aloud** — every sentence

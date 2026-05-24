@@ -1,7 +1,7 @@
 # Winning Writing
 
 
-> 28 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, performance reviews, and reply-rate tracking. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
+> 29 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, performance reviews, spoken-delivery talks, and reply-rate tracking. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
 
 ## The shortest path
 
@@ -124,6 +124,7 @@ Eleven reference docs, each focused on one slice of the course:
 | [cold-email-rules.md](points/cold-email-rules.md) | Konrad's 10 rules + Heidi Roizen's mailing rules |
 | [exec-memo-rules.md](points/exec-memo-rules.md) | Decision-memo rules: TL;DR up front, one ask per memo, named decision criterion, sourced numbers, early-failure signal, the 60-second test |
 | [performance-review-rules.md](points/performance-review-rules.md) | Performance-review rules from Kramon: letter to the person not about them, lead with what you like then what you would like, near-term + long-term goals (including their next job), colleague feedback as multiplier, no psychoanalyzing or ambushing, close with thank-you, the house-on-fire test |
+| [speech-rules.md](points/speech-rules.md) | Speech and talk-delivery rules from Kramon Session 8 ("Wowing the Crowd"): write the closing line first, repeat the main thought, one story, audience-size adjustments, three opening + closing archetypes, pre-talk checklist |
 | [kramon-master.md](points/kramon-master.md) | Full Kramon reference, all four sessions |
 | [examples-and-critiques.md](points/examples-and-critiques.md) | Model letters, op-ed headlines, before/after rewrites |
 | [ai-writing-rules.md](points/ai-writing-rules.md) | How to use AI without sounding like AI ("centaur" mode) |
@@ -142,6 +143,7 @@ Drop the `skills/` directory into `~/.claude/skills/` (or your Cowork folder) an
 | `op-ed-coach` | Drafting an op-ed, opinion piece, or LinkedIn long-form |
 | `pitch-coach` | VC pitch, internal pitch, six-word product summary, mission statement |
 | `pitch-memo` | Text-first investor memo for pre-seed and seed founders — Constine's 15 questions |
+| `speech-coach` | Drafts and critiques speeches, keynotes, lightning talks, demo-day pitches, all-hands, panel openers, wedding toasts — anything delivered aloud. The 12 wowing-the-crowd rules from Kramon Session 8: closing line written first, main thought repeated, one story, no bullet slides, the end matters more than the beginning |
 | `gratitude-note-coach` | Thank-you notes, recommendation letters, recognition messages |
 | `dealing-with-reporters` | Crisis comms + press inquiries — Sorkin's 11 rules + AP attribution. Names the Sorkin (litigation-first) vs. Tylenol/Kramon (trust-first) school tension explicitly. |
 | `yourself-story` | Bios, LinkedIn About, intro slides, "tell me about yourself" — Bryant + Weinstein + the six Kramon model bios |

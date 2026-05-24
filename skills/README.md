@@ -25,6 +25,7 @@ Each skill has frontmatter that tells Claude when to auto-invoke it.
 | [op-ed-coach](op-ed-coach/SKILL.md) | Drafting an op-ed, opinion piece, or LinkedIn long-form |
 | [pitch-coach](pitch-coach/SKILL.md) | VC pitch, internal pitch, six-word product summary, mission statement |
 | [pitch-memo](pitch-memo/SKILL.md) | Text-first investor memo for pre-seed and seed founders — Constine's 15 questions |
+| [speech-coach](speech-coach/SKILL.md) | Drafting or critiquing a speech, keynote, lightning talk, demo-day pitch, all-hands, panel opener, wedding toast — anything delivered aloud. Kramon's 12 wowing-the-crowd rules, written for the ear |
 | [gratitude-note-coach](gratitude-note-coach/SKILL.md) | Thank-you notes, recommendation letters, recognition |
 | [dealing-with-reporters](dealing-with-reporters/SKILL.md) | Drafting answers to reporter questions, on-the-record statements, crisis comms — Sorkin's 11 rules + AP attribution, with the Sorkin/Tylenol-Kramon school tension named explicitly |
 | [yourself-story](yourself-story/SKILL.md) | Bios, LinkedIn About sections, intro slides, "tell me about yourself" — Bryant + Weinstein + the six Kramon model bios |
