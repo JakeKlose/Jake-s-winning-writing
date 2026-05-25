@@ -31,6 +31,46 @@ if (!API_KEY) {
   process.exit(2);
 }
 
+// Sentinel error: when every case would fail the same way (insufficient
+// credit, invalid key, model not available, rate limit), abort the run
+// early instead of repeating the same error N times. Mirrors skill-evals
+// runner.ts so the two harnesses behave the same way on infra failures.
+class FatalApiError extends Error {
+  constructor(summary, detail) {
+    super(summary);
+    this.summary = summary;
+    this.detail = detail;
+  }
+}
+
+function classifyFatalApiError(message) {
+  if (/credit balance is too low/i.test(message)) {
+    return {
+      summary: 'Insufficient credit balance on the Anthropic API key.',
+      detail: 'Top up at https://console.anthropic.com/settings/plans, then re-run.',
+    };
+  }
+  if (/invalid x-api-key|authentication_error/i.test(message)) {
+    return {
+      summary: 'Anthropic API key is invalid or expired.',
+      detail: 'Check ANTHROPIC_API_KEY. Generate a new one at https://console.anthropic.com/settings/keys.',
+    };
+  }
+  if (/model.*not.*found|invalid.*model/i.test(message)) {
+    return {
+      summary: 'The configured model is not available on this API key.',
+      detail: 'Override with MODEL=claude-haiku-4-5-20251001 (or another model your account has access to).',
+    };
+  }
+  if (/rate.?limit/i.test(message)) {
+    return {
+      summary: 'Anthropic rate limit hit.',
+      detail: 'Re-run after the limit window resets, or use a different key.',
+    };
+  }
+  return null;
+}
+
 const model = process.env.MODEL || 'claude-sonnet-4-6';
 const intent = process.env.INTENT || 'cold-email';
 const filter = process.env.FILTER || '';
@@ -84,6 +124,8 @@ function fmt(n, w = 4) {
     try {
       critiqueResult = await critique({ apiKey: API_KEY, model, rules: caseRules, draft: testCase.draft, intent: caseIntent });
     } catch (err) {
+      const fatal = classifyFatalApiError(err.message);
+      if (fatal) throw new FatalApiError(fatal.summary, fatal.detail);
       console.log(`[${id}] ${testCase.name}`);
       console.log(`  FAIL — API error: ${err.message}\n`);
       results.push({ id, name: testCase.name, pass: false, error: err.message });
@@ -127,6 +169,14 @@ function fmt(n, w = 4) {
 
   process.exit(passed === results.length ? 0 : 1);
 })().catch((err) => {
+  if (err instanceof FatalApiError) {
+    console.error('');
+    console.error(`Aborting: ${err.summary}`);
+    console.error(`         ${err.detail}`);
+    console.error('');
+    console.error('Not a code bug. No case re-runs needed once this is resolved.');
+    process.exit(2);
+  }
   console.error('Eval harness crashed:', err);
   process.exit(2);
 });
