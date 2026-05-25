@@ -31,6 +31,10 @@ const INTENT_BUNDLES = {
     points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md', 'frameworks.md', 'kramon-master.md'],
     skills: ['style-tells', 'vividness', 'headline-as-claim', 'compression', 'irrelevant-detail-killer'],
   },
+  'exec-memo': {
+    points: ['exec-memo-rules.md', 'named-failure-modes.md', 'banned-jargon.md', 'ai-writing-rules.md', 'core-rules.md'],
+    skills: ['style-tells', 'compression', 'headline-as-claim', 'vividness', 'irrelevant-detail-killer'],
+  },
   'general': {
     points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md'],
     skills: ['style-tells', 'vividness', 'compression'],

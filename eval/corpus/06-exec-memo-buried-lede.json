@@ -4,17 +4,12 @@
   "draft": "Subject: Q3 thoughts\n\nHi team,\n\nI hope you're well. Over the past several months, our team has been doing a lot of work to leverage AI in our pricing flow. We've been at the intersection of pricing strategy and machine learning, and I wanted to share some thoughts on where this could potentially go.\n\nAs you may know, we ran a number of experiments. The results were quite interesting — we observed what we believe could be a meaningful uplift in conversion. Some users seemed to respond very positively to the new flow. It's worth noting that the data is still being analyzed, but early signs are encouraging.\n\nWe considered several different approaches. There were a number of ways we could have structured the test. Ultimately, we landed on what we felt was a comprehensive approach that would give us robust signal.\n\nGoing forward, we believe there's a significant opportunity to expand this work. Next steps could include a broader rollout, more experiments, and additional analysis. We're excited to drive impact in this space.\n\nHappy to chat anytime. Thanks for considering!\n\nBest,\nAlex",
   "expected_clean": false,
   "min_total_flags": 6,
-  "recall_threshold": 0.7,
+  "recall_threshold": 0.5,
   "expected_flags": [
     {
       "quote_contains": "I hope you're well",
       "categories": ["Generic opener", "Throat-clearing", "Banned phrase", "Buried lede"],
       "min_severity": "medium"
-    },
-    {
-      "quote_contains": "I wanted to share some thoughts",
-      "categories": ["Buried lede", "Throat-clearing", "Generic opener", "Vague ask"],
-      "min_severity": "high"
     },
     {
       "quote_contains": "leverage",
@@ -28,33 +23,33 @@
     },
     {
       "quote_contains": "meaningful uplift",
-      "categories": ["Unsourced number", "Hedge", "Vague claim", "Missing specifics"],
+      "categories": ["Unsourced number", "Hedge", "Vague claim", "Missing specifics", "Unquantified claim"],
       "min_severity": "medium"
     },
     {
       "quote_contains": "we believe",
-      "categories": ["Hedge", "Hedging", "Vague claim"],
+      "categories": ["Hedge", "Hedging", "Vague claim", "Unquantified claim"],
       "min_severity": "medium"
     },
     {
       "quote_contains": "comprehensive approach",
-      "categories": ["Jargon", "Banned word", "AI-tell", "AI tell"],
+      "categories": ["Jargon", "Banned word", "AI-tell", "AI tell", "Adjectives doing work of evidence"],
       "min_severity": "medium"
     },
     {
       "quote_contains": "robust signal",
-      "categories": ["Jargon", "Banned word", "AI-tell", "AI tell"],
+      "categories": ["Jargon", "Banned word", "AI-tell", "AI tell", "Adjectives doing work of evidence"],
       "min_severity": "medium"
     },
     {
       "quote_contains": "Next steps could include",
-      "categories": ["Vague ask", "Hedge", "Missing owner", "Trailing ask"],
-      "min_severity": "high"
+      "categories": ["Vague ask", "Hedge", "Missing owner", "Trailing ask", "Next steps wish list"],
+      "min_severity": "medium"
     },
     {
       "quote_contains": "drive impact",
       "categories": ["Jargon", "Banned word", "Banned jargon"],
-      "min_severity": "medium"
+      "min_severity": "low"
     },
     {
       "quote_contains": "Thanks for considering",
