@@ -115,6 +115,18 @@ Run after the critique passes:
 - Right person: not jobs@ or pitches@ — actual human?
 - Sign-off: has personality (not "Best" or "Sincerely")?
 
+## Condensation discipline
+
+When the task is to shorten existing text (not draft new), the move is **subtract, not rewrite**. Each bad sentence has 1-2 specific cancers — a hedge, a throat-clearer, a euphemism, a presumption. The exercise: identify, excise, stop. Reaching for new fragments, em-dashes, or "helpful" additions after the cut refills the space you just opened. **After you cut, don't refill.**
+
+Three failure modes to watch for when condensing:
+
+- **Register drift.** The shortest version isn't the right version if you've moved the reader from a business room to a Slack room. "Want help?" is shorter than "May I help?" but matches a different reader. The catalog rule is `register-mismatch`.
+- **Soft-cope substitution.** Stripping "to secure our future" from a layoff sentence is right; replacing it with "to survive" or "to keep the company alive" is the same sin in shorter form. Verb + object. Trust the reader to supply context. The catalog rule is `soft-cope-substitution`.
+- **Presumptive next-step.** "Interested?" beats "Interested? I'll send times." The follow-up sentence forces a structure on a reader who hasn't said yes. The catalog rule is `presumptive-next-step`.
+
+If you can't condense without restructuring, the original sentence's problem isn't length — it's that the wrong verb is doing the work. Find the working verb, lead with it, stop.
+
 ## When you finish
 
 Hand back: (a) the structured critique in the format above, (b) a clean rewrite, (c) a flag for any factual claim the user needs to verify before sending.

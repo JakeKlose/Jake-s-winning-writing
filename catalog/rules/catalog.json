@@ -459,6 +459,53 @@
           "after": "Thank you for being the steady one. You married me when I was unemployable on paper, and you book the next flight before I have to ask."
         }
       ]
+    },
+    {
+      "id": "register-mismatch",
+      "name": "Register too casual for mode",
+      "description": "The draft uses texting/Slack register in a business setting. 'Want X?', 'Yeah', 'kinda', 'hit me up' in a cold email to a CEO or a memo to leadership. Shortest isn't best if you've changed which room you're in. Match the room: business correspondence stays in polite-business register ('May I', 'Would you', 'I can help with X') even when condensed. The fix is usually one notch up in formality, not five.",
+      "modes": ["cold-email", "memo"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "Want help with the report?",
+          "after": "May I help you craft that report?"
+        }
+      ]
+    },
+    {
+      "id": "soft-cope-substitution",
+      "name": "Soft cope replacing harder cope",
+      "description": "A hard business action (layoffs, price hikes, product kills, exits) followed by a softer justification clause that's still a euphemism. 'We're laying people off to secure our future' / 'to remain competitive' / 'to keep the company healthy' / 'to focus on what matters most.' The reader recognized the original cope; replacing it with a milder cope insults them twice. State the action. Trust the reader to supply context.",
+      "modes": ["memo", "cold-email", "essay"],
+      "severity": "issue",
+      "examples": [
+        {
+          "before": "We have decided to restructure our workforce to secure our future.",
+          "after": "We are cutting jobs."
+        },
+        {
+          "before": "We're laying people off to keep the company alive.",
+          "after": "We are cutting jobs."
+        }
+      ]
+    },
+    {
+      "id": "presumptive-next-step",
+      "name": "Presumptive next-step after ask",
+      "description": "An explicit ask immediately followed by a declarative that assumes the reader said yes. 'Interested? I'll send times.' 'Want to chat? I'll grab a slot.' 'Yes or no? Either way I'll follow up next week.' The follow-up forces a structure on the reader and removes the easy no. Trust the reader to take the next step — they will if the answer is yes, and you don't want to badger them if it's no.",
+      "modes": ["cold-email", "linkedin-post"],
+      "severity": "warn",
+      "examples": [
+        {
+          "before": "Interested? I'll send times.",
+          "after": "Interested?"
+        },
+        {
+          "before": "Want me on the board? Let me know and I'll loop in my chief of staff to set up an intro call.",
+          "after": "Want me on the board?"
+        }
+      ]
     }
   ]
 }
