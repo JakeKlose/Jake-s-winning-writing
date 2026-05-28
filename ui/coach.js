@@ -160,8 +160,8 @@ async function callClaude(userMessage) {
 function pickReviewerModel(drafterModel, reviewerSelection) {
   if (reviewerSelection !== 'auto') return reviewerSelection;
   // Auto: pick a different model than the drafter. Haiku is too small to be a reliable reviewer.
-  if (drafterModel === 'claude-opus-4-7') return 'claude-sonnet-4-6';
-  if (drafterModel === 'claude-sonnet-4-6') return 'claude-opus-4-7';
+  if (drafterModel === 'claude-opus-4-8') return 'claude-sonnet-4-6';
+  if (drafterModel === 'claude-sonnet-4-6') return 'claude-opus-4-8';
   if (drafterModel.startsWith('claude-haiku')) return 'claude-sonnet-4-6';
   return 'claude-sonnet-4-6';
 }
@@ -555,7 +555,7 @@ async function run() {
       drafterElapsed = ((performance.now() - t0) / 1000).toFixed(1);
     } else if (mode === 'single-shot-polish') {
       userMessage = buildUserMessage();
-      setHint('Single-shot + polish: drafter (Opus 4.7) then planner-routed surgical passes (Haiku)…');
+      setHint('Single-shot + polish: drafter (Opus 4.8) then planner-routed surgical passes (Haiku)…');
       setStatus('Running single-shot + polish…', 'ok');
       const r = await runSingleShotWithPolish({
         apiKey,

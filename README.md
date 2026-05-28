@@ -31,8 +31,8 @@ Point Cowork at the repo folder. The skills get picked up automatically. Set Set
 
 | Mode | Calls | Time | Est. cost | What it does |
 |---|---|---|---|---|
-| **Single-shot + polish** *(default)* | 2–5 | 40–90s | $0.12–0.18 | Opus 4.7 drafts in one call; a Haiku planner reads the email and decides which surgical passes to run (style-tells, humanize, warmth-and-competence); only the relevant passes execute. The planner is the agent — it routes around skills that aren't needed. |
-| **Full agentic** | 7–10 | 60–150s | $0.30–0.80 | Per-step pipeline: researcher (Sonnet + `web_search`) → connection-finder (Sonnet) → drafter (Opus 4.7) → surgical edits (Haiku, parallel) → warmth + competence audit (Sonnet) → rubric scorer (Sonnet). Every step is a separate call with its own prompt and model. Streaming trace shows latency + tokens per step and an "Inspect output" details block for each. |
+| **Single-shot + polish** *(default)* | 2–5 | 40–90s | $0.12–0.18 | Opus 4.8 drafts in one call; a Haiku planner reads the email and decides which surgical passes to run (style-tells, humanize, warmth-and-competence); only the relevant passes execute. The planner is the agent — it routes around skills that aren't needed. |
+| **Full agentic** | 7–10 | 60–150s | $0.30–0.80 | Per-step pipeline: researcher (Sonnet + `web_search`) → connection-finder (Sonnet) → drafter (Opus 4.8) → surgical edits (Haiku, parallel) → warmth + competence audit (Sonnet) → rubric scorer (Sonnet). Every step is a separate call with its own prompt and model. Streaming trace shows latency + tokens per step and an "Inspect output" details block for each. |
 | **Single-shot** | 1 | 30–80s | $0.10 | Original behavior. One Opus call with the full megaprompt. Fast and cheap but the routing is invisible. |
 
 Single-shot is one call with embedded instructions. The other two route between agents explicitly: single-shot+polish has a planner deciding what to apply; full-agentic chains specialized agents into a final output. Both stream to the UI so you can audit each step.
@@ -263,7 +263,7 @@ After Accepting flags (or a refinement rewrite), **Show diff** opens a side-by-s
 1. Get an Anthropic API key at [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
 2. Serve the repo root over HTTP so the Coach can fetch the rule library: `python -m http.server 8770` **from the repo root** (not from `ui/`). Open `http://localhost:8770/ui/coach.html`.
 3. Paste your key into the API field. It persists across sessions.
-4. Pick a model — Sonnet 4.6 is the default (fast + good); Opus 4.7 for the highest quality; Haiku 4.5 for cheap.
+4. Pick a model — Sonnet 4.6 is the default (fast + good); Opus 4.8 for the highest quality; Haiku 4.5 for cheap.
 
 #### For local dev
 

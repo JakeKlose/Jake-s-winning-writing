@@ -5,7 +5,7 @@
 //   ANTHROPIC_API_KEY=sk-ant-... node eval/run.mjs
 //
 // Options via env vars:
-//   MODEL=claude-sonnet-4-6        (or opus-4-7 / haiku-4-5)
+//   MODEL=claude-sonnet-4-6        (or opus-4-8 / haiku-4-5)
 //   RECALL_THRESHOLD=0.7           (per-case pass threshold; tests can override)
 //   INTENT=cold-email              (which bundle to load)
 //   FILTER=01                      (only run cases whose filename contains this)

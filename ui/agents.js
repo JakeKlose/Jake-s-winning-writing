@@ -2,7 +2,7 @@
 //
 // Two modes shipped here:
 //
-//   1. runSingleShotWithPolish — Opus 4.7 drafts in one call (existing megaprompt),
+//   1. runSingleShotWithPolish — Opus 4.8 drafts in one call (existing megaprompt),
 //      then a Haiku planner reads the email and decides which surgical passes apply,
 //      then those passes run sequentially as small Haiku calls on the email body only.
 //      Drafter cost dominates; planner + passes add ~$0.02 and ~10s.
@@ -554,7 +554,7 @@ function replaceEmail(blob, newBody) {
 
 export async function runSingleShotWithPolish({
   apiKey,
-  drafterModel = 'claude-opus-4-7',
+  drafterModel = 'claude-opus-4-8',
   plannerModel = 'claude-haiku-4-5-20251001',
   passModel = 'claude-haiku-4-5-20251001',
   userMessage,
@@ -676,11 +676,11 @@ export async function runFullAgentic({
     planner: 'claude-haiku-4-5-20251001',
     researcher: 'claude-sonnet-4-6',
     connectionFinder: 'claude-sonnet-4-6',
-    drafter: 'claude-opus-4-7',
+    drafter: 'claude-opus-4-8',
     surgical: 'claude-haiku-4-5-20251001',
     warmthCompetence: 'claude-sonnet-4-6',
     rubric: 'claude-sonnet-4-6',
-    reviewer: 'claude-opus-4-7',
+    reviewer: 'claude-opus-4-8',
   },
   enableSearch = true,
   onEvent = () => {},
