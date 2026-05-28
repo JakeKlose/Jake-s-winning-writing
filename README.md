@@ -1,5 +1,6 @@
 # Winning Writing
 
+[![eval](https://github.com/kalyvask/winning-writing/actions/workflows/eval.yml/badge.svg)](https://github.com/kalyvask/winning-writing/actions/workflows/eval.yml)
 
 > 30 Claude skills for cold outreach, op-eds, pitches, press inquiries, bios, exec memos, performance reviews, spoken-delivery talks, and reply-rate tracking. Distilled from Stanford GSB's *Winning Writing* (Glenn Kramon, GSBGEN 352), Rachel Konrad's cold-outreach lectures, and Andrew Ross Sorkin's reporter playbook. Run them from Claude Code, from Cowork, from a three-mode browser Coach with a span-level inline critic and refinement chat, or from a Chrome side panel that imports the active Gmail compose.
 
@@ -16,15 +17,15 @@ Open Claude Code (or Cowork), drop a draft into the chat, and say *"critique thi
 
 The same skills power all four. Pick whichever fits where you already work.
 
-### 1. Claude Code (recommended — fastest, most powerful)
+### 1. Claude Code (recommended)
 
-Skills live at `~/.claude/skills/`. Claude auto-triggers them based on what you're doing. You can chain them by name (*"now run `humanize` on the result"*), inspect each `SKILL.md` to see exactly what it does, and edit any one of them to your taste. Web search, file editing, and multi-step orchestration all happen in-process — there's nothing the UI does that Claude Code doesn't do better.
+Skills live at `~/.claude/skills/`. Claude auto-triggers them based on what you're doing. You can chain them by name (*"now run `humanize` on the result"*), inspect each `SKILL.md` to see exactly what it does, and edit any one of them to your taste. Web search, file editing, and multi-step orchestration all happen in-process.
 
 ### 2. Cowork (desktop, no terminal)
 
 Point Cowork at the repo folder. The skills get picked up automatically. Set Settings → Cowork → Edit Global Instructions to *"Before every task, read everything in my `context/` files."* Same pipeline, no command line.
 
-### 3. The browser UI (now an agentic pipeline of its own)
+### 3. The browser UI
 
 `ui/coach.html` ships with a mode selector. Pick how much orchestration you want:
 
@@ -34,11 +35,9 @@ Point Cowork at the repo folder. The skills get picked up automatically. Set Set
 | **Full agentic** | 7–10 | 60–150s | $0.30–0.80 | Per-step pipeline: researcher (Sonnet + `web_search`) → connection-finder (Sonnet) → drafter (Opus 4.7) → surgical edits (Haiku, parallel) → warmth + competence audit (Sonnet) → rubric scorer (Sonnet). Every step is a separate call with its own prompt and model. Streaming trace shows latency + tokens per step and an "Inspect output" details block for each. |
 | **Single-shot** | 1 | 30–80s | $0.10 | Original behavior. One Opus call with the full megaprompt. Fast and cheap but the routing is invisible. |
 
-The single-shot mode is one call with embedded instructions — it's not really agentic, it just looks like one big prompt to the model. The two new modes route between agents explicitly: single-shot+polish has a planner deciding what to apply, full-agentic has a chain of specialized agents composing into a final output. Both stream to the UI in real time so you can audit each step.
+Single-shot is one call with embedded instructions. The other two route between agents explicitly: single-shot+polish has a planner deciding what to apply; full-agentic chains specialized agents into a final output. Both stream to the UI so you can audit each step.
 
-**Claude Code is still the most powerful path** — it auto-routes between all 28 skills based on what you're doing, has tool access for file edits, and skips the browser entirely. The Coach UI exists for people who want a form, plus now an agentic pipeline they can inspect step by step.
-
-Beyond the three pipeline modes, the Coach also ships a **span-level inline critic** that highlights specific words and sentences against the rule library, with Accept / Reject / Snooze per flag and a refinement chat for multi-turn iteration. See [The UI](#the-ui-optional-now-agentic) below.
+Beyond the three pipeline modes, the Coach also ships a **span-level inline critic** that highlights specific words and sentences against the rule library, with Accept / Reject / Snooze per flag and a refinement chat for multi-turn iteration. See [The UI](#the-ui-optional) below.
 
 ### 4. Chrome extensions — pick by where you compose
 
@@ -63,7 +62,7 @@ The rules are not in the model's training — they're loaded from `skills/` and 
 Five pieces:
 
 - **`points/`** — distilled rules and frameworks. The "what."
-- **`skills/`** — 28 focused Claude skills (`SKILL.md` files). The "how."
+- **`skills/`** — 30 focused Claude skills (`SKILL.md` files). The "how."
 - **`context/`** — `about-me.md` + `voice-and-style.md` so Claude writes in your voice, not generic AI voice. Update them incrementally via `voice-update --source manual` (one rule at a time), `voice-update --source memory` (batch pull from Claude Code's auto-memory), or `voice-update --source sent-mail` (audit recent Gmail sent mail against the voice file).
 - **`ui/`** — optional browser pages: an offline draft critic, and a Claude-powered Coach with a span-level inline critic and refinement chat. Not needed if you're already in Claude Code.
 - **`side-panel-coach/`** and **`inline-coach/`** — two Chrome MV3 extensions backed by the same rule library. `side-panel-coach` opens in Chrome's side panel on click and supports multiple critic intents; `inline-coach` auto-attaches to Gmail and LinkedIn compose surfaces. Personal-use, load unpacked.
@@ -212,9 +211,9 @@ context/
 
 In Claude Code, add to your project `CLAUDE.md`: *"Before every task, read everything in my `context/` files."* In Cowork, set the same string in Settings → Cowork → Edit Global Instructions. From then on every session starts with Claude knowing your voice.
 
-## The UI (optional, now agentic)
+## The UI (optional)
 
-Two browser pages. Useful if you don't live in Claude Code. **Not required for any flow above** — every skill the UI invokes is also installable directly into Claude Code or Cowork. The Coach page (`ui/coach.html`) now runs a real agentic pipeline with per-step model choice and a streaming trace; see *Three ways to use this* above for the mode breakdown.
+Two browser pages. Useful if you don't live in Claude Code. Every skill the UI invokes is also installable directly into Claude Code or Cowork. The Coach page (`ui/coach.html`) runs an agentic pipeline with per-step model choice and a streaming trace; see *Four ways to use this* above for the mode breakdown.
 
 ### Page 1 — `ui/index.html` — Draft Critic (offline)
 
@@ -232,46 +231,32 @@ What it does:
 
 Use it for fast iterative feedback while you write.
 
-### Page 2 — `ui/coach.html` — LLM-powered Coach with three modes
+### Page 2 — `ui/coach.html` — LLM-powered Coach
 
-This is the one that runs Claude end-to-end from the browser. (Identical capability is available natively in Claude Code — see *Three ways to use this* above.)
+Runs Claude end-to-end from the browser. Same capability is available natively in Claude Code.
 
 **You fill in:**
 1. Recipient — name, role, links, anything you've read about them
 2. About you — auto-loaded from `context/about-me.md` or pasted inline
 3. The ask — what you want, why now, what you can offer
 4. (Optional) Existing draft — Coach critiques line-by-line, then rewrites
-5. **Mode** — single-shot + polish (default), full agentic, or single-shot
-
-**What runs depends on the mode:**
-
-In **single-shot + polish**, Opus 4.7 drafts the full output (dossier → connections → subject lines → email → rubric) in one call. Then a Haiku planner reads the email and decides which surgical passes to apply (`style-tells` targeting em-dashes / adverbs / jargon, `humanize`, `warmth-and-competence`). Only the relevant ones run. Skipped passes show as "skipped" in the trace — that's the planner doing its job.
-
-In **full agentic**, the pipeline is decomposed into eight specialized steps, each with its own system prompt and its own model. The researcher uses Sonnet + `web_search` to build a dossier with citations. The connection-finder cross-references it against your about-me. The drafter (Opus 4.7) composes the email from those upstream outputs. Surgical passes run in parallel (Haiku each). Warmth-and-competence audit and rubric scorer run on Sonnet. Each step renders as a card in the pipeline trace the moment it starts, turns green when done with latency + token counts, and offers an "Inspect output" details block.
-
-In **single-shot**, one Opus call with the existing 290-line megaprompt — preserved for cost and speed.
+5. **Mode** — single-shot + polish (default), full agentic, or single-shot (see the mode table under *Four ways to use this* above)
 
 The pipeline implementation lives in [`ui/agents.js`](ui/agents.js); per-step prompts are co-located with the runners. Claude calls happen browser-direct to `api.anthropic.com`. **Your API key sits in localStorage on your machine and is never sent anywhere else.**
 
 #### Inline critic + refinement chat
 
-Below the draft input (and again above the output after the pipeline runs), the Coach exposes a **Critique inline** button. One Sonnet call with the rule library cached as the system block returns span-level annotations: each one carries a `quote`, a `severity` (high / medium / low), a `category`, a one-sentence `why`, a `suggested` rewrite, and a `rule_source` pointing at the exact file in `points/` or `skills/` the rule came from.
+The **Critique inline** button makes one Sonnet call (rule library cached as the system block) and returns span-level annotations — each with a `quote`, `severity`, `category`, one-sentence `why`, `suggested` rewrite, and a `rule_source` pointing at the exact `points/` or `skills/` file. A **Critic intent** dropdown picks the rule bundle (`cold-email`, `exec-memo`, `performance-review`, `op-ed`, `pitch`, `general`); each loads a different mix of `points/` docs and surgical skills, and the choice persists across reloads.
 
-A **Critic intent** dropdown next to the Critique button picks the rule bundle: `cold-email`, `exec-memo`, `performance-review`, `op-ed`, `pitch`, or `general`. The choice is persisted. Each intent loads a different combination of `points/` docs and surgical skills — exec-memo, for example, pulls `exec-memo-rules.md` and adds `bluf-rewriter` to the surgical set so the critic flags buried ledes and hedge stacks; performance-review pulls `performance-review-rules.md` and the `warmth-and-competence` skill so the critic flags letter-to-the-person voice, ambushes, and psychoanalysis. Selection survives reloads.
+The annotated viewer paints severity-coded highlights. Hover a span for the rule card, click to pin it. Each card carries **Accept / Reject / Snooze** — Accept edits a working draft (the original stays untouched until **Apply to draft input**). Unmatched quotes (model quote not found verbatim) are surfaced rather than dropped.
 
-The annotated viewer paints the draft with severity-coded highlights. Hover any span for the rule card; click for the sticky version. Each card carries **Accept / Reject / Snooze**: Accept replaces the quote in a working draft (the original stays untouched until you click **Apply to draft input**); Reject and Snooze remove the highlight without changing the text. The sidebar lists all open flags including unmatched quotes (when the model's quote doesn't appear verbatim in the draft, surfaced as "unmatched" rather than silently dropped).
+A **refinement chat** below the viewer takes plain-English follow-ups (*"cut 30 words," "move the ask earlier"*): rewrites update the working draft, questions return a short evaluation. **Re-critique** re-runs the critic on the refined draft. If **About me** is filled in, it's passed as an additional cached voice block so the critic doesn't flag your settled style and rewrites stay in your voice.
 
-Below the annotated viewer, a **refinement chat** takes plain-English follow-ups: *"cut 30 words," "move the ask earlier," "what's wrong with the opener?"*. Rewrites update the working draft and clear stale annotations; asking a question returns a 1–3 sentence evaluation styled distinctly (amber border) from rewrites (green) and errors (red). **Re-critique** runs the inline critic on the refined draft so you can see what's still broken. The same prompt-cached rule library backs every refinement turn so rewrites stay rule-compliant — every turn pays the cache-hit price (~10% of input cost) on the rule block after the first.
-
-If the **About me** field is filled in, its content is passed to both the inline critic and the refinement turn as an additional cached system block. The critic uses it to avoid flagging your settled stylistic choices as rule violations; the refiner uses it to keep rewrites sounding like you. The voice block is ephemeral-cached alongside the rule library, so refinement turns reuse it at cache-hit cost.
-
-The rule library is loaded at runtime from `points/*.md` and the SKILL.md files of the surgical skills. **Edit a rule file, refresh the page, the critic immediately reflects the change.** No prompt rewrite, no code change — the skills are the live operating system, not decoration.
+The rule library loads at runtime from `points/*.md` and the surgical skills' SKILL.md files. **Edit a rule file, refresh, the critic reflects the change** — no prompt rewrite, no code change.
 
 #### Diff view
 
-After Accepting one or more flags (or after the refinement chat rewrites the draft), click **Show diff** in the inline-coach toolbar. A side-by-side view appears: original on the left with deletions struck through in red, working draft on the right with additions highlighted in green. Hover any deletion or insertion to see the rule that fired (category, severity, one-sentence why, source path). An **Edits applied** sidebar lists each accepted edit in order with the originalQuote → replacement and a link to the rule source.
-
-The diff is computed with a word-level LCS between the original and working drafts — refinement-chat rewrites show up too, just without a rule label (since they have no per-rule attribution). **Copy diff (markdown)** produces a shareable block with the edit log on top and both full drafts below, useful for review threads or before/after screenshots.
+After Accepting flags (or a refinement rewrite), **Show diff** opens a side-by-side view: deletions struck through in red on the left, additions highlighted green on the right. Hover any change for the rule that fired; an **Edits applied** sidebar lists each accepted edit with its rule source. Computed with a word-level LCS; **Copy diff (markdown)** produces a shareable before/after block.
 
 #### Setup
 
