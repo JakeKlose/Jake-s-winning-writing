@@ -6,12 +6,23 @@
 
 ## The shortest path
 
+Install as a Claude Code plugin — two commands, no clone:
+
+```
+/plugin marketplace add kalyvask/winning-writing
+/plugin install winning-writing
+```
+
+Skills become available as `/winning-writing:<skill-name>` and update when the plugin version bumps. Or install by copying, if you want to edit the skills as your own:
+
 ```bash
 git clone https://github.com/kalyvask/winning-writing
 cp -r winning-writing/skills/* ~/.claude/skills/
 ```
 
-Open Claude Code (or Cowork), drop a draft into the chat, and say *"critique this cold email"* — Claude auto-triggers `cold-email-coach`, runs the rubric, calls in `recipient-research`, `connection-finder`, `tell-them-something-new`, `style-tells`, `humanize`, and whichever else applies. The skills compose. No UI to open, nothing to paste between windows.
+Either way: open Claude Code (or Cowork), drop a draft into the chat, and say *"critique this cold email"* — Claude auto-triggers `cold-email-coach`, runs the rubric, calls in `recipient-research`, `connection-finder`, `tell-them-something-new`, `style-tells`, `humanize`, and whichever else applies. The skills compose. No UI to open, nothing to paste between windows.
+
+To try the offline Draft Critic without installing anything: [kalyvask.github.io/winning-writing](https://kalyvask.github.io/winning-writing/) — runs entirely client-side, no API key, pastes never leave your machine.
 
 ## Four ways to use this
 
@@ -73,7 +84,7 @@ Built because most cold emails, op-eds, and memos read the same — hedged, jarg
 
 If you forked or cloned this repo, do these seven steps in order before running anything. The whole point of the toolkit is that Claude critiques *your* writing against *your* voice — until you fill in the context files, every output is generic.
 
-1. **Install the skills.** `cp -r skills/* ~/.claude/skills/` on macOS/Linux; copy `skills\*` into `%USERPROFILE%\.claude\skills\` on Windows. Each skill is a self-contained `SKILL.md` — Claude Code loads them on next session start. (Skip this step if you're using Cowork — point Cowork at the repo folder and it picks them up.)
+1. **Install the skills.** Fastest: `/plugin marketplace add kalyvask/winning-writing` then `/plugin install winning-writing` in Claude Code. For a personalized fork, copy instead: `cp -r skills/* ~/.claude/skills/` on macOS/Linux; copy `skills\*` into `%USERPROFILE%\.claude\skills\` on Windows — copied skills are yours to edit. (Skip this step if you're using Cowork — point Cowork at the repo folder and it picks them up.)
 
 2. **Edit `context/about-me.md`.** Open the file and replace every bracketed placeholder with the real thing. Look for: `[Your name]`, `[role / title]`, `[the thing you're working on right now]`, `[N years]` of prior experience, `[the through-line that makes your career make sense]`, your **Primary focus** / **Secondary** / **Public output** bullets, the "How I think" paragraph, the five "What you (Claude) should know" bullets, and your contact line. Be specific — named companies, real numbers, actual side projects. Generic in, generic out.
 
