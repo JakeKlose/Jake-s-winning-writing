@@ -42,12 +42,12 @@ Beyond the three pipeline modes, the Coach also ships a **span-level inline crit
 ### 4. Chrome extensions — pick by where you compose
 
 > **Composing in Gmail or LinkedIn? → [`inline-coach`](inline-coach/)**
-> **Critiquing memos, performance reviews, op-eds, or pitches? → [`side-panel-coach`](side-panel-coach/)**
+> **Critiquing a cold email from the Gmail side panel? → [`side-panel-coach`](side-panel-coach/)**
 
 Two MV3 extensions, same bundled rule library, different surfaces. Install one or both.
 
 - **[`inline-coach/`](inline-coach/)** — auto-attaches to Gmail compose AND LinkedIn DM surfaces (overlay bubble, full-page thread, InMail). Recipient parsing, connection-angle suggestions, S.H.I.T. pre-send checklist. Cold-email intent. Vite + React + TS; `npm run build` once before loading.
-- **[`side-panel-coach/`](side-panel-coach/)** — opens in Chrome's side panel when you click the toolbar icon. One-click import of the active Gmail compose. Multi-intent rule loader (cold-email, exec-memo, performance-review, op-ed, pitch, general), opt-in pre-send gate, opt-in "Live from GitHub" rule source. Gmail only. Vanilla JS, no build step.
+- **[`side-panel-coach/`](side-panel-coach/)** — opens in Chrome's side panel when you click the toolbar icon. One-click import of the active Gmail compose. Cold-email critic (the rule loader supports all six intents; the panel UI doesn't expose a picker yet — use the Coach UI for other intents), opt-in pre-send gate, opt-in "Live from GitHub" rule source. Gmail only. Vanilla JS, no build step.
 
 API key in `chrome.storage.local`; calls go browser-direct to `api.anthropic.com`. No backend on either. Load unpacked from `chrome://extensions`.
 
@@ -95,9 +95,13 @@ Done. Open Claude Code and try *"draft me a cold email to [person] asking for [t
 context/             Two priming files (about-me.md, voice-and-style.md) — point Claude at these once
 points/              Distilled rules and frameworks (the "what")
 skills/              Claude skills you can invoke from Claude Code or Cowork (the "how")
+bundles.json         Canonical intent bundles — which points/skills each critic intent loads.
+                     Shared by the Coach UI, the side-panel extension, and the eval harness.
+tools/               sync-rules.mjs regenerates the extension's bundled rule snapshot from
+                     bundles.json + points/ + skills/; --check mode gates CI on drift.
 ui/                  Optional browser entry point — Draft Critic + LLM Coach with inline critic
 side-panel-coach/    Chrome MV3 extension — Coach in the Gmail side panel. Vanilla JS,
-                     no build step. Multi-intent rule loader, pre-send gate, opt-in
+                     no build step. Cold-email critic, pre-send gate, opt-in
                      GitHub live-fetch.
 inline-coach/        Chrome MV3 extension that auto-attaches to Gmail AND LinkedIn
                      compose surfaces (overlay bubble, full-page thread, InMail). Vite +
@@ -280,7 +284,7 @@ Designed to deploy as-is to GitHub Pages (the offline page).
 ## The Chrome extensions
 
 > **Composing in Gmail or LinkedIn? → [`inline-coach`](inline-coach/) auto-attaches inline**
-> **Critiquing memos, performance reviews, op-eds, or pitches? → [`side-panel-coach`](side-panel-coach/) runs multi-intent in the side panel**
+> **Critiquing a cold email from the Gmail side panel? → [`side-panel-coach`](side-panel-coach/)**
 
 Two MV3 extensions, same rule library, different surfaces. Install one or both — they don't share storage or state.
 
@@ -298,9 +302,9 @@ npm run build
 
 Then load `inline-coach/dist/` as an unpacked extension. Full walkthrough in [`inline-coach/README.md`](inline-coach/README.md).
 
-### `side-panel-coach` — multi-intent critic in the side panel
+### `side-panel-coach` — cold-email critic in the side panel
 
-Opens in Chrome's side panel when you click the toolbar icon. Same prompt-cached rule library, same Accept / Reject / Refine flow as the Coach UI, with one-click import of the active Gmail compose body. The reason to reach for this one: multi-intent rule loader (cold-email, exec-memo, performance-review, op-ed, pitch, general), opt-in pre-send gate that intercepts Send + Cmd/Enter, opt-in GitHub live-fetch rule mode. Gmail only.
+Opens in Chrome's side panel when you click the toolbar icon. Same prompt-cached rule library, same Accept / Reject / Refine flow as the Coach UI, with one-click import of the active Gmail compose body. The reason to reach for this one: opt-in pre-send gate that intercepts Send + Cmd/Enter, opt-in GitHub live-fetch rule mode. The panel runs the cold-email intent; the underlying rule loader supports all six intents (an intent picker in the panel is a planned follow-up — use the Coach UI's dropdown meanwhile). Gmail only.
 
 **What's in the bundle**
 
@@ -313,7 +317,9 @@ side-panel-coach/
 ├── lib/agents.js          runInlineCritic + runRefinementTurn (mirror of ui/agents.js)
 ├── lib/skill-loader.js    Dual-mode loader (chrome.runtime.getURL inside the extension,
 │                          relative paths in a browser tab for preview testing)
-└── rules/                 Snapshot of points/ docs + skills/ SKILL.md files
+└── rules/                 Generated snapshot of bundles.json + the points/ docs and
+                           skills/ SKILL.md files it references. Regenerate with
+                           node tools/sync-rules.mjs; CI fails on drift.
 ```
 
 **Install (unpacked, personal use)**
@@ -357,7 +363,7 @@ Wired to GitHub Actions at [`.github/workflows/eval.yml`](.github/workflows/eval
 
 The harness loads the rule library **per case-intent**, caching by intent across the run — so a corpus that mixes `cold-email` and `exec-memo` cases works in one pass without re-fetching the cold-email bundle for every case. Set the env var `INTENT` to override the default fallback for cases that don't declare their own `intent`.
 
-The harness mirrors the production critic prompt and rule loader; it doesn't share code with the browser side directly because of the ES-modules-in-Node configuration. Keep them in sync when either changes; the duplication is called out in the eval code's header comment.
+The harness reads the same canonical `bundles.json` as the browser loaders, so intent composition can't drift between eval and production. The critic prompt and loader logic are still mirrored (not shared) because of the ES-modules-in-Node configuration — keep those in sync when either changes. `node tools/sync-rules.mjs --check` runs in CI before the eval and fails the build if the extension's bundled rule snapshot drifts from the canonical sources.
 
 ## Sources
 

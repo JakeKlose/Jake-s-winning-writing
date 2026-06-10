@@ -1,0 +1,91 @@
+{
+  "_comment": "Canonical intent bundles for the inline critic. Single source of truth consumed by ui/skill-loader.js (fetched at runtime), eval/lib/load-rules.mjs (read from disk), and side-panel-coach/lib/skill-loader.js (via the rules/ snapshot or GitHub live mode). After editing, run `node tools/sync-rules.mjs` to regenerate the extension snapshot; CI fails if the snapshot drifts.",
+  "cold-email": {
+    "points": [
+      "named-failure-modes.md",
+      "banned-jargon.md",
+      "cold-email-rules.md",
+      "ai-writing-rules.md",
+      "core-rules.md"
+    ],
+    "skills": [
+      "style-tells",
+      "vividness",
+      "tell-them-something-new",
+      "warmth-and-competence",
+      "headline-as-claim",
+      "compression",
+      "fun-angle",
+      "pick-a-lane",
+      "irrelevant-detail-killer"
+    ]
+  },
+  "op-ed": {
+    "points": [
+      "core-rules.md",
+      "banned-jargon.md",
+      "ai-writing-rules.md",
+      "frameworks.md",
+      "kramon-master.md"
+    ],
+    "skills": [
+      "style-tells",
+      "vividness",
+      "headline-as-claim",
+      "compression",
+      "irrelevant-detail-killer"
+    ]
+  },
+  "pitch": {
+    "points": [
+      "core-rules.md",
+      "banned-jargon.md",
+      "ai-writing-rules.md",
+      "frameworks.md"
+    ],
+    "skills": [
+      "style-tells",
+      "vividness",
+      "headline-as-claim",
+      "pick-a-lane",
+      "compression"
+    ]
+  },
+  "exec-memo": {
+    "points": [
+      "core-rules.md",
+      "banned-jargon.md",
+      "ai-writing-rules.md",
+      "exec-memo-rules.md"
+    ],
+    "skills": [
+      "style-tells",
+      "vividness",
+      "bluf-rewriter",
+      "headline-as-claim",
+      "compression",
+      "pick-a-lane",
+      "irrelevant-detail-killer"
+    ]
+  },
+  "performance-review": {
+    "points": [
+      "core-rules.md",
+      "banned-jargon.md",
+      "ai-writing-rules.md",
+      "performance-review-rules.md"
+    ],
+    "skills": [
+      "style-tells",
+      "vividness",
+      "warmth-and-competence",
+      "compression",
+      "irrelevant-detail-killer",
+      "feedback-rephraser"
+    ]
+  },
+  "general": {
+    "points": ["core-rules.md", "banned-jargon.md", "ai-writing-rules.md"],
+    "skills": ["style-tells", "vividness", "compression"]
+  }
+}

@@ -6,8 +6,12 @@ on:
     paths:
       - 'skills/**'
       - 'points/**'
+      - 'bundles.json'
+      - 'tools/**'
       - 'ui/agents.js'
+      - 'ui/skill-loader.js'
       - 'side-panel-coach/lib/**'
+      - 'side-panel-coach/rules/**'
       - 'eval/**'
       - '.github/workflows/eval.yml'
   pull_request:
@@ -15,8 +19,12 @@ on:
     paths:
       - 'skills/**'
       - 'points/**'
+      - 'bundles.json'
+      - 'tools/**'
       - 'ui/agents.js'
+      - 'ui/skill-loader.js'
       - 'side-panel-coach/lib/**'
+      - 'side-panel-coach/rules/**'
       - 'eval/**'
       - '.github/workflows/eval.yml'
   workflow_dispatch:
@@ -31,6 +39,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # Free, deterministic gate: the extension's bundled rule snapshot must
+      # match bundles.json + points/ + skills/. Runs before the paid eval so
+      # drift fails fast without burning API budget.
+      - name: Check rule snapshot is in sync
+        run: node tools/sync-rules.mjs --check
 
       - name: Run inline-critic regression eval
         env:

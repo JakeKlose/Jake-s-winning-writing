@@ -184,6 +184,54 @@ If the noun or verb is absolute, the intensifier is redundant.
 | In light of the fact that | Because |
 | For the purpose of | To |
 
+### Pattern 7 — Two weak words → one strong word
+
+Kramon's Session 8 drill: nearly every adverb-plus-weak-verb pair has a single strong verb that does the work better. The strong verb is shorter, more vivid, and more memorable. Two weak words almost always lose to one strong one.
+
+| Two weak words | One strong word |
+|---|---|
+| Incredibly important | Vital / crucial |
+| Dramatically cut | Slashed |
+| Mitigating the impact | Cushioning / softening |
+| Grown up significantly | Matured |
+| Make better | Improve |
+| Make sure | Ensure |
+| Walk fast | Stride / hurry / dash |
+| Impact significantly | Reshape / overhaul |
+| Extremely smart | Brilliant |
+| Especially unusual | Singular / unique |
+| Negatively affect | Harm / hurt |
+| Look carefully at | Examine / inspect |
+| Think hard about | Reckon with / weigh |
+| Get bigger | Grow / swell |
+| Get smaller | Shrink |
+| Get worse | Decline / worsen |
+| Get better | Improve / mend |
+| Very angry | Furious |
+| Very tired | Exhausted |
+| Very happy | Thrilled |
+| Very sad | Bereft / devastated |
+| Very surprised | Astonished |
+| Very scared | Terrified |
+| Very small | Tiny / minute |
+| Very big | Enormous / vast |
+| Very fast | Rapid / sudden |
+| Very slow | Glacial |
+| Very old | Ancient |
+| Very new | Novel / fresh |
+| Looked at quickly | Glanced |
+| Spoke loudly | Shouted / boomed |
+| Spoke softly | Murmured / whispered |
+| Held tightly | Gripped / clutched |
+| I'll be able to do this | I can do this |
+| Action item | Task / to-do |
+| Make a decision | Decide |
+| Reach a conclusion | Conclude |
+| Conduct an investigation | Investigate |
+| Give consideration to | Consider |
+
+**Use the table as a sniff test, not gospel.** If the strong word changes the meaning (*"vital"* and *"important"* are not exact synonyms — *vital* means "essential to survival"), keep the weaker pair. The point is to notice when two weak words are doing the job of one, not to forcibly substitute.
+
 ### The two-question test (for any phrase)
 
 1. **Does this phrase add information not already implied by the verb, the subject, or the surrounding sentence?**
@@ -204,10 +252,13 @@ For each verb, check the next clause: does it merely describe the result? *"Redu
 ### Pass 3 — Tautological adjectives and doubled qualifiers
 *free gift, new innovation, past history, end result, definitely commit, absolutely critical* — cut the redundant half.
 
-### Pass 4 — Target-count cuts (if a target is set)
+### Pass 4 — Two-weak-words → one-strong-word
+Scan for adverb-plus-weak-verb pairs and "very + adjective" pairs. Substitute the strong single word from the Pattern 7 table when the meaning holds. Skip when the strong word shifts the meaning.
+
+### Pass 5 — Target-count cuts (if a target is set)
 Apply the three drill levels above. Stop when at target.
 
-### Pass 5 — Read aloud
+### Pass 6 — Read aloud
 Anything that lands twice in your ear lands twice in the reader's ear. Cut the second landing.
 
 ## Output format

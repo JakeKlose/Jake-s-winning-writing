@@ -1,45 +1,15 @@
 // Loads rule docs (points/*.md) and skill prompts (skills/*/SKILL.md) from the
 // filesystem and assembles them into the same markdown blob the browser
-// skill-loader.js builds at runtime. Mirrors the curation in ui/skill-loader.js
-// — keep them in sync.
+// skill-loader.js builds at runtime. Intent composition comes from the canonical
+// bundles.json at the repo root — shared with ui/skill-loader.js and
+// side-panel-coach/lib/skill-loader.js.
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const INTENT_BUNDLES = {
-  'cold-email': {
-    points: [
-      'named-failure-modes.md',
-      'banned-jargon.md',
-      'cold-email-rules.md',
-      'ai-writing-rules.md',
-      'core-rules.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'tell-them-something-new',
-      'warmth-and-competence',
-      'headline-as-claim',
-      'compression',
-      'fun-angle',
-      'pick-a-lane',
-      'irrelevant-detail-killer',
-    ],
-  },
-  'op-ed': {
-    points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md', 'frameworks.md', 'kramon-master.md'],
-    skills: ['style-tells', 'vividness', 'headline-as-claim', 'compression', 'irrelevant-detail-killer'],
-  },
-  'exec-memo': {
-    points: ['exec-memo-rules.md', 'named-failure-modes.md', 'banned-jargon.md', 'ai-writing-rules.md', 'core-rules.md'],
-    skills: ['style-tells', 'compression', 'headline-as-claim', 'vividness', 'irrelevant-detail-killer'],
-  },
-  'general': {
-    points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md'],
-    skills: ['style-tells', 'vividness', 'compression'],
-  },
-};
+async function getBundles(repoRoot) {
+  return JSON.parse(await readFile(join(repoRoot, 'bundles.json'), 'utf-8'));
+}
 
 function stripFrontmatter(text) {
   if (!text) return '';
@@ -56,8 +26,9 @@ async function readOrSkip(path) {
 }
 
 export async function loadRules(repoRoot, intent = 'cold-email') {
-  const key = INTENT_BUNDLES[intent] ? intent : 'general';
-  const bundle = INTENT_BUNDLES[key];
+  const bundles = await getBundles(repoRoot);
+  const key = bundles[intent] ? intent : 'general';
+  const bundle = bundles[key];
 
   const pointResults = await Promise.all(
     bundle.points.map(async (file) => {

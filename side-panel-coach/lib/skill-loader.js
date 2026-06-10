@@ -8,75 +8,9 @@
 // In a browser tab (preview testing, no chrome.*), uses relative paths to the
 // bundled snapshot.
 //
-// Source of truth lives at ../../ui/skill-loader.js — keep them in sync.
-
-const INTENT_BUNDLES = {
-  'cold-email': {
-    points: [
-      'named-failure-modes.md',
-      'banned-jargon.md',
-      'cold-email-rules.md',
-      'ai-writing-rules.md',
-      'core-rules.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'tell-them-something-new',
-      'warmth-and-competence',
-      'headline-as-claim',
-      'compression',
-      'fun-angle',
-      'pick-a-lane',
-      'irrelevant-detail-killer',
-    ],
-  },
-  'op-ed': {
-    points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md', 'frameworks.md'],
-    skills: ['style-tells', 'vividness', 'headline-as-claim', 'compression', 'irrelevant-detail-killer'],
-  },
-  'pitch': {
-    points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md', 'frameworks.md'],
-    skills: ['style-tells', 'vividness', 'headline-as-claim', 'pick-a-lane', 'compression'],
-  },
-  'exec-memo': {
-    points: [
-      'core-rules.md',
-      'banned-jargon.md',
-      'ai-writing-rules.md',
-      'exec-memo-rules.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'bluf-rewriter',
-      'headline-as-claim',
-      'compression',
-      'pick-a-lane',
-      'irrelevant-detail-killer',
-    ],
-  },
-  'performance-review': {
-    points: [
-      'core-rules.md',
-      'banned-jargon.md',
-      'ai-writing-rules.md',
-      'performance-review-rules.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'warmth-and-competence',
-      'compression',
-      'irrelevant-detail-killer',
-      'feedback-rephraser',
-    ],
-  },
-  'general': {
-    points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md'],
-    skills: ['style-tells', 'vividness', 'compression'],
-  },
-};
+// Intent composition comes from the canonical bundles.json at the repo root,
+// snapshotted into rules/bundles.json by tools/sync-rules.mjs. In github mode
+// the canonical file is fetched live, with the snapshot as fallback.
 
 const cache = new Map();
 const inExtension = typeof chrome !== 'undefined' && chrome.runtime && typeof chrome.runtime.getURL === 'function';
@@ -200,15 +134,26 @@ function stripFrontmatter(text) {
   return m ? text.slice(m[0].length) : text;
 }
 
+let bundlesCache = null;
+
+async function getBundles(settings, storedCache, freshFetches, forceRefresh = false) {
+  if (bundlesCache && !forceRefresh) return bundlesCache;
+  const r = await loadOneFile('bundles.json', settings, storedCache, freshFetches);
+  if (!r.body) throw new Error('Failed to load bundles.json from any rule source');
+  bundlesCache = JSON.parse(r.body);
+  return bundlesCache;
+}
+
 export async function loadRulesForIntent(intent = 'cold-email', opts = {}) {
-  const key = INTENT_BUNDLES[intent] ? intent : 'general';
   const settings = await getSettings();
+  const storedCache = settings.source === 'github' ? await getStoredCache() : {};
+  const freshFetches = {};
+  const bundles = await getBundles(settings, storedCache, freshFetches, opts.forceRefresh);
+  const key = bundles[intent] ? intent : 'general';
   const cacheKey = `${key}::${settings.source}::${settings.githubBase || ''}`;
   if (cache.has(cacheKey) && !opts.forceRefresh) return cache.get(cacheKey);
 
-  const bundle = INTENT_BUNDLES[key];
-  const storedCache = settings.source === 'github' ? await getStoredCache() : {};
-  const freshFetches = {};
+  const bundle = bundles[key];
 
   const allPaths = [
     ...bundle.points.map((f) => ({ path: `points/${f}`, kind: 'point', slug: f })),
@@ -257,6 +202,7 @@ export async function loadRulesForIntent(intent = 'cold-email', opts = {}) {
 }
 
 export function clearRuleCache() {
+  bundlesCache = null;
   cache.clear();
   if (inExtension && chrome.storage && chrome.storage.local) {
     chrome.storage.local.remove('ww-coach.rule-cache');

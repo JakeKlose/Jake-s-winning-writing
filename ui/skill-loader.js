@@ -6,102 +6,23 @@
 // points/ or skills/, refresh the page, and the critic immediately reflects the new
 // rule. No code changes required.
 //
+// Intent composition (which points/skills each intent loads) comes from the
+// canonical bundles.json at the repo root — shared with eval/lib/load-rules.mjs
+// and side-panel-coach/lib/skill-loader.js.
+//
 // Files are cached in module state after the first fetch.
 
-const INTENT_BUNDLES = {
-  'cold-email': {
-    points: [
-      'named-failure-modes.md',
-      'banned-jargon.md',
-      'cold-email-rules.md',
-      'ai-writing-rules.md',
-      'core-rules.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'tell-them-something-new',
-      'warmth-and-competence',
-      'headline-as-claim',
-      'compression',
-      'fun-angle',
-      'pick-a-lane',
-      'irrelevant-detail-killer',
-    ],
-  },
-  'op-ed': {
-    points: [
-      'core-rules.md',
-      'banned-jargon.md',
-      'ai-writing-rules.md',
-      'frameworks.md',
-      'kramon-master.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'headline-as-claim',
-      'compression',
-      'irrelevant-detail-killer',
-    ],
-  },
-  'pitch': {
-    points: [
-      'core-rules.md',
-      'banned-jargon.md',
-      'ai-writing-rules.md',
-      'frameworks.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'headline-as-claim',
-      'pick-a-lane',
-      'compression',
-    ],
-  },
-  'exec-memo': {
-    points: [
-      'core-rules.md',
-      'banned-jargon.md',
-      'ai-writing-rules.md',
-      'exec-memo-rules.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'bluf-rewriter',
-      'headline-as-claim',
-      'compression',
-      'pick-a-lane',
-      'irrelevant-detail-killer',
-    ],
-  },
-  'performance-review': {
-    points: [
-      'core-rules.md',
-      'banned-jargon.md',
-      'ai-writing-rules.md',
-      'performance-review-rules.md',
-    ],
-    skills: [
-      'style-tells',
-      'vividness',
-      'warmth-and-competence',
-      'compression',
-      'irrelevant-detail-killer',
-      'feedback-rephraser',
-    ],
-  },
-  'general': {
-    points: ['core-rules.md', 'banned-jargon.md', 'ai-writing-rules.md'],
-    skills: [
-      'style-tells',
-      'vividness',
-      'compression',
-    ],
-  },
-};
+let bundlesPromise = null;
+
+function getBundles() {
+  if (!bundlesPromise) {
+    bundlesPromise = fetch('../bundles.json').then((r) => {
+      if (!r.ok) throw new Error(`Failed to load bundles.json (HTTP ${r.status}) — serve from the repo root.`);
+      return r.json();
+    });
+  }
+  return bundlesPromise;
+}
 
 const cache = new Map();
 
@@ -125,10 +46,11 @@ function stripFrontmatter(text) {
 }
 
 export async function loadRulesForIntent(intent = 'cold-email') {
-  const key = INTENT_BUNDLES[intent] ? intent : 'general';
+  const bundles = await getBundles();
+  const key = bundles[intent] ? intent : 'general';
   if (cache.has(key)) return cache.get(key);
 
-  const bundle = INTENT_BUNDLES[key];
+  const bundle = bundles[key];
 
   const pointResults = await Promise.all(
     bundle.points.map(async (file) => {
