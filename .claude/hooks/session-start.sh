@@ -17,11 +17,16 @@ mkdir -p "$DEST"
 
 # Copy every skill directory (each contains a SKILL.md). Skip the top-level
 # README.md so it does not land as a bogus skill.
+#
+# Delete-then-copy (with no trailing slash on the source) so re-runs replace
+# each skill instead of nesting it: SessionStart also fires on resume/clear,
+# and on GNU cp `cp -r src/ dest` copies src INTO an existing dest.
 count=0
 for dir in "$SRC"/*/; do
   [ -d "$dir" ] || continue
   name="$(basename "$dir")"
-  cp -r "$dir" "$DEST/$name"
+  rm -rf "$DEST/$name"
+  cp -R "${dir%/}" "$DEST/$name"
   count=$((count + 1))
 done
 
